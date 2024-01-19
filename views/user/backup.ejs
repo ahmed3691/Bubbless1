@@ -1,0 +1,41 @@
+
+
+
+
+
+    
+    <script>
+      $('.value-plus').on('click', function () {
+          console.log('plus')
+          let stock = '<%=item.productId.stockQty %>'
+          
+          var divUpd = $(this).parent().find('.value'), newVal = parseInt(divUpd.text(), 10) + 1;
+          console.log(newVal)
+          if(newVal<=stock){
+              divUpd.text(newVal);
+              $('#stockAlert').prop('hidden',true)
+          }else if(newVal>stock){
+              $('#stockAlert').prop('hidden',false)
+          } 
+          updateCartQuantity(newVal);
+      });
+
+      $('.value-minus').on('click', function () {
+          console.log('minus')
+          var divUpd = $(this).parent().find('.value'), newVal = parseInt(divUpd.text(), 10) - 1;
+          if (newVal >= 1){
+              divUpd.text(newVal);
+              $('#stockAlert').prop('hidden',true)
+          }
+          updateCartQuantity(newVal);
+      });
+      function updateCartQuantity(value){
+          console.log(value)
+          $('#cartQuantity').val(value)
+          $('#productQty').val(value)
+      }
+  </script>
+
+
+
+

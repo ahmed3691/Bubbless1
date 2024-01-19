@@ -1,0 +1,145 @@
+<%- include("../admin/layouts/header") %>
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Categories</h2>
+            <p>Lorem ipsum dolor sit amet.</p>
+        </div>
+        <div>
+            <a href="#" class="btn btn-light rounded font-md">Export</a>
+            <a href="#" class="btn btn-light rounded font-md">Import</a>
+            <a href="#" class="btn btn-primary btn-sm rounded">Create new</a>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <header class="card-header">
+            <div class="row align-items-center">
+                <div class="col col-check flex-grow-0">
+                    <!-- <div class="form-check ms-2">
+                        <input class="form-check-input" type="checkbox" value="" />
+                    </div> -->
+                </div>               
+                <div class=" row col-md-3 col-12 me-auto mb-md-0 mb-3">
+                    <form action="/admin/categories" class="row" method="get">
+                        <div class="col-md-8  ">
+                            <!-- <label for="mainCat">Select Category:</label> -->
+                            <select id="mainCat" class="form-select" name="mainCategory">
+                                <option >All</option>
+                                <option>Unisex</option>
+                                <option>Boys</option>
+                                <option>Girls</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="submit" value="Search" class="btn btn-md rounded font-sm hover-up">
+                        </div>               
+                    </form>
+                </div>
+                    
+                
+                <div class="col-md-2 col-6">
+                    <input type="date" value="02.05.2021" class="form-control" />
+                </div>
+                <div class="col-md-2 col-6">
+                    <select class="form-select">
+                        <option hidden >Status</option>
+                        <option>Active</option>
+                        <option>Disabled</option>
+                        <option>Show all</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+        <!-- card-header end// -->
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Category Name</th>
+                            <th>Category</th>
+                            <!-- <th>Price</th>
+                            <th>Size</th>
+                            <th>Color</th> -->
+                            <th>List/Unlist</th>
+                            <th>Total Stock Qty</th>
+                            <!-- <th>Brand</th> -->
+                            <th class="">Action</th> <!---class text end-->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% subCategory.forEach((doc) => { %>
+                            <tr>
+                                <td width="30%">
+                                    <a href="#" class="itemside">
+                                       
+                                        <div class="info pl-3">
+                                            <h6 class="mb-0 title"><%=  doc.subCatName  %></h6>
+                                           
+                                        </div>
+                                    </a>
+                                </td>
+                                <td>
+                                    <table>
+                                        <tr>
+                                          <td><%= doc.category %></td>
+                                        </tr>
+                                       
+                                    </table>
+                                </td>
+                            
+                                <td>
+                                    <% if(doc.isListed){ %>
+                                        <form action="/admin/unlist-category?subCategoryId=<%= doc._id %>" method="post">
+                                            <input type="submit" value="Unlist"
+                                                class="btn btn-sm btn-success rounded font-sm mt-15 unlist-btn"
+                                                onclick="return confirm('Are you sure?')">                                           
+                                        </form>
+                                        <% } else{ %>
+                                        <form action="/admin/list-category?subCategoryId=<%= doc._id %>" method="post">
+                                            <input  type="submit" value="List" 
+                                                class="btn btn-sm btn-danger rounded font-sm mt-15 list-btn"
+                                                onclick="return confirm('Are you sure?')">
+                                        </form>
+                                        <% } %>
+                                </td>
+                                <td>Not yet available</td>
+                               
+                                <td class="row col-md-12">  <!---class text end-->
+                                    <a href="/admin/edit-category?subCategoryId=<%= doc._id %>" class="btn btn-sm font-sm rounded btn-brand mb-2 col-md-6"> <i class="material-icons md-edit"></i> Edit </a>
+                                    <form action="/admin/delete-category?subCategoryId=<%= doc._id %>" class="col-md-6" method="post">
+                                        <button type="submit" class="btn btn-sm font-sm btn-light rounded" onclick="return confirm('Are you sure?')" >
+                                            <i class="material-icons md-delete_forever"></i>Delete</button>
+                                    </form>                                 
+                                </td>
+                            </tr>
+                            <% }) %>
+               
+                    </tbody>
+                </table>
+                <!-- table-responsive.// -->
+            </div>
+        </div>
+        <!-- default table................................................... -->
+        
+        <!-- card-body end// -->
+    </div>
+    <!-- card end// -->
+    <div class="pagination-area mt-30 mb-50">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-start">
+                <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                <li class="page-item"><a class="page-link" href="#">02</a></li>
+                <li class="page-item"><a class="page-link" href="#">03</a></li>
+                <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                <li class="page-item"><a class="page-link" href="#">16</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</section>
+
+<%- include("../admin/layouts/footer") %>

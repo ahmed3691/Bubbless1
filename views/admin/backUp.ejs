@@ -1,0 +1,66 @@
+<script>
+    async function showUnblockAlert(categoryId) {
+        const result = await Swal.fire({
+            title: 'Are you sure to List?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Listed !'
+        });
+
+        if (result.isConfirmed) {
+            // Handle the unblocking logic, e.g., make an AJAX request
+            window.location.href = "/admin/unblockCategory/" + categoryId;
+        }
+    }
+
+    async function showBlockAlert(categoryId) {
+        const result = await Swal.fire({
+            title: 'Are you sure to Unlisting?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, Unlist it!'
+        });
+
+        if (result.isConfirmed) {
+            // Handle the blocking logic, e.g., make an AJAX request
+            window.location.href = "/admin/blockCategory/" + categoryId;
+        }
+        }
+
+        onclick="showBlockAlert('<%= category._id %>')"
+</script>
+
+
+
+<% if(orders[i].status === 'Pending'){ %>
+    <a href="/admin/cancel-order/<%= orders[i]._id %>"
+        onclick="return confirm('Are you sure')"
+        class="btn  btn-danger rounded font-sm">Cancel</a>
+    <% } %>
+    <% if(orders[i].status === 'Cancelled'){ %>
+        <a href="/admin/cancel-order/<%= orders[i]._id %>"
+            onclick="return confirm('Are you sure')"
+            class="btn  btn-md rounded font-sm">Resume</a>
+    <% } %>
+
+
+
+    let update = userCart.products.map((item) => {
+        const count = typeof item.count === "number" ? item.count : 0;
+        const updatedQuantity = isNaN(count) ? 0 : +count;
+  
+        return {
+          updateOne: {
+            filter: { _id: item.product._id },
+            update: {
+              $inc: { quantity: -updatedQuantity, sold: updatedQuantity },
+            },
+          },
+        };
+      });
+  
+      const updated = await Product.bulkWrite(update, {});

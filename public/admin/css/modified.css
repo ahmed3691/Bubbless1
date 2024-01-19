@@ -1,0 +1,15 @@
+.btn-success{
+    background-color: #ccf0d1;
+}
+.btn-danger{
+    background-color: rgb(243, 113, 113);
+}
+
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}

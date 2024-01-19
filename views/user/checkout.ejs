@@ -1,0 +1,419 @@
+<%- include("../user/layouts/header") %>
+
+
+
+
+    <section class="bg-light py-5 " style="margin: 20px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12  mb-4">
+                    <!-- Checkout -->
+                    <form id="checkoutForm" action="/place-order" method="post">
+                        <div class="card col-md-7 shadow-0 border">
+
+                            <div class="p-4">
+                                <div class="row">
+                                    <h5 class="card-title mb-3">Delivery adress:</h5>
+                                    <!-- fill address  -->
+                                    <div id="addAddress" class="col-md-12">
+                                        <p><span style="color: red;">* marked sections are mandatory</span></p>
+                                        <div class="col-md-12 mb-3">
+                                            <p class="mb-0">Full Name <span style="color: red;">*</span></p>
+                                            <div class="form-outline">
+                                                <input name="fullName" type="text" id="fullName" placeholder="Type here"
+                                                    class="form-control" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <p class="mb-0">Phone<span style="color: red;">*</span></p>
+                                            <div class="form-outline">
+                                                <input name="phoneNUmber" type="tel" id="phoneNUmber"
+                                                    class="form-control" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <p class="mb-0">Email</p>
+                                            <div class="form-outline">
+                                                <input type="email" id="email" placeholder="example@gmail.com"
+                                                    class="form-control" name="email" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-0">Address<span style="color: red;">*</span></p>
+                                            <div class="form-outline">
+                                                <input type="text" id="house" placeholder="Type here"
+                                                    class="form-control" name="house" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-0">Landmark/locality</p>
+                                            <div class="form-outline">
+                                                <input type="text" id="landMark" placeholder="Type here"
+                                                    class="form-control" name="landMark" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-0">City<span style="color: red;">*</span></p>
+                                            <div class="form-outline">
+                                                <input type="text" id="city" placeholder="Type here"
+                                                    class="form-control" name="city" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-0">District</p>
+                                            <div class="form-outline">
+                                                <input type="district" id="district" placeholder="Type here"
+                                                    class="form-control" name="district" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-0">State</p>
+                                            <div class="form-outline">
+                                                <input type="state" id="state" placeholder="Type here"
+                                                    class="form-control" name="state" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <p class="mb-0">PIN code<span style="color: red;">*</span></p>
+                                            <div class="form-outline">
+                                                <input type="tel" id="pincode" class="form-control" name="pincode" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- ..................  -->
+                                    <div class="col-md-12 " style="margin-top: 2vh;">
+                                        <span id="savedAddress-btn" class="btn btn-primary">Saved Addresses</span>
+                                    </div>
+                                    <!-- select adressese -->
+                                    <div id="savedAddress" class="col-md-12" hidden>
+                                        <div class="row mb-3">
+                                            <% savedAddress?.addresses.forEach(address=>{ %>
+                                                <div class="col-md-12 mb-3">
+                                                    <div class="form-check h-100 border rounded-3">
+                                                        <div class="p-3">
+                                                            <input class="form-check-input selectAddress" type="radio"
+                                                                name="selectedAddress" 
+                                                                value="<%= `${address.fullName}\n${address.houseName}\n${address.locality}\n${address.city}\n${address.pinCode}\n${address.district}\n${address.state}\n${address.phoneNumber}` %>" />
+                                                            <label class="form-check-label" >
+                                                                <%= address.title %> <br />
+                                                                    <small class="text-muted">
+                                                                        <%= address.fullName %>, <%= address.houseName%>
+                                                                                , <%=address.locality%>,
+                                                                                    <%=address.city%>,
+                                                                                        <%=address.pinCode%>,
+                                                                                            <%=address.district%>,
+                                                                                                <%=address.state%>,
+                                                                                                    <%=address.phoneNumber%>
+                                                                    </small>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <% }) %>
+                                        </div>
+                                    </div>
+                               
+                                </div>
+
+                                <hr class="my-4" />
+                                <h5 class="card-title mb-3">Add delivery instructions</h5>
+                                <div class="row mb-3">
+                                    <div class="mb-3 col-md-12">
+
+                                        <div class="form-outline">
+                                            <textarea name="deliveryInstruction" class="form-control"
+                                                id="textAreaExample1" rows="2"></textarea>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- Checkout -->
+
+                        <!-- single Product Summary........................................................... -->
+
+                        <div class=" col-md-5  d-flex justify-content-center justify-content-lg-end">
+                            <div class="ms-lg-4 mt-4 mt-lg-0" style="max-width: 320px;">
+                                <% if(product){ %>
+                                    <h6 class="mb-3 " style="font-weight: bolder; font-size: larger;">Summary</h6>
+                                    <hr />
+                                    <div class="d-flex col-md-12 justify-content-between">
+                                        <p class="mb-2">Total price:</p>
+                                        <input type="hidden" value="<%= product.price %>" name="totalPrice">
+                                        <p class="mb-2 fw-bold">&#x20B9; <%= product.price*productQty %>
+                                        </p>
+                                    </div>
+
+                                    <div class="input-group mt-3 mb-4">
+                                        <input type="text" class="form-control border" name=""
+                                            placeholder="Promo code" />
+                                        <button class="btn btn-light text-primary border">Apply</button>
+                                    </div>
+                                    <div>
+                                        <h5>Choose a payment method</h5>
+                                        <div class="custom-control custom-radio">
+                                            <input type="radio" name="paymentMethod" value="COD" id="paymentCOD"
+                                                class="paymentOptions custom-control-input">
+                                            <label class="custom-control-label" for="paymentCOD">Cash on
+                                                Delivery</label>
+                                        </div>
+                                        <div class="custom-control custom-radio">
+                                            <input type="radio" name="paymentMethod" value="Online Payment" id="onlinePayment"
+                                                class="paymentOptions custom-control-input">
+                                            <label class="custom-control-label" for="onlinePayment">Online
+                                                Payment</label>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <h6 class="text-dark my-4">Items:</h6>
+
+                                    <div class="d-flex col-md-12 align-items-center mb-4">
+                                        <div class="me-3 col-md-4 position-relative">
+                                            <img src="<%= product.productImages[0] %>" style="height: 96px; width: 96x;"
+                                                class="img-sm rounded border" />
+                                        </div>
+                                        <div class="col-8">
+                                            <input type="hidden" name="productId" value="<%= product._id %>">
+                                            <a class="nav-link">
+                                                <%= product.productName %>
+                                            </a>
+                                            <input type="hidden" name="productPrice" value="<%= product.price %>">
+                                            <div class="price ">&#x20B9; <%= product.price %>
+                                            </div>
+                                            <input type="hidden" name="orderProductQty" value="<%= productQty %>">
+                                            <div class="">Quantity: <%= productQty %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% } else{%>
+                                        <div>Cart Checkout</div>
+
+                                        <h6 class="mb-3 " style="font-weight: bolder; font-size: larger;">
+                                            Summary</h6>
+                                        <hr />
+                                        <div class="d-flex col-md-12 justify-content-between">
+                                            <p class="mb-2">Total price:</p>
+                                            <input type="hidden" name="cartId" value="<%= userCart._id %>">
+                                            <input type="hidden" value="<%= userCart.totalPrice %>" name="totalPrice">
+                                            <p class="mb-2 fw-bold">&#x20B9; <%= userCart.totalPrice %>
+                                            </p>
+                                            <p class="mb-2 fw-bold">Total Products: <%= userCart.totalProducts %>
+                                            </p>
+                                        </div>
+
+                                        <div class="input-group mt-3 mb-4">
+                                            <input type="text" class="form-control border" name=""
+                                                placeholder="Promo code" />
+                                            <button class="btn btn-light text-primary border">Apply</button>
+                                        </div>
+                                        <div>
+                                            <h5>Choose a payment method</h5>
+
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" name="paymentMethod" value="COD" id="paymentCOD"
+                                                    class="paymentOptions custom-control-input">
+                                                <label class="custom-control-label" >Cash on
+                                                    Delivery</label>
+                                            </div>
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" name="paymentMethod" value="Online Payment" id="onlinePayment"
+                                                    class="paymentOptions custom-control-input">
+                                                <label class="custom-control-label"
+                                                    >Online Payment</label>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <h6 class="text-dark my-4">Items:</h6>
+
+                                        <% userCart.items.forEach((item)=>{ %>
+                                            <div class="d-flex col-md-12 align-items-center mb-4">
+                                                <div class="me-3 col-md-4 position-relative">
+                                                    <img src="<%= item.productId.productImages[0] %>"
+                                                        style="height: 96px; width: 96x;"
+                                                        class="img-sm rounded border" />
+                                                    <div>
+                                                        <%= item.Quantity %>
+                                                    </div>
+                                                </div>
+                                                <div class="col-8">
+                                                    <input type="hidden" name="productId" id="productId"
+                                                        value="<%= item.productId._id %>">
+                                                    <a class="nav-link">
+                                                        <%= item.productId.productName %>
+                                                    </a>
+                                                    <input type="hidden" name="productPrice" id="productPrice"
+                                                        value="<%= item.productId.price %>">
+                                                    <div class="price ">&#x20B9; <%= item.productId.price %>
+                                                    </div>
+                                                    <input type="hidden" name="orderProductQty" id="orderProductQty"
+                                                        value="<%= item.quantity %>">
+                                                    <div class="">Quantity: <%= item.quantity %>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <% }) %>
+                                                <% } %>
+                                <div  id="CODContainer" class="float-end col-md-6" style="margin-top: 2vh;">
+                                    <input  id="submitBtn" type="submit" class="btn btn-success " value="Place Order">
+                                </div>
+                               
+                             </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+    </section>
+    <script>
+        // $(document).ready(function(){
+        //     $('#paymentCOD').on('click',function(){
+        //         console.log('COD selected')
+        //             $('#onlineContainer').attr('hidden',true)
+        //             $('#CODContainer').attr('hidden',false);
+        //             $('#CODBtn').focus();
+        //     })
+
+        //     $('#onlinePayment').on('click',function(){
+        //         console.log('online payment');
+        //         $('#CODContainer').attr('hidden',true);
+        //         $('#onlineContainer').attr('hidden',false)
+        //         $('#onlineBtn').focus();
+        //     })
+        // })
+    </script>
+
+
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#savedAddress-btn').click(function (event) {
+            event.preventDefault();
+            $('#savedAddress').toggle();
+            $('#addAddress').toggle();
+
+        })
+        $('#checkoutForm').submit(function (event) {
+            console.log('form submitted')
+            
+        })
+
+     
+
+        $('#submitBtn').on('click',function(event){
+            event.preventDefault();
+            console.log('form submission started');
+
+            if (!formHasData()) {
+                event.preventDefault();
+                return alert('Please specify an address and payment method')
+            }
+            function formHasData() {
+                console.log('formaData checking')
+                const addAddres = $('#fullName').val().trim() !== '' && $('#phoneNUmber').val().trim() !== '' &&
+                    $('#house').val().trim() !== '' && $('#city').val().trim() !== '' &&
+                    $('#pincode').val().trim() !== '';
+                const savedAddress = $('.selectAddress:checked').length !== 0;
+                console.log('address length',$('.selectAddress:checked').length)
+                const paymentMethod = $('.paymentOptions:checked').length !== 0;
+                console.log(addAddres, savedAddress)
+                return (addAddres || savedAddress) && paymentMethod;
+            }
+
+            const formData = Object.fromEntries(
+                new FormData(document.getElementById("checkoutForm")),
+            );
+
+            $.ajax({
+                url: '/place-order',
+                type: 'POST',
+                data: formData,
+                success: function(response){
+                    console.log('response on client===>',response)
+                    
+                    if(response.COD){
+                        location.href = '/order-success'
+                    }else{
+                        console.log('sending request to razorpay')
+                        razorPayPayment(response)
+                    }
+                },
+                error: function(error){
+                    console.log(error)
+                }
+            })
+
+            function razorPayPayment(order){
+                console.log('send request ready to razorpay')
+              
+                var options = {
+                    "key": "rzp_test_EbOxVRcWySzIRR",
+                    "amount": order.amount,
+                    "currency": order.currency,
+                    "name": "Bubbles",
+                    "description": "Test Transaction",
+                    // "image": "https://example.com/your_logo",
+                    "order_id": order.id, 
+                    "handler": function (response){
+                        alert('Payment Successfull');
+                        verifyPayment(response,order);
+                    },
+                    "prefill": { 
+                    "name": "Gaurav Kumar", 
+                    "email": "gaurav.kumar@example.com", 
+                    "contact": "9000090000"  
+                    },
+                    "notes": {
+                        "address": "Razorpay Corporate Office"
+                    },
+                    "theme": {
+                        "color": "#3399cc"
+                    }
+                }
+
+                var rzp1 = new Razorpay(options);
+                rzp1.on('payment.failed', function (response){
+                    alert('Payment Failed');
+                    verifyPayment(response,order)
+                });
+                rzp1.open();
+           
+            }
+
+            function verifyPayment(payment,order){ 
+                $.ajax({
+                    url: '/verify-payment',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data:JSON.stringify({
+                        payment,
+                        order,
+                        formData
+                    }),
+                    success: function(response){
+                        console.log('payment status',response);
+                        if(response.payment_success){
+                            location.href = '/order-success'
+                        }                    
+                    },
+                    error: function(_,...error){
+                        console.log(...error)
+                    }
+                })
+            }
+        })
+    })
+
+
+</script>
+
+    <%- include("../user/layouts/footer") %>
+
+        <script src="/js/simpleCart.min.js"> </script>
+
+        <script src="/js/bootstrap.min.js"></script>
+        </body>
+
+        </html>

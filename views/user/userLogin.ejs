@@ -1,0 +1,62 @@
+<%- include("../user/layouts/header") %>
+
+
+<!--banner-->
+<div class="banner-top">
+	<div class="container">
+		<h1>Login</h1>
+		<em></em>
+		<h2><a href="index.html">Home</a><label>/</label>Login</h2>
+	</div>
+</div>
+<!--login-->
+<div class="container">
+		<div class="login">
+			<form action="/login" method="post">
+			<div class="col-md-6 login-do">
+				<div class="login-mail">
+					<input type="text" placeholder="Email" name="userEmail" required="">
+					<i  class="glyphicon glyphicon-envelope"></i>
+				</div>
+				<div class="login-mail">
+					<input type="password" placeholder="Password" name="userPassword" required="">
+					<i class="glyphicon glyphicon-lock"></i>
+				</div>
+				   <!-- <a class="news-letter " href="#">
+						 <label class="checkbox1"><input type="checkbox" name="checkbox" ><i> </i>Forget Password</label>
+					   </a> -->
+				<label class="hvr-skew-backward">
+					<input type="submit" value="login">
+				</label>
+				<!-- <div><p  onclick="sendOTP()" style="cursor: pointer; "  class="text-danger link-info ">Forgot Password?</p></div>
+				<div id="sendOTPBtn" hidden>
+					<a href="/forgot-password">Send OTP to reset password</a>
+				</div>
+				 -->
+				
+				<%  if(locals.message){ %>
+					<div style="color: red;" >  <%= message %> </div>
+				  <% } %>
+			</div>
+			<div class="col-md-6 login-right">
+				 <h3>Completely Free Account</h3>
+				 
+				 <p>Pellentesque neque leo, dictum sit amet accumsan non, dignissim ac mauris. Mauris rhoncus, lectus tincidunt tempus aliquam, odio 
+				 libero tincidunt metus, sed euismod elit enim ut mi. Nulla porttitor et dolor sed condimentum. Praesent porttitor lorem dui, in pulvinar enim rhoncus vitae. Curabitur tincidunt, turpis ac lobortis hendrerit, ex elit vestibulum est, at faucibus erat ligula non neque.</p>
+				<a href="/register" class=" hvr-skew-backward">Register</a>
+
+			</div>
+			
+			<div class="clearfix"> </div>
+			</form>
+		</div>
+
+</div>
+<script>
+	function sendOTP(){
+		$('#sendOTPBtn').toggle();
+	}
+</script>
+
+<!--//login-->
+<%- include("../user/layouts/footer") %>

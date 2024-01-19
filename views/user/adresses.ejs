@@ -1,0 +1,144 @@
+<%- include("../user/layouts/header") %>
+
+    <section class="content-main container">
+
+        <%- include("../user/layouts/profileHeader") %>
+        <div class="card">
+            <% if(locals.message){ %>
+                <div class="alert-success"><%= message %></div>
+                <% } %>
+            <div class="card-body">
+                <div class="row gx-5">
+                    
+                    <div class="col-md-12 row  ">
+                        <% userAdress?.addresses.forEach(address=>{ %>
+                       <div class=" col-md-3 bg p-5 address-card" >
+                           <b class="" ><%= address.title  %></b>
+                           <div><%= address?.fullName %></div>
+                           <div><%= address?.houseName %></div>
+                           <div><%= address?.locality %></div>
+                           <div><%= address?.district %></div>
+                           <div><%= address?.state %></div>
+                           <div>Phone: <%= address?.phoneNumber %></div>
+                           <div>PIN: <%= address?.pinCode %> </div>
+                           <div >
+                                <a href="/delete-adress/<%= address._id %>" style="margin-right: 10px;" onclick="return confirm('Are you sure?')">Remove</a>
+                                <a href="/edit-address/<%= address._id %>/" style="margin-right: 10px;">Edit</a>
+                               
+                           </div>
+                          
+                       </div>
+                       <% }) %>
+                    </div>
+                    <button id="add-address-btn" class="btn btn-info">Add new adress</button>
+                    <div id="addAdress" class="col-md-12"   style="margin-top: 2vh;" hidden>
+                        <!-- <section class="content-body p-xl-4"> -->
+                            <form action="/user-address" method="post">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="row gx-3" >
+                                            <div class="col-md-12 mb-3">
+                                                <label for="title" class="form-label">Title</label>
+                                                <input name="title" id="title" placeholder="eg:Home,Work etc...."
+                                                    class="form-control" required>
+                                            </div>
+                                            <div class="col-md-7 mb-3">
+                                                <label for="receiverName" class="form-label">Name</label>
+                                                <input name="receiverName" id="receiverName"
+                                                    placeholder="Receiver's name" class="form-control" required>
+                                            </div>
+                                            <!-- col .// -->
+                                            <div class="col-md-5 mb-3">
+                                                <label for="phoneNumber" class="numberInput form-label">Phone Number</label>
+                                                <input name="phoneNumber" id="phoneNumber" type="number"
+                                                    placeholder="enter your mobile number" class="form-control" required>
+                                            </div>
+                                            <div class="col-md-12 mb-3">
+                                                <label for="house" class="form-label">House</label>
+                                                <input name="house" id="house"
+                                                    placeholder="house number or house name" class="form-control" required>
+                                            </div>
+                                            <!-- col .// -->
+                                            <div class="col-md-8 mb-3">
+                                                <label for="locality" class="form-label">Locality or Landmark</label>
+                                                <input name="locality" id="locality"
+                                                    placeholder="A landmark or your locality" class="form-control" required>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label for="city" class="form-label">City</label>
+                                                <input name="city" id="city" placeholder="city" class="form-control" required>
+                                            </div>
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="district" class="form-label">District</label>
+                                                <input name="district" id="district" placeholder="district"
+                                                    class="form-control">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="state" class="form-label">State</label>
+                                                <input name="state" id="state" placeholder="state" class="form-control" required>
+                                            </div> 
+                                            <div class="col-md-4 mb-3 ">
+                                                <label for="pincode"  class="numberInput form-label">ZIP code</label>
+                                                <input name="pincode" type="number" id="pincode" placeholder="postal code"
+                                                    class="form-control" required>
+                                            </div>                                                                                  
+                                        </div>                                     
+                                    </div>
+                                </div>
+                                <div class="mt-5">
+                                    <input type="submit" class="btn btn-primary " value="Save Details">  
+                                </div>                                                          
+                            </form>
+                        <!-- </section> -->
+                    </div>
+                    <script>
+                    //        productQty.addEventListener('input',()=>{
+                    //         console.log('enter num')
+                    //         let value = productQty.value;
+                    //         value = value.replace(/^0+/, '');
+
+                    //         if (value.includes("-")) {
+                    //             value = value.replace('-', '');3
+                    //         }
+                    //         productQty.value = value;
+
+                    //  })
+                        $(document).ready(function () {
+                            // When the button is clicked
+                            $("#add-address-btn").click(function () {
+                                // Toggle the visibility of the addAdress div
+                                $("#addAdress").toggle();
+                            });
+
+                            $('#phoneNumber').on('input',function(){
+                                console.log("hi")
+                                let inputValue = $(this).val();
+                                if(inputValue.includes('-')){
+                                    inputValue = inputValue.replace('-','')
+                                }
+                                $(this).val(inputValue);
+                                
+                            })
+
+                            $('#pincode').on('input',function(){
+                                console.log("hi")
+                                let inputValue = $(this).val();
+                                if(inputValue.includes('-')){
+                                    inputValue = inputValue.replace('-','')
+                                }
+                                $(this).val(inputValue);
+                            })
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <%- include("../user/layouts/footer") %>
+
+
+        </body>
+
+        </html>

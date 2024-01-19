@@ -1,0 +1,103 @@
+<%- include("../user/layouts/header") %>
+
+    <section class="content-main container">
+        <%- include("../user/layouts/profileHeader") %>
+        <div class="card">
+            <div class="card-body">
+                <div class="row gx-5">
+                    <div id="addAdress" class="col-md-12"   style="margin-top: 2vh;" >
+                        <!-- <section class="content-body p-xl-4"> -->
+                            <form action="/edit-address/<%= addressToEdit.addresses[0]._id %>" method="post">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="row gx-3" >
+                                            <div class="col-md-12 mb-3">
+                                                <label for="title" class="form-label">Title</label>
+                                                <input name="title" id="title" placeholder="eg:Home,Work etc...."
+                                                    class="form-control" value="<%= addressToEdit.addresses[0].title %>" required>
+                                            </div>
+                                            <div class="col-md-7 mb-3">
+                                                <label for="receiverName" class="form-label">Name</label>
+                                                <input name="receiverName" id="receiverName"
+                                                    placeholder="Receiver's name" class="form-control" value="<%= addressToEdit.addresses[0].fullName %>" required>
+                                            </div>
+                                            <!-- col .// -->
+                                            <div class="col-md-5 mb-3">
+                                                <label for="phoneNumber" class="form-label">Phone Number</label>
+                                                <input name="phoneNumber" id="phoneNumber" type="number"
+                                                    placeholder="enter your mobile number" class="form-control" value="<%= addressToEdit.addresses[0].phoneNumber %>" required>
+                                            </div>
+                                            <div class="col-md-12 mb-3">
+                                                <label for="house" class="form-label">House</label>
+                                                <input name="house" id="house"
+                                                    placeholder="house number or house name" class="form-control" value="<%= addressToEdit.addresses[0].houseName %>" required>
+                                            </div>
+                                            <!-- col .// -->
+                                            <div class="col-md-8 mb-3">
+                                                <label for="locality" class="form-label">Locality or Landmark</label>
+                                                <input name="locality" id="locality"
+                                                    placeholder="A landmark or your locality" class="form-control" value="<%= addressToEdit.addresses[0].locality %>" required>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label for="city" class="form-label">City</label>
+                                                <input name="city" id="city" placeholder="city" class="form-control" value="<%= addressToEdit.addresses[0].city %>" required>
+                                            </div>
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="district" class="form-label">District</label>
+                                                <input name="district" id="district" placeholder="district"
+                                                    class="form-control" value="<%= addressToEdit.addresses[0].district %>">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="state" class="form-label">State</label>
+                                                <input name="state" id="state" placeholder="state" class="form-control" value="<%= addressToEdit.addresses[0].state %>" required>
+                                            </div> 
+                                            <div class="col-md-4 mb-3 ">
+                                                <label for="pincode" class="form-label">ZIP code</label>
+                                                <input name="pincode" id="pincode" placeholder="postal code" type="number"
+                                                    class="form-control" value="<%= addressToEdit.addresses[0].pinCode %>" required>
+                                            </div>                                                                                  
+                                        </div>                                     
+                                    </div>
+                                </div>
+                                <div class="mt-5">
+                                    <input type="submit" class="btn btn-primary " value="Save Details">  
+                                </div>                                                          
+                            </form>
+                        <!-- </section> -->
+                    </div>
+                    <script>
+                               $(document).ready(function () {
+                            
+                           
+
+                            $('#phoneNumber').on('input',function(){
+                                console.log("hi")
+                                let inputValue = $(this).val();
+                                if(inputValue.includes('-')){
+                                    inputValue = inputValue.replace('-','')
+                                }
+                                $(this).val(inputValue);
+                            })
+
+                            $('#pincode').on('input',function(){
+                                console.log("hi")
+                                let inputValue = $(this).val();
+                                if(inputValue.includes('-')){
+                                    inputValue = inputValue.replace('-','')
+                                }
+                                $(this).val(inputValue);
+                            })
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <%- include("../user/layouts/footer") %>
+
+
+        </body>
+
+        </html>

@@ -1,0 +1,211 @@
+<%- include("../admin/layouts/header") %>
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Products List</h2>
+            <p>Lorem ipsum dolor sit amet.</p>
+        </div>
+        <div>
+            <a href="/admin/add-products" class="btn btn-primary btn-sm rounded">Add new Product</a>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <header class="card-header">
+            <div class="row align-items-center">
+             
+                <div  class="col-md-3 col-12 me-auto mb-md-0 mb-3">
+                    <div class=" ">
+                        <button class="btn   form-select" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Filter by category
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="/admin/products/All/0" class=" selectedItem dropdown-item">All</a></li>
+                            <li><a href="/admin/products/Boys/0" class=" selectedItem dropdown-item">Boys</a></li>
+                            <li><a href="/admin/products/Girls/0" class=" selectedItem dropdown-item">Girls</a></li>
+                            <li><a href="/admin/products/Unisex/0" class=" selectedItem dropdown-item">Unisex</a></li>
+                        </ul>
+                      </div>
+                </div>
+       
+                <div class="col-md-4" style="position: relative;">
+                    <form action="/admin/products" method="get">
+                        <input id="searchBar" type="text" name="searchKey" placeholder="Search Product" class="form-control bg-white" />
+                    </form>          
+                        <div id="productContainer" ></div>  
+                    <style>
+                        #productContainer{
+                            position: absolute;
+                            top: 50px;
+                            left:0;
+                            z-index: 999;
+                            background-color: white;
+                            width: 100%;
+                            max-height: 200px;
+                            overflow-y: auto;
+                        }
+                    </style>                                     
+                </div>
+                
+                <template data-product-template>
+                    <div class="">
+                        <div class="list-group"> 
+                            <a href="#" data-productName class=" list-group-item list-group-item-action"></a>
+                        </div>
+                    </div>
+                </template>
+                
+                <script>
+                    const searchTemplate = document.querySelector('[data-product-template]');
+                    const searchBar = document.getElementById('searchBar');
+                    const productContainer = document.getElementById('productContainer')
+                    searchBar.addEventListener('input',()=>{
+                        productContainer.innerHTML = '';
+                        fetch(`/admin/search-products/${searchBar.value}`)
+                        .then(response => response.json())
+                        .then(data =>{
+                           
+                            data.forEach(product=>{
+                                const card = searchTemplate.content.cloneNode(true).children[0];
+                                const productList  = card.querySelector('[data-productName]')
+                                productList.textContent = product.productName;
+                                productContainer.append(card)
+                            })
+                        }).catch(error=>{console.log(error)})
+                    })
+                </script>
+                <div class="col-md-2 col-6">
+                    <select class="form-select">
+                        <option hidden >Status</option>
+                        <option>Active</option>
+                        <option>Disabled</option>
+                        <option>Show all</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+        <!-- card-header end// -->
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Size</th>
+                            <th>Color</th>
+                            <th>List/Unlist</th>
+                            <th>Stock Qty</th>
+                            <th>Brand</th>
+                            <th class="">Action</th> <!---class text end-->
+                        </tr>
+                    </thead>
+                   
+                    <tbody>
+                        <% allProducts.forEach((prod) => { %>
+                            <tr>
+                                <td width="30%">
+                                    <a href="#" class="itemside">
+                                        <div class="left">
+                                            <img src="<%= prod.productImages[0] %>" class="img-sm img-avatar" alt="Userpic" />
+                                        </div>
+                                        <div class="info pl-3">
+                                            <h6 class="mb-0 title"><%=  prod.productName  %></h6>
+                                            <!-- <small class="text-muted"><%= prod._id %></small> -->
+                                        </div>
+                                    </a>
+                                </td>
+                                <td>
+                                    <table>
+                                        <tr>
+                                          <td><%= prod.category %></td>
+                                        </tr>
+                                        <tr>
+                                            <td><%= prod.subCategory %></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>&#x20B9;<%= prod.price %></td>
+                                <td><%= prod.ageGap %></td>
+                                <td><%= prod.color %></td>
+                                <td>
+                                    <% if(prod.isListed){ %>
+                                        <form action="/admin/unlist-product?productId=<%= prod._id %>" method="post">
+                                            <input type="submit" value="Unlist"
+                                                class="btn btn-sm btn-success rounded font-sm mt-15 unlist-btn"
+                                                onclick="return confirm('Are you sure?')">                                           
+                                        </form>
+                                        <% } else{ %>
+                                        <form action="/admin/list-product?productId=<%= prod._id %>" method="post">
+                                            <input  type="submit" value="List" 
+                                                class="btn btn-sm btn-danger rounded font-sm mt-15 list-btn"
+                                                onclick="return confirm('Are you sure?')">
+                                        </form>
+                                        <% } %>
+                                </td>
+                                <td><%= prod.stockQty %></td>
+                                <td><%= prod.brand %></td>
+                                <td class="">  <!---class text end-->
+                                    <a href="/admin/edit-product?productId=<%= prod._id %>" class="btn btn-sm font-sm rounded btn-brand mb-2"> <i class="material-icons md-edit"></i> Edit </a>
+                                    <form action="/admin/delete-product?productId=<%= prod._id %>" method="post">
+                                        <button type="submit" class="btn btn-sm font-sm btn-light rounded" onclick="return confirm('Are you sure?')" >
+                                            <i class="material-icons md-delete_forever"></i>Delete</button>
+                                    </form>                                 
+                                </td>
+                            </tr>
+                            <% }) %>
+               
+                    </tbody>
+                </table>
+                <!-- table-responsive.// -->
+            </div>
+        </div>
+        <!-- default table................................................... -->
+        
+        <!-- card-body end// -->
+    </div>
+    <!-- card end// -->
+    <div class="pagination-area mt-30 mb-50">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-start">
+                <% if (pageNumber>0){ %>
+                <li class="page-item">
+                    <a class="page-link" href="/admin/products/<%=category%>/<%= pageNumber-1 %>"><i class="material-icons md-chevron_left"></i></a>
+                </li>
+                <% } %>
+                <% for(let i=0;i<totalPages;i++){ %>
+                <li class="page-item "><a class="page-link" href="/admin/products/<%= category%>/<%= i%>"><%= i+1 %></a></li>
+                <% } %>
+                <% if(pageNumber<totalPages-1){ %>
+                <li class="page-item">
+                    <a class="page-link" href="/admin/products/<%=category%>/<%= pageNumber+1 %>"><i class="material-icons md-chevron_right"></i></a>
+                </li>
+                <% } %>
+            </ul>
+        </nav>
+    </div>
+</section>
+<!-- <script>
+    document.addEventListener('DOMContentLoaded',async()=>{
+        const categorySelection = document.getElementById('selectCategory')
+            
+        categorySelection.addEventListener('change',(event)=>{
+            const selectedCategory = categorySelection.value
+            console.log(selectedCategory)
+            let xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function(){
+                if(this.readyState == 4 && this.status == 200){
+                    const allProducts = JSON.parse(this.responseText)
+                    console.log(allProducts)
+                }
+            }
+            xhttp.open('GET',`/admin/categorized-products/${selectedCategory}`,true)
+            xhttp.send();
+        })
+    })
+</script> -->
+
+
+
+<%- include("../admin/layouts/footer") %>

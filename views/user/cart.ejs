@@ -1,0 +1,114 @@
+<%- include("../user/layouts/header") %>
+
+    <div class="container">
+
+        <div class="bs-example4 col-md-8" data-example-id="simple-responsive-table" style="background-color: #d6ccc4;
+    border-radius: 30px;
+    margin-top: 2vh;">
+            <div class="card-body">
+                <table class="table-heading simpleCart_shelfItem cart-list table-hover">
+                    <thead>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Delivery </th>
+                        <th>Quantity</th>
+                        <p hidden id="stockAlert" style="color: red;">Sorry stock limit has been reached</p>
+                    </thead>
+                    <% cartItems?.items.forEach(item=>{ %>
+
+                        <tr class="cart-header ">
+                            <td class="ring-in"><a href="single.html" class="at-in"><img
+                                        src="<%= item.productId.productImages[0] %>" class="img-responsive" alt=""></a>
+                                <div class="sed">
+                                    <h5><a href="single.html">
+                                            <%= item.productId.productName %>
+                                        </a></h5>
+                                    <p>
+                                        <%= item.productId.brand %>
+                                    </p>
+                                </div>
+                                <div class="clearfix"> </div>
+                            </td>
+                            <td>&#x20B9;<%= item.productId.price %>
+                            </td>
+                            <td>FREE SHIPPING </td>
+ 
+                            <td class="item_price">
+                                <input class="productId" hidden value="<%= item.productId._id %>">
+                                <select name="productQty" class="selectedQty" id="productQty">
+                                    <option id="selectedQuantity" selected><%= item.quantity %></option>
+                                    <% for(let i=1; i <=item.productId.stockQty ;i++){ %>                        
+                                        <option class="quantitySelector" value="<%= i %>">
+                                            <%= i %>
+                                        </option>
+                                        <% } %>
+                                </select>
+                            </td>
+                            <td><a href="/remove-from-cart/<%= item?.productId?._id %>"
+                                    class="btn btn-danger">Remove</a></td>
+
+                        </tr>
+
+                        <% }) %>
+                </table>
+            </div>
+        </div>
+
+        <div class="produced col-md-4" style=" background-color: #FAF3F0; margin-top: 2vh; border-radius: 30px;">
+            <table class=" table-responsive table-hover">
+                <th>Summary</th>
+                <tr>
+                    <th>Total Products</th>
+                    <th>
+                        <%= cartItems?.items.length %>
+                    </th>
+                </tr>
+                <tr>
+                    <th>Total Quantity</th>
+                    <th id="totalQuantity">
+                        <%= cartItems?.totalQuantity %>
+                    </th>
+                </tr>
+                <tr>
+                    <th>Total Amount</th>
+                    <th id="cartPrice">&#x20B9; <%= cartItems?.totalPrice %></th>
+                </tr>
+
+            </table>
+            <a href="/checkout/<%= cartItems?._id %>" class="hvr-skew-backward" style>checkout</a>
+        </div>
+    </div>
+
+
+
+    <%- include("../user/layouts/footer") %>
+        <script>
+            $('.selectedQty').on('change',()=>{
+                console.log('tester')
+            })
+            $(document).ready(function(){
+                $('.selectedQty').on('change',function(){
+                    let quantity = $(this).val();
+                    let productId = $(this).closest('td').find('.productId').val()
+                    let xhttp = new XMLHttpRequest();
+                    xhttp.onreadystatechange = function(){
+                        if(this.readyState == 4 && this.status == 200){                         
+                            const response = JSON.parse(this.responseText);
+                            console.log(response)
+                            $('#totalQuantity').text(response.newCartQty);
+                            $('#cartPrice').text(response.newCartPrice);
+                        }
+                    }
+                    xhttp.open('GET',`/edit-cart-quantity/${productId}/${quantity}`,true);
+                    xhttp.send();
+                })
+            })
+
+        </script>
+ 
+        <script src="js/simpleCart.min.js"> </script>
+        <!-- slide -->
+        <script src="js/bootstrap.min.js"></script>
+        </body>
+
+        </html>

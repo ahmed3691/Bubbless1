@@ -1,0 +1,162 @@
+<%- include("../admin/layouts/header") %>
+<link rel="stylesheet" href="node_modules/cropperjs/dist/cropper.min.css">
+    <section class="content-main" id="addProductsPage">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="content-header">
+                    <h2 class="content-title">Add New Product</h2>
+                </div>
+                <% if(message){ %>
+                    <div class="alert alert-danger" id="error-message"><%=message%></div>
+                <% } %>
+            </div>
+            <form  id="productForm" enctype="multipart/form-data" class="row">
+                <div class="col-lg-6 data-table">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h4>Basic</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <label for="productName" class="form-label">Product title</label>
+                                <input type="text" placeholder="Product name" class="form-control" id="productName" name="productName" required/>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label" for="productDesc">Full description</label>
+                                <textarea placeholder="Type here" class="form-control" rows="4" id="productDesc" name="productDesc" required></textarea>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label class="form-label" for="productPrice">Brand</label>
+                                        <div class="row gx-2">
+                                            <input placeholder="Brand Name" type="text" class="form-control" id="productBrand" 
+                                            name="productBrand"  required/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label class="form-label" for="productPrice">Color</label>
+                                        <div class="row gx-2">
+                                            <input placeholder="Color" type="text" class="form-control" id="productColor" 
+                                            name="productColor"  required/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label class="form-label" for="productPrice">Price</label>
+                                        <div class="row gx-2">
+                                            <input placeholder="&#8377;" type="text" class="form-control" id="productPrice" 
+                                            name="productPrice"  required/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label class="form-label" for="productCat">Age Gap</label>
+                                        <select class="form-select" name="productAgeGap" id="productAgeGap" required>
+                                            <option>3-5 Y</option>
+                                            <option>5-8 Y</option>
+                                            <option>8-10 Y</option>
+                                            <option>10-13 Y</option>                                           
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label class="form-label" for="productQty">Quantity</label>
+                                        <input placeholder="Quantity" type="number" class="form-control" id="productQty"
+                                            name="productQty" required/>
+                                    </div>
+                                </div>
+                                <!-- <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label class="form-label" for="productSize">Size</label>
+                                        <select class="form-select" name="productSize" id="productSize" required>
+                                            <option>X-Small</option>
+                                            <option>Small</option>
+                                            <option>Medium</option>
+                                            <option>Large</option>
+                                            <option>X-Large</option>
+                                            <option>XX-Large</option>
+                                        </select>
+                                    </div>
+                                </div> -->
+                                <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label class="form-label" for="productCat">Category</label>
+                                        <select class="form-select" name="productCat" id="productCat" required>
+                                            <option hidden>Choose an option</option>
+                                            <option>Unisex</option> 
+                                            <option>Boys</option>
+                                            <option>Girls</option>                                           
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label class="form-label" for="productSubCat">Sub category</label>
+                                        <select class="form-select" name="productSubCat" id="productSubCat" required>
+                                            <% categories.forEach((cat)=>{ %>
+                                            <option><%= cat %></option>
+                                            <% }) %>
+                                        </select>   
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <div>
+                                        <label class="form-label">Choose upto 4 pictures</label>
+                                        <input class="form-control" id="image-input" type="file" multiple name="productImages"  required />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 cropped-image">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h4>Preview cropped images</h4>
+                        </div>
+                        <div >
+                            <!-- dynamic rendering by script -->
+                            <div  id="cropped-images" class="row"></div>
+                        </div>
+                        
+                        
+
+                        <div class="card-body col-lg-6">
+                            <button type="button" id="submitForm" class="btn btn-md rounded font-sm hover-up" disabled> Save Product</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 image-preview">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h4>Edit images</h4>
+                        </div>
+                        <div>
+                            <!-- dynamic rendering by script -->
+                            <div id="image-preview" class="row"></div>
+                        </div>
+                        <!--  hidden input field for the cropped images -->
+                    
+                        
+                        <div class="card-body col-lg-6">
+                            <button type="button" id="crop-button" class="btn btn-md rounded font-sm hover-up" disabled> Crop Images</button>
+                        </div>
+                    </div>
+                </div>
+                
+            </form>
+
+            <!-- ....................................... -->
+            <!-- row.// -->
+        </div>
+    </section>
+    <script src="node_modules/cropperjs/dist/cropper.min.js"></script>
+    <%- include("../admin/layouts/footer") %>
