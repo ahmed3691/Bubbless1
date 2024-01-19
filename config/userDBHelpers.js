@@ -31,7 +31,7 @@ const confirmPayment = async (orderId,amount_paid)=>{
     )
     return;
 }
-
+console.log('hi')
 
 module.exports = {
     updateStock, 

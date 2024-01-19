@@ -43,7 +43,7 @@ const addressSchema = {
         type: Number,
         required: true,
       },
-      district: {
+      district: { 
         type: String,
         required: true,
       },
