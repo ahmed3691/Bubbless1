@@ -6,8 +6,8 @@
                 <div class="content-header">
                     <h2 class="content-title">Add New Product</h2>
                 </div>
-                <% if(message){ %>
-                    <div class="alert alert-danger" id="error-message"><%=message%></div>
+                <% if(errorMessage){ %>
+                    <div class="alert alert-danger" id="error-message"><%=errorMessage%></div>
                 <% } %>
             </div>
             <form  id="productForm" enctype="multipart/form-data" class="row">

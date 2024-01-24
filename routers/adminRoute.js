@@ -4,10 +4,10 @@ const multer = require("multer");
 const path = require("path");
 
 const { adminAuth } = require("../middlewares/adminMWs");
-const adminController = require("../controller/admin/adminCont");
+const adminController = require("../controller/admin/adminController");
 const adminUserController = require("../controller/admin/adminUserCont");
 const adminProdController = require("../controller/admin/adminProductController")
-const adminCatController = require("../controller/admin/adminCatCont")
+const adminCatController = require("../controller/admin/categoryController")
 const adminOrderController = require('../controller/admin/adminOrderController');
 
 
@@ -24,13 +24,15 @@ const upload = multer({ storage: storage });
 
 //Admin login controlls...........................
 
-adminRouter.route("/", adminAuth)
-  .get(adminController.sendAdminPanel);
+adminRouter.route("/")
+  .get(adminAuth,adminController.sendAdminPanel);
 adminRouter.route('/login')
   .get(adminController.adminLogin)
   .post(adminController.adminPanel) 
 adminRouter.route("/logout")
   .get(adminController.adminLogout);
+adminRouter.route('/dashboard-analytics')
+  .get(adminAuth,adminController.analytics)
 
 
 // for user controlls....................................................
@@ -40,7 +42,7 @@ adminRouter.route("/users")
 adminRouter.route("/blockUser")
   .post(adminAuth, adminUserController.blockUser);
 adminRouter.route("/unblockUser")
-  .post(adminUserController.unblockUser);
+  .post(adminAuth,adminUserController.unblockUser);
 
 //for product management.....................................................
 
@@ -88,7 +90,9 @@ adminRouter.route('/orders')
 adminRouter.route('/order-details')
   .get(adminAuth,adminOrderController.orderDetails)
 adminRouter.route('/cancel-order/:action/:id')
-  .get(adminAuth,adminOrderController.cancelOrder)
+  .get(adminAuth,adminOrderController.cancelOrder);
+adminRouter.route('/order-details/:id')
+  .get(adminAuth,adminOrderController.singleOrder)
 
 module.exports = adminRouter;
 

@@ -40,12 +40,12 @@
                         <thead>
                             <tr>
                                 <th>S.No</th>
-                                <th scope="col">Order ID</th>
-                                <th scope="col">Payment Method</th>
-                                <th scope="col">Total</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Order Date</th>
-                                <th scope="col" class="text-end">Action</th>
+                                <th scope="col" class="text-center">Order ID</th>
+                                <th scope="col" class="text-center">Payment Method</th>
+                                <th scope="col" class="text-center">Total</th>
+                                <th scope="col" class="text-center">Status</th>
+                                <th scope="col" class="text-center">Order Date</th>
+                                <th scope="col" class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -67,24 +67,28 @@
                                             <%= orders[i].status %>
                                         </span></td>
                                     <td>
-                                        <%= new Date(orders[i].orderDate).toLocaleDateString() %>
+                                        <%= new Date(orders[i].createdAt).toLocaleDateString() %>
                                     </td>
                                     <td class="text-end">
-                                    
-                                        <div class="dropdown">
-                                            <a href="#" data-bs-toggle="dropdown"
-                                                class="btn btn-light rounded btn-sm font-sm"> <i
-                                                    class="material-icons md-more_horiz"></i> </a>
-                                            <div class="dropdown-menu">
-                                                <a class="dropdown-item text-danger" onclick="return confirm('Are you sure')" 
-                                                href="/admin/cancel-order/Cancelled/<%= orders[i]._id %>">Cancel order</a>
-                                                <a class="dropdown-item text-success" onclick="return confirm('Are you sure')"  
-                                                href="/admin/cancel-order/Delivered/<%= orders[i]._id %>">Delivered</a>
-                                                <a class="dropdown-item " onclick="return confirm('Are you sure')"
-                                                href="/admin/cancel-order/Pending/<%= orders[i]._id %>"  >Pending</a>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <a href="/admin/order-details/<%= orders[i]._id %>" class="btn btn-xs"> View details</a>
                                             </div>
-                                        </div>
-                                        <!-- dropdown //end -->
+                                            <div class="dropdown col-md-4" >
+                                                <a href="#" data-bs-toggle="dropdown"
+                                                    class="btn btn-light rounded btn-sm font-sm"> <i
+                                                        class="material-icons md-more_horiz"></i> </a>
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item text-danger" onclick="return confirm('Are you sure')" 
+                                                    href="/admin/cancel-order/Cancelled/<%= orders[i]._id %>">Cancel order</a>
+                                                    <a class="dropdown-item text-success" onclick="return confirm('Are you sure')"  
+                                                    href="/admin/cancel-order/Delivered/<%= orders[i]._id %>">Delivered</a>
+                                                    <a class="dropdown-item " onclick="return confirm('Are you sure')"
+                                                    href="/admin/cancel-order/Pending/<%= orders[i]._id %>"  >Pending</a>
+                                                </div>
+                                            </div>
+                                            
+                                        </div> <!-- dropdown //end -->
                                     </td>
                                 </tr>
                                 <% } %>

@@ -1,41 +1,49 @@
-(function ($) {
-    "use strict";
 
-    /*Sale statistics Chart*/
-    if ($('#myChart').length) {
         var ctx = document.getElementById('myChart').getContext('2d');
         var chart = new Chart(ctx, {
-            // The type of chart we want to create
             type: 'line',
-            
-            // The data for our dataset
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30','31'],
                 datasets: [{
-                        label: 'Sales',
+                        label:'Placed Orders',
                         tension: 0.3,
                         fill: true,
-                        backgroundColor: 'rgba(44, 120, 220, 0.2)',
+                        backgroundColor:'rgba(0, 0, 0, 0)',
                         borderColor: 'rgba(44, 120, 220)',
-                        data: [18, 17, 4, 3, 2, 20, 25, 31, 25, 22, 20, 9]
+                        data: []
                     },
                     {
-                        label: 'Visitors',
+                        label:'Delivered Orders',
                         tension: 0.3,
                         fill: true,
-                        backgroundColor: 'rgba(4, 209, 130, 0.2)',
-                        borderColor: 'rgb(4, 209, 130)',
-                        data: [40, 20, 17, 9, 23, 35, 39, 30, 34, 25, 27, 17]
+                        backgroundColor:'rgba(0, 0, 0, 0)',
+                        borderColor: '#65B741',
+                        data: []
                     },
                     {
-                        label: 'Products',
+                        label:'Returned Orders',
                         tension: 0.3,
                         fill: true,
-                        backgroundColor: 'rgba(380, 200, 230, 0.2)',
-                        borderColor: 'rgb(380, 200, 230)',
-                        data: [30, 10, 27, 19, 33, 15, 19, 20, 24, 15, 37, 6]
+                        backgroundColor:'rgba(0, 0, 0, 0)',
+                        borderColor: '#B80000',
+                        data: []
+                    },
+                    {
+                        label:'Cancelled Orders',
+                        tension: 0.3,
+                        fill: true,
+                        backgroundColor:'rgba(0, 0, 0, 0)',
+                        borderColor: '#FE7A36',
+                        data: []
+                    },
+                    {
+                        label:'Pending Orders',
+                        tension: 0.3,
+                        fill: true,
+                        backgroundColor:'rgba(0, 0, 0, 0)',
+                        borderColor: '#AC87C5',
+                        data: []
                     }
-
                 ]
             },
             options: {
@@ -48,40 +56,27 @@
                 }
             }
         });
-    } //End if
+
+        
+
+
+   
 
     /*Sale statistics Chart*/
-    if ($('#myChart2').length) {
-        var ctx = document.getElementById("myChart2");
-        var myChart = new Chart(ctx, {
+
+        var ctx2 = document.getElementById("myChart2");
+        var myChart = new Chart(ctx2, {
             type: 'bar',
             data: {
-            labels: ["900", "1200", "1400", "1600"],
+            labels: ["Boys", "Girls","Unisex"],
             datasets: [
                 {
-                    label: "US",
-                    backgroundColor: "#5897fb",
-                    barThickness:10,
-                    data: [233,321,783,900]
+                    label: "Category wise stock",
+                    backgroundColor: ['#40A2D8','#F875AA','#9ADE7B'],
+                    borderWidth: 1,
+                    borderColor: '#000',
+                    data: []
                 }, 
-                {
-                    label: "Europe",
-                    backgroundColor: "#7bcf86",
-                    barThickness:10,
-                    data: [408,547,675,734]
-                },
-                {
-                    label: "Asian",
-                    backgroundColor: "#ff9076",
-                    barThickness:10,
-                    data: [208,447,575,634]
-                },
-                {
-                    label: "Africa",
-                    backgroundColor: "#d595e5",
-                    barThickness:10,
-                    data: [123,345,122,302]
-                },
             ]
             },
             options: {
@@ -99,6 +94,43 @@
                 }
             }
         });
-    } //end if
+
+
+        var ctx3 = document.getElementById("monthlyData");
+        var myChart2 = new Chart(ctx3, {
+            type: 'bar',
+            data: {
+            labels: ["January", "February", "March", "April","May","June","July","August","September","October","November","December"],
+            datasets: [
+                {
+                    label: "Revenue",
+                    backgroundColor: "#5897fb",
+                    
+                    data: []
+                }, 
+                {
+                    label: "Products Sold",
+                    backgroundColor: "#7bcf86",
+                   
+                    data: []
+                }
+            ]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        labels: {
+                        usePointStyle: true,
+                        },
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
     
-})(jQuery);
+// })(jQuery);

@@ -57,9 +57,8 @@ connect
         default:'Pending',
         enum: ['Cancelled','Returned','Delivered','Pending']
     },
-    orderDate: {
+    completionDate: {
         type: Date,
-        default:Date.now
     },
     deliveryDate: Date,
     paymentMethod: {

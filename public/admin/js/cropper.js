@@ -28,8 +28,16 @@
         }
 
         if (files.length > 0) {
-          previewImageContainer.innerHTML = "";
-          croppers.length = 0;
+          let divCount = previewImageContainer.querySelectorAll('.view-image').length;
+          console.log('file lenght',files.length)
+          console.log('img count',croppers.length)
+          console.log(' total length',files.length + croppers.length)
+          if(files.length + croppers.length >4){
+            previewImageContainer.innerHTML = "";
+            croppers.length = 0;
+          }
+          
+          
 
           for (let file of files) {
             let reader = new FileReader();

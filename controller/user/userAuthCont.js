@@ -49,10 +49,7 @@ const loginUser = async (req, res) => {
       const accessToken = jwt.sign({ userId }, process.env.JWT_ACCESS_SECRET, {
         expiresIn: "1d",
       });
-      await UserModel.updateOne(
-        { userEmail: userEmail },
-        { $set: { accessToken: accessToken } },
-      );
+      await UserModel.updateOne({ userEmail: userEmail },{ $set: { accessToken: accessToken } });
       res.cookie("userAccessToken", accessToken, {
         httpOnly: true,
         maxAge: 1 * 24 * 60 * 60 * 1000,

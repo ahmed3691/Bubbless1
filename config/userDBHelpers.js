@@ -29,7 +29,7 @@ const confirmPayment = async (orderId,amount_paid)=>{
       {orderId:orderId},
       {$set:{paymentStatus:'Completed'}}
     )
-    return;
+    return; 
 }
 console.log('hi')
 

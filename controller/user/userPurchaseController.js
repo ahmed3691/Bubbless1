@@ -4,8 +4,8 @@ const { CartModel } = require("../../model/cartModel");
 const { generateOrderId,placeOrder, razorPayRequest } = require("../../config/userConfig");
 const { updateStock,confirmPayment } = require("../../config/userDBHelpers");
 const { AddressModel } = require("../../model/addressModel");
-const {PaymentModel}  = require('../../model/paymentModel')
-const OrdersModel = require("../../model/ordersModel");
+const {PaymentModel}  = require('../../model/paymentModel');
+const {OrdersModel} = require("../../model/ordersModel");
 const crypto = require("crypto");
 const { response } = require("express");
 const { truncate } = require("fs");
@@ -46,8 +46,6 @@ const getChekout = async (req, res) => {
 
 const orderConfirmation = async (req, res) => {
     try {
-        const cartQty = req.cookies.cartQty;
-        const isAuthenticated = req.cookies.userAccessToken || false;
         const {paymentMethod,totalPrice} = req.body
         const userId = req.user;
         const userName = req.userName;
@@ -124,7 +122,9 @@ const cancelOrder = async (req, res) => {
     if (order.status !== "Delivered" && order.status !== "Returned") {
         const updateOrderStatus = await OrdersModel.updateOne(
             { _id: orderId },
-            { $set: { status: "Cancelled" } },
+            { $set:
+                { status: "Cancelled",completionDate: Date.now()}
+            },
         );
         req.flash("message", "Order cancellation is successsfull");
     }
