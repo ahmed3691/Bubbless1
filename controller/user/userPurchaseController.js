@@ -50,7 +50,7 @@ const getChekout = async (req, res) => {
 const orderConfirmation = async (req, res) => {
     try {
         const {paymentMethod,totalPrice} = req.body
-        
+        console.log(totalPrice)
         const userId = req.user;
         const userName = req.userName;
         if(paymentMethod == 'Online Payment'){

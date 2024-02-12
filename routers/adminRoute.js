@@ -14,7 +14,9 @@ const adminDiscountController = require('../controller/admin/discountsController
 
 
 const storage = multer.diskStorage({
+  
   destination: function (req, file, cb) {
+    console.log('file from multer'.file)
     cb(null, "./public/admin/uploads");
   },
   filename: function (req, file, cb) {
@@ -49,7 +51,7 @@ adminRouter.route("/unblockUser")
 //for product management.....................................................
 
 adminRouter.route("/products/:category/:pageNumber")
-  .get(adminAuth, adminProdController.viewProducts);
+  .get(adminAuth, adminProdController.viewProducts); 
 adminRouter.route('/products')
   .get(adminAuth,adminProdController.viewProducts)
 adminRouter.route("/add-products")
@@ -61,7 +63,7 @@ adminRouter.route('/unlist-product')
   .post(adminProdController.unlistProduct)
 adminRouter.route('/edit-product')
   .get(adminAuth,adminProdController.sendEditProduct)
-  .post(adminProdController.editProducts)
+  .post(upload.fields([{name:'productImages',maxCount:4}]),adminProdController.editProducts)
 adminRouter.route('/search-products/:searchKey')
   .get(adminAuth,adminProdController.searchProducts)
 

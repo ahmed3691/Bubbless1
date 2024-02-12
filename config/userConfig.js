@@ -117,7 +117,7 @@ const placeOrder = async (body,userId,userName,orderId)=>{
       cartId,
   } = body;
 
-
+  console.log('product price',productPrice)
 
   let products = [];
 
@@ -131,6 +131,7 @@ const placeOrder = async (body,userId,userName,orderId)=>{
           userId:0, 
       }
     );
+    console.log('userCart====>',userCart)
     products =  userCart.items;
     await CartModel.deleteOne({_id:cartId})
   

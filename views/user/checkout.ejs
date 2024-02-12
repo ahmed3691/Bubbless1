@@ -138,8 +138,16 @@
                                     <hr />
                                     <div class="d-flex col-md-12 justify-content-between">
                                         <p class="mb-2">Total price:</p>
-                                        <input type="hidden" value="<%= product.price %>" id="totalPrice" name="totalPrice">
-                                        <p class="mb-2 fw-bold">&#x20B9; <%= product.price*productQty %>
+                                        <% if(product.appliedOffer){ %>
+                                            <input type="hidden" value="<%=  Math.ceil(product.offerPrice)*productQty %>" id="totalPrice" name="totalPrice">
+                                            <strike><p class="mb-2 fw-bold">&#x20B9; <%= product.price*productQty %></strike>
+                                            <span>Offer Price:</span><p class="mb-2 fw-bold">&#x20B9; <%= Math.ceil(product.offerPrice)*productQty %>
+                                        <% }else{ %>
+                                            <input type="hidden" value="<%= product.price %>" id="totalPrice" name="totalPrice">
+                                            <p class="mb-2 fw-bold">&#x20B9; <%= product.price*productQty %>
+                                        <% } %>
+                                        
+                                        
                                         </p>
                                     </div>
 
@@ -184,9 +192,14 @@
                                             <a class="nav-link">
                                                 <%= product.productName %>
                                             </a>
-                                            <input type="hidden" name="productPrice" value="<%= product.price %>">
-                                            <div class="price ">&#x20B9; <%= product.price %>
-                                            </div>
+                                            <% if(product.appliedOffer){ %>
+                                                <input type="hidden" name="productPrice" value="<%= Math.ceil(product.offerPrice) %>">
+                                                <div class="price ">&#x20B9; <%= Math.ceil(product.offerPrice) %></div>
+                                            <% }else{ %>
+                                                <input type="hidden" name="productPrice" value="<%= product.price %>">
+                                                <div class="price ">&#x20B9;  <%= product.price %></div>
+                                            <% } %>
+                                            
                                             <input type="hidden" name="orderProductQty" value="<%= productQty %>">
                                             <div class="">Quantity: <%= productQty %>
                                             </div>
@@ -244,9 +257,16 @@
                                                     <input type="hidden" name="productId" id="productId"
                                                         value="<%= item.productId._id %>">
                                                     <a class="nav-link"> <%= item.productId.productName %> </a>
-                                                    <input type="hidden" name="productPrice" id="productPrice"
-                                                        value="<%= item.productId.price %>">
-                                                    <div class="price ">&#x20B9; <%= item.productId.price %> </div>
+                                                    <% if(item.productId.appliedOffer){ %>
+                                                        <input type="hidden" name="productPrice" id="productPrice"
+                                                        value="<%= item.productId.offerPrice %>">
+                                                        <div class="price ">&#x20B9; <%= item.productId.offerPrice %> </div>
+                                                    <% }else{ %>
+                                                        
+                                                        <input type="hidden" name="productPrice" id="productPrice" value="<%= item.productId.price %>">
+                                                        <div class="price ">&#x20B9; <%= item.productId.price %> </div>
+                                                    <% } %>
+                                                    
                                                     <input type="hidden" name="orderProductQty" id="orderProductQty" value="<%= item.quantity %>">
                                                     <div class="">Quantity: <%= item.quantity %> </div>
                                                 </div>
@@ -279,12 +299,12 @@
 
         const totalPrice = $('#totalPrice').val();
         const walletBalance = $('#walletBalance').text();
-        console.log(walletBalance)
+       
      
 
         $('#submitBtn').on('click',function(event){
             event.preventDefault();
-            console.log('form submission started');
+           
 
             if (!formHasData()) {
                 event.preventDefault();
@@ -296,16 +316,16 @@
                     $('#house').val().trim() !== '' && $('#city').val().trim() !== '' &&
                     $('#pincode').val().trim() !== '';
                 const savedAddress = $('.selectAddress:checked').length !== 0;
-                console.log('address length',$('.selectAddress:checked').length)
+                
                 const paymentMethod = $('.paymentOptions:checked').length !== 0;
-                console.log(addAddres, savedAddress)
+               
                 return (addAddres || savedAddress) && paymentMethod;
             }
             
             const formData = Object.fromEntries(
                 new FormData(document.getElementById("checkoutForm")),
             );
-
+            console.log(formData)
             $.ajax({
                 url: '/place-order',
                 type: 'POST',
@@ -315,7 +335,7 @@
                     if(response.COD){
                         location.href = '/order-success';
                     }else{
-                        console.log('sending request to razorpay')
+                        console.log(response)
                         razorPayPayment(response)
                     }
                 },
@@ -329,7 +349,7 @@
                 var options = {
                     "key": "rzp_test_EbOxVRcWySzIRR",
                     "amount": order.amount,
-                    "currency": order.currency,
+                    "currency": order.currency, 
                     "name": "Bubbles",
                     "description": "Test Transaction",
                     // "image": "https://example.com/your_logo",

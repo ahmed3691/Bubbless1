@@ -1,5 +1,7 @@
 const { ProductModel } = require("../../model/productModel");
 const { SubCatModel, CatModel } = require("../../model/categoryModel");
+const fs = require('fs');
+const path = require('path')
 
 
 const viewProducts = async (req, res) => {
@@ -152,7 +154,7 @@ const sendEditProduct = async (req, res) => {
 
 const editProducts = async (req, res) => {
   try {
-    const {
+    let {
       productName,
       productDesc,
       productBrand,
@@ -163,11 +165,30 @@ const editProducts = async (req, res) => {
       productCat,
       productSubCat,
       productId,
+      productImages
     } = req.body;
+    console.log(req.body)
+
+    
 
     const catId = await CatModel.findOne({ catName: productCat }).select("_id")
-    const subCatId = await SubCatModel.findOne({ subCatName: productSubCat }).select("_id")
-
+    const subCatId = await SubCatModel.findOne({ subCatName: productSubCat }).select("_id");
+    const product = await ProductModel.findOne({_id:productId})
+    let newImagePath = product.productImages;
+    console.log("file names : ", req.files.productImages);
+ 
+    for(let i=0;i<req.files.productImages.length;i++){
+      let imagePath = path.join(__dirname,'../../public',product.productImages[i]);
+      console.log(imagePath);
+      fs.unlink(imagePath,(err)=>{
+        if(err){
+          console.log( 'error deleting image',err);
+          return;
+        }
+      })
+      newImagePath[i] = '/admin/uploads/'+req.files.productImages[i].filename
+    }
+    console.log('newpath',newImagePath)
     const updateProd = await ProductModel.findByIdAndUpdate(productId, {
       productName: productName,
       stockQty: productQty,
@@ -179,7 +200,8 @@ const editProducts = async (req, res) => {
       category: productCat,
       categoryId: catId,
       subCategory: productSubCat,
-      subCategoryId: subCatId
+      subCategoryId: subCatId,
+      productImages:newImagePath
     });
     if (updateProd) {
       console.log(`${productName} updated`)

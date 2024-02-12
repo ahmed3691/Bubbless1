@@ -8,8 +8,8 @@
                 </div>
             </div>
         <div class="row col-lg-12">
-            <form action="/admin/edit-product" method="post" id="productForm"  class="row col-lg-6">
-                <div class="col-lg-12 data-table">
+            <form action="/admin/edit-product" method="post" id="productForm"  class="row " enctype="multipart/form-data">
+                <div class="col-lg-6 data-table">
                     <div class="card mb-4">
                         <div class="card-header">
                             <h4>Product details</h4>
@@ -72,19 +72,6 @@
                                             name="productQty" value="<%= product.stockQty %>" required/>
                                     </div>
                                 </div>
-                                <!-- <div class="col-lg-4">
-                                    <div class="mb-4">
-                                        <label class="form-label" for="productSize">Size</label>
-                                        <select class="form-select" name="productSize" id="productSize" required>
-                                            <option>X-Small</option>
-                                            <option>Small</option>
-                                            <option>Medium</option>
-                                            <option>Large</option>
-                                            <option>X-Large</option>
-                                            <option>XX-Large</option>
-                                        </select>
-                                    </div>
-                                </div> -->
                                 <div class="col-lg-4">
                                     <div class="mb-4">
                                         <label class="form-label" for="productCat">Category</label>
@@ -126,7 +113,7 @@
                         </div>
                     </div>
                 </div>  
-            </form>
+            
             <div class="row col-lg-6">
                 <div class="card-header">
                     <h4>Gallery</h4>
@@ -134,19 +121,65 @@
                 <% product.productImages.forEach((image) => { %>
                 <div class="col-lg-6">                   
                     <div class=" col-lg-12 col-md-6">                      
-                            <div class="card card-product-grid">
-                                <div  class="img-wrap"> <img src="<%= image %>" alt="Product" /> </div>
+                            <div class="card card-product-grid image-div">
+                                <div  class="img-wrap">
+                                    <img src="<%= image %>" alt="Product" />
+                                    <a  class="btn btn-sm btn-danger deleteBtn">
+                                        <span class="material-symbols-outlined">delete</span>
+                                    </a>
+                                </div>
                             </div>                       
                         <!-- card-product  end// -->
                     </div>                  
                 </div>
                 <% }) %>
             </div>
+            </form>
         </div>
-          
-            <!-- ....................................... -->
-            <!-- row.// -->
         </div>
     </section>
+    <script>
+        document.addEventListener('DOMContentLoaded',function(){
+            console.log('script')
+            const productImage = document.querySelectorAll('.img-wrap');
+            const deleteBtn = document.querySelectorAll('.deleteBtn');
+            const imageDiv = document.querySelectorAll('.image-div');
+            let imageInput=[];
+            deleteBtn.forEach(button=>{
+                button.addEventListener('click',function(){
+                   
+                    const inputHtml = `<div>
+                                        <label class="form-label">Choose an image</label>
+                                        <input class="form-control imageInput"  type="file" accept=".png,.jpg,.jpeg"   name="productImages"  required />
+                                        <img />
+                                    </div>`
+                    const thisImageDiv = button.closest('.image-div');
+                    button.closest('.image-div').innerHTML = inputHtml
+                    const thisInput = thisImageDiv.querySelector('.imageInput');
+                    thisInput.addEventListener('change',function(event){
+                   
+                        const file = event.target.files[0];
+                        const reader = new FileReader();
+                    //    if(event.target.files.length>1){
+                    //     event.target.value = '';
+                    //     return alert('please select only 1 file')
+                    //    }
+                        reader.onload = function(e){
+                            const thisImage = thisImageDiv.querySelector('img');
+                            thisImage.src = e.target.result;
+                        }
+                        reader.readAsDataURL(file);
+                        
+                    })
+                })
+            })
+
+            imageInput.forEach(input=>{
+                input.addEventListener('change',function(){
+                    console.log('image selected')
+                })
+            })
+        })
+    </script>
 
     <%- include("../admin/layouts/footer") %>

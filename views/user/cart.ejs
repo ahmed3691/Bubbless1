@@ -29,7 +29,12 @@
                                 </div>
                                 <div class="clearfix"> </div>
                             </td>
-                            <td>&#x20B9;<%= item.productId.price %>
+                            <% if(item.productId.appliedOffer){ %>
+                                <td>&#x20B9;<%= Math.ceil(item.productId.offerPrice) %>
+                            <% }else{ %>
+                                <td>&#x20B9;<%= item.productId.price %>
+                            <% } %>
+                            
                             </td>
                             <td>FREE SHIPPING </td>
  
@@ -46,9 +51,7 @@
                             </td>
                             <td><a href="/remove-from-cart/<%= item?.productId?._id %>"
                                     class="btn btn-danger">Remove</a></td>
-
                         </tr>
-
                         <% }) %>
                 </table>
             </div>
