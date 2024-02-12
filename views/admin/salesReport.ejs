@@ -1,0 +1,149 @@
+<%- include("../admin/layouts/header") %>
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Sales Report</h2>
+            <p>Lorem ipsum dolor sit amet.</p>
+        </div>
+        <div class="col-lg-2 col-6 col-md-3">
+            <div class="col-md-6">
+                <a href="" id="downloadBtn" download="sales-report.pdf" class="btn btn-xs">Download Report</a>
+            </div>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <header class="card-header">
+            <div class="row gx-3">
+                <div class="col-md-2 col-6">
+                    <label for="fromDate">From</label>
+                    <input type="date" id="fromDate" value="<%= new Date().toISOString().substr(0, 10) %>" name="fromDate" " placeholder="From" class="form-control" />
+                </div>
+                <div class="col-md-2 col-6">
+                    <label for="uptoDate">To</label>
+                    <input type="date" id="uptoDate" name="uptoDate" value="<%= new Date().toISOString().substr(0, 10) %>"  placeholder="To" class="form-control" />
+                </div>
+            </div>
+        </header>
+        <div class="card-body">
+            <div class="table-responsive text-center">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Order Id</th>
+                            <th scope="col">Delivery Address</th>
+                            <th scope="col">Products</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Products Count</th>
+                            <th scope="col">Order Date</th>
+                            <th scope="col" >Payment Method</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableContents">
+                     <!-- order datas from ajax request goes here -->
+                    </tbody>
+                </table>
+                <div class="row col-md-11 mb-50 mt-20 order-info-wrap">
+                    <div class="col-md-6">
+                        <article class="icontext align-items-start">
+                            <div class="text">
+                                <h6 class="mb-1 h5">Total Revenue</h6>
+                                <h1 class="mb-1" id="totalRevenue"></h1>
+                            </div>
+                        </article>
+                    </div>  
+                    <div class="col-md-6">
+                        <article class="icontext align-items-start">
+                            <div class="text">
+                                <h6 class="mb-1 h5">Products Sold</h6>
+                                <h1 class="mb-1" id="productsSold">20</h1>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+            <!-- table-responsive //end -->
+        </div>
+        <!-- card-body end// -->
+    </div>
+    <!-- card end// -->
+    <div class="pagination-area mt-15 mb-50">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-start">
+                <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                <li class="page-item"><a class="page-link" href="#">02</a></li>
+                <li class="page-item"><a class="page-link" href="#">03</a></li>
+                <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                <li class="page-item"><a class="page-link" href="#">16</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded',function(){
+
+        let from  = document.getElementById('fromDate')
+        let to = document.getElementById('uptoDate');
+        let tableBody = document.getElementById('tableContents');
+        let revenueElement = document.getElementById('totalRevenue');
+        let producstElement = document.getElementById('productsSold');
+        let downloadBtn = document.getElementById('downloadBtn');
+
+        getSalesData();
+        from.addEventListener('change',getSalesData);
+        to.addEventListener('change',getSalesData)
+
+        function getSalesData(){
+            let fromDate = from.value;
+            let toDate = to.value;
+       
+            let xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState == 4 && xhr.status == 200){
+                    let responseData = JSON.parse(xhr.responseText);
+                    let orders = responseData.orders;
+                    console.log(responseData)
+                    revenueElement.innerText = responseData.summary.totalRevenue ;
+                    producstElement.innerText = responseData.summary.productsSold;
+                    downloadBtn.setAttribute('href', `docs/${responseData.fileName}`);
+                    updateTable(orders);
+                }else{
+                    console.log('error',xhr.status)
+                }
+            }
+            xhr.open('GET',`/admin/sales-data/${fromDate}/${toDate}`,true);
+            xhr.send();
+        }
+
+        function updateTable(orders){
+        
+            tableBody.innerHTML = '';
+            orders.forEach((order)=>{
+                let tableRow = document.createElement('tr');
+                let productNames = order.products.map((product)=>product.productId.productName).join(', ');
+                let productsCount = order.products.length;
+                let orderDate = new Date(order.createdAt)
+ 
+                tableRow.innerHTML = `
+                    <td>${order.orderId}</td>
+                    <td>${order.deliveryAddress}</td>
+                    <td>${productNames}</td>
+                    <td>&#x20B9;${order.totalPrice}</td>
+                    <td>${productsCount}</td>
+                    <td>${orderDate}</td>
+                    <td>${order.paymentMethod}</td>
+                `
+                tableBody.appendChild(tableRow)
+            })
+            
+
+        }
+    })
+
+</script>
+
+<%- include("../admin/layouts/footer") %>

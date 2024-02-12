@@ -1,4 +1,4 @@
-const { response } = require('express')
+
 const {SubCatModel,CatModel} = require('../../model/categoryModel')
 const { ProductModel } = require("../../model/productModel");
 
@@ -96,9 +96,9 @@ const sendEditCategory = async(req,res)=>{
     try{
         let message = req.session.message
         req.session.message = ''
-        subCatId= req.query.subCatId ?? req.session.subCatId;
+        subCatId= req.query.subCategoryId ?? req.subCatId;
         const subCat = await SubCatModel.findOne({_id:subCatId})
-        console.log(subCat)
+        console.log(subCat) 
         res.render('./admin/editCategory',{subCat:subCat,message})
     }
     catch(err){
@@ -117,7 +117,7 @@ const editCat = async (req,res)=>{
       });
        console.log(subCategory)
        if(subCategory){
-        req.session.subCatId = subCatId;
+        req.subCatId = subCatId;
         req.session.message = "This category already exists"
         console.log(' editing category already exist')
         return res.redirect('/admin/edit-category')

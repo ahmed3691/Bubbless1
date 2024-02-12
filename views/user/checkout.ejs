@@ -1,8 +1,5 @@
 <%- include("../user/layouts/header") %>
 
-
-
-
     <section class="bg-light py-5 " style="margin: 20px;">
         <div class="container">
             <div class="row">
@@ -141,7 +138,7 @@
                                     <hr />
                                     <div class="d-flex col-md-12 justify-content-between">
                                         <p class="mb-2">Total price:</p>
-                                        <input type="hidden" value="<%= product.price %>" name="totalPrice">
+                                        <input type="hidden" value="<%= product.price %>" id="totalPrice" name="totalPrice">
                                         <p class="mb-2 fw-bold">&#x20B9; <%= product.price*productQty %>
                                         </p>
                                     </div>
@@ -150,6 +147,9 @@
                                         <input type="text" class="form-control border" name=""
                                             placeholder="Promo code" />
                                         <button class="btn btn-light text-primary border">Apply</button>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p> <b>Wallet Balance:</b> &#x20B9;<span id="walletBalance"><%= userWallet.amount %></span></p>
                                     </div>
                                     <div>
                                         <h5>Choose a payment method</h5>
@@ -164,6 +164,11 @@
                                                 class="paymentOptions custom-control-input">
                                             <label class="custom-control-label" for="onlinePayment">Online
                                                 Payment</label>
+                                        </div>
+                                        <div class="custom-control custom-radio">
+                                            <input type="radio" name="paymentMethod" value="Wallet Payment" id="walletPayment"
+                                                class="paymentOptions custom-control-input">
+                                            <label class="custom-control-label" for="walletPayment">Pay Using Wallet Money</label>
                                         </div>
                                     </div>
                                     <hr />
@@ -190,23 +195,22 @@
                                     <% } else{%>
                                         <div>Cart Checkout</div>
 
-                                        <h6 class="mb-3 " style="font-weight: bolder; font-size: larger;">
-                                            Summary</h6>
+                                        <h6 class="mb-3 " style="font-weight: bolder; font-size: larger;"> Summary</h6>
                                         <hr />
                                         <div class="d-flex col-md-12 justify-content-between">
-                                            <p class="mb-2">Total price:</p>
+                                            <p  class="mb-2">Total price:</p>
                                             <input type="hidden" name="cartId" value="<%= userCart._id %>">
-                                            <input type="hidden" value="<%= userCart.totalPrice %>" name="totalPrice">
-                                            <p class="mb-2 fw-bold">&#x20B9; <%= userCart.totalPrice %>
-                                            </p>
-                                            <p class="mb-2 fw-bold">Total Products: <%= userCart.totalProducts %>
-                                            </p>
+                                            <input type="hidden" value="<%= userCart.totalPrice %>" id="totalPrice" name="totalPrice">
+                                            <p class="mb-2 fw-bold" >&#x20B9; <%= userCart.totalPrice %></p>
+                                            <p class="mb-2 fw-bold">Total Products: <%= userCart.totalProducts %></p>
                                         </div>
 
                                         <div class="input-group mt-3 mb-4">
-                                            <input type="text" class="form-control border" name=""
-                                                placeholder="Promo code" />
+                                            <input type="text" class="form-control border" name="" placeholder="Promo code" />
                                             <button class="btn btn-light text-primary border">Apply</button>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <p> <b>Wallet Balance:</b> &#x20B9;<span id="walletBalance"><%= userWallet.amount %></span></p>
                                         </div>
                                         <div>
                                             <h5>Choose a payment method</h5>
@@ -214,15 +218,17 @@
                                             <div class="custom-control custom-radio">
                                                 <input type="radio" name="paymentMethod" value="COD" id="paymentCOD"
                                                     class="paymentOptions custom-control-input">
-                                                <label class="custom-control-label" >Cash on
-                                                    Delivery</label>
+                                                <label class="custom-control-label" >Cash on Delivery</label>
                                             </div>
                                             <div class="custom-control custom-radio">
-                                                <input type="radio" name="paymentMethod" value="Online Payment" id="onlinePayment"
-                                                    class="paymentOptions custom-control-input">
-                                                <label class="custom-control-label"
-                                                    >Online Payment</label>
+                                                <input type="radio" name="paymentMethod" value="Online Payment" id="onlinePayment" class="paymentOptions custom-control-input">
+                                                <label class="custom-control-label" >Online Payment</label>
                                             </div>
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" name="paymentMethod" value="Wallet Payment" id="walletPayment"
+                                                    class="paymentOptions custom-control-input">
+                                                <label class="custom-control-label" for="walletPayment">Pay Using Wallet Money</label>
+                                            </div>  
                                         </div>
                                         <hr />
                                         <h6 class="text-dark my-4">Items:</h6>
@@ -233,24 +239,16 @@
                                                     <img src="<%= item.productId.productImages[0] %>"
                                                         style="height: 96px; width: 96x;"
                                                         class="img-sm rounded border" />
-                                                    <div>
-                                                        <%= item.Quantity %>
-                                                    </div>
                                                 </div>
                                                 <div class="col-8">
                                                     <input type="hidden" name="productId" id="productId"
                                                         value="<%= item.productId._id %>">
-                                                    <a class="nav-link">
-                                                        <%= item.productId.productName %>
-                                                    </a>
+                                                    <a class="nav-link"> <%= item.productId.productName %> </a>
                                                     <input type="hidden" name="productPrice" id="productPrice"
                                                         value="<%= item.productId.price %>">
-                                                    <div class="price ">&#x20B9; <%= item.productId.price %>
-                                                    </div>
-                                                    <input type="hidden" name="orderProductQty" id="orderProductQty"
-                                                        value="<%= item.quantity %>">
-                                                    <div class="">Quantity: <%= item.quantity %>
-                                                    </div>
+                                                    <div class="price ">&#x20B9; <%= item.productId.price %> </div>
+                                                    <input type="hidden" name="orderProductQty" id="orderProductQty" value="<%= item.quantity %>">
+                                                    <div class="">Quantity: <%= item.quantity %> </div>
                                                 </div>
                                             </div>
 
@@ -266,26 +264,6 @@
                 </div>
             </div>
     </section>
-    <script>
-        // $(document).ready(function(){
-        //     $('#paymentCOD').on('click',function(){
-        //         console.log('COD selected')
-        //             $('#onlineContainer').attr('hidden',true)
-        //             $('#CODContainer').attr('hidden',false);
-        //             $('#CODBtn').focus();
-        //     })
-
-        //     $('#onlinePayment').on('click',function(){
-        //         console.log('online payment');
-        //         $('#CODContainer').attr('hidden',true);
-        //         $('#onlineContainer').attr('hidden',false)
-        //         $('#onlineBtn').focus();
-        //     })
-        // })
-    </script>
-
-
-
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
     $(document).ready(function () {
@@ -297,9 +275,11 @@
         })
         $('#checkoutForm').submit(function (event) {
             console.log('form submitted')
-            
         })
 
+        const totalPrice = $('#totalPrice').val();
+        const walletBalance = $('#walletBalance').text();
+        console.log(walletBalance)
      
 
         $('#submitBtn').on('click',function(event){
@@ -321,7 +301,7 @@
                 console.log(addAddres, savedAddress)
                 return (addAddres || savedAddress) && paymentMethod;
             }
-
+            
             const formData = Object.fromEntries(
                 new FormData(document.getElementById("checkoutForm")),
             );
@@ -331,10 +311,9 @@
                 type: 'POST',
                 data: formData,
                 success: function(response){
-                    console.log('response on client===>',response)
                     
                     if(response.COD){
-                        location.href = '/order-success'
+                        location.href = '/order-success';
                     }else{
                         console.log('sending request to razorpay')
                         razorPayPayment(response)
@@ -346,8 +325,7 @@
             })
 
             function razorPayPayment(order){
-                console.log('send request ready to razorpay')
-              
+                console.log('razor')
                 var options = {
                     "key": "rzp_test_EbOxVRcWySzIRR",
                     "amount": order.amount,
@@ -366,7 +344,7 @@
                     "contact": "9000090000"  
                     },
                     "notes": {
-                        "address": "Razorpay Corporate Office"
+                        "address": "Razorpay Corporate Office"   
                     },
                     "theme": {
                         "color": "#3399cc"

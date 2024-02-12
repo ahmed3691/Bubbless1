@@ -8,21 +8,18 @@
                     <% } %>
                 <div>
                     <h2 class="content-title card-title">Order detail</h2>
-                    <p> Order ID: <%= order.orderId %></p>
+                    <p > Order ID: <span id="orderId"><%= order.orderId %></span> </p>
                 </div>
             </div>
             <div class="card">
                 <header class="card-header col-sm-12">
                     <div class="row align-items-center">
                         <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
-                            <span> <i class="material-symbols-outlined">calendar_month</i> <b><%= new Date(order.createdAt) %></b>
-                            </span> <br />
-                           
-                        </div>
-                     
+                            <span> <i class="material-symbols-outlined">calendar_month</i> <b id="orderDate"><%= new Date(order.createdAt) %></b>
+                            </span> <br />                       
+                        </div>                
                     </div>
                 </header>
-                <!-- card-header end// -->
                 <div class="card-body col-sm-12">
                     <div class="row mb-50 mt-20 order-info-wrap">
                         <div class="col-sm-6">
@@ -32,43 +29,22 @@
                                 </span>
                                 <div class="text">
                                     <h6 class="mb-1">Delivery Address</h6>
-                                    <p class="mb-1"><%= order.deliveryAddress %></p>
+                                    <p class="mb-1" id="deliveryAddress"><%= order.deliveryAddress %></p>
 
                                 </div>
                             </article>
                         </div>
-                        <!-- col// -->
                         <div class="col-sm-6" >
                             <article class="icontext align-items-start">
-                                <span class="icon icon-sm rounded-circle bg-primary-light">
-                                    <i class="text-primary material-icons md-local_shipping"></i>
-                                </span>
                                 <div class="text">
                                     <h6 class="mb-1">Order info</h6>
                                     <p class="mb-1">status: <%= order.status %></p>
                                     <p class="mb-1">Payment Method: <%= order.paymentMethod %></p>
+                                    <span><a onclick="downloadInvoice()" style="cursor: pointer;"><small>Download invoice</small></a></span>
                                 </div>
                             </article>
                         </div>
-                        <!-- col// -->
-                        <!-- <div class="col-md-4">
-                            <article class="icontext align-items-start">
-                                <span class="icon icon-sm rounded-circle bg-primary-light">
-                                    <i class="text-primary material-icons md-place"></i>
-                                </span>
-                                <div class="text">
-                                    <h6 class="mb-1">Deliver to</h6>
-                                    <p class="mb-1">
-                                        City: Tashkent, Uzbekistan <br />Block A, House 123, Floor 2 <br />
-                                        Po Box 10000
-                                    </p>
-                                    <a href="#">View profile</a>
-                                </div>
-                            </article>
-                        </div> -->
-                        <!-- col// -->
                     </div>
-                    <!-- row // -->
                     <div class="row">
                         <div class="col-sm-9">
                             <div class="table-responsive">
@@ -82,6 +58,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        if()
                                         <% order.products.forEach(product=>{%>
                                         <tr>
                                             <td>
@@ -99,37 +76,10 @@
                                         </tr>
                                         <% }) %>
                                         <tr>
-                                            <td><h4>Subtotal:</h4> &#x20B9; <%= order.totalPrice %></td>
-                                           
-                                            
-                                            <!-- <td colspan="4">
-                                                <article class="float-end">
-                                                    <dl class="dlist">
-                                                        <dt>Subtotal:</dt>
-                                                        <dd>&#x20B9; <%= order.totalPrice %></dd>
-                                                    </dl>
-                                                    <dl class="dlist">
-                                                        <dt>Shipping cost:</dt>
-                                                        <dd>&#x20B9; 0:00</dd>
-                                                    </dl>
-                                                    <dl class="dlist">
-                                                        <dt>Grand total:</dt>
-                                                        <dd>&#x20B9; <%= order.totalPrice %></dd>
-                                                    </dl>
-                                                    <dl class="dlist">
-                                                        <dt class="text-muted">Status:</dt>
-                                                        <dd>
-                                                            <span
-                                                                class="badge rounded-pill alert-success text-success">Payment
-                                                                done</span>
-                                                        </dd>
-                                                    </dl>
-                                                </article>
-                                            </td> -->
+                                            <td><h4>Subtotal:</h4> &#x20B9; <%= order.totalPrice %></td>                                          
                                         </tr>
                                     </tbody>
-                                </table>
-                                
+                                </table>           
                                 <% if(order.status == 'Pending'){ %>
                                 <div><small><a onclick="cancelOrderForm()" style="cursor: pointer;" >Cancel this order</a></small></div>
                                 <div hidden id="cancelOrderForm">
@@ -139,45 +89,128 @@
                                         <input type="submit" class="btn btn-danger" value="Cancel order">
                                     </form>
                                 </div>
-                                <% } %>
+                                <% }else if(order.status == 'Delivered'){ %>
+                                    <div><small><a onclick="cancelOrderForm()" style="cursor: pointer;" >Return this order</a></small></div>
+                                    <div hidden id="cancelOrderForm">
+                                        <form action="/return-order/<%= order._id %>" method="post">
+                                            <p>Do you really want to Return this order? Please specify the reason.</p>
+                                            <div><textarea name="returnReason" id="" cols="50" rows="5"></textarea></div>
+                                            <input type="submit" class="btn btn-danger" value="Return order">
+                                        </form>
+                                    </div>
+                                    <% } %>
                             </div>
-                           <!-- Modal -->
-                         
-
-                            <!-- table-responsive// -->
                         </div>
-                        <!-- col// -->
-                        <!-- <div class="col-lg-1"></div>
-                        <div class="col-lg-4">
-                            <div class="box shadow-sm bg-light">
-                                <h6 class="mb-15">Payment info</h6>
-                                <p>
-                                    <img src="assets/imgs/card-brands/2.png" class="border" height="20" /> Master Card
-                                    **** **** 4768 <br />
-                                    Business name: Grand Market LLC <br />
-                                    Phone: +1 (800) 555-154-52
-                                </p>
-                            </div>
-                            <div class="h-25 pt-4">
-                                <div class="mb-3">
-                                    <label>Notes</label>
-                                    <textarea class="form-control" name="notes" id="notes"
-                                        placeholder="Type some note"></textarea>
-                                </div>
-                                <button class="btn btn-primary">Save note</button>
-                            </div>
-                        </div> -->
-                        <!-- col// -->
                     </div>
                 </div>
-                <!-- card-body end// -->
             </div>
-            <!-- card end// -->
         </section>
+     
     </div>
+
     <script>
+        const orders = <%- JSON.stringify(order.products) %> ;
+        let invoiceArr = [];
+        orders.forEach(element => {
+            let obj = {
+                "quantity": element.quantity,
+                "description": element.productId.productName,
+                "tax-rate": 0,
+                "price": element.productId.price
+            }
+            invoiceArr.push(obj);
+        });
+    
+    
+        console.log(invoiceArr)
+        const costumer = $('#deliveryAddress').text();
+        const orderID = $('#orderId').text();
+
+        const orderDate = $("#orderDate").text();
         function cancelOrderForm(){
             $("#cancelOrderForm").toggle()
+        }
+
+        function downloadInvoice(){
+            console.log('invoice downloaded');
+
+            var data = {
+                "customize": {
+                    //  "template": fs.readFileSync('template.html', 'base64') // Must be base64 encoded html 
+                },
+                "images": {
+                    // The logo on top of your invoice
+                    "logo": "https://public.budgetinvoice.com/img/logo_en_original.png",
+                    // The invoice background
+                    "background": "https://public.budgetinvoice.com/img/watermark-draft.jpg"
+                },
+                // Your own data
+                "sender": {
+                    "company": "Bubbles",
+                    "address": "Meppadi Wayanad",
+                    "zip": "568307",
+                    "city": "Meppadi",
+                    "country": "India"
+                    //"custom1": "custom value 1",
+                    //"custom2": "custom value 2",
+                    //"custom3": "custom value 3"
+                },
+                // Your recipient
+                "client": {
+                    "company": costumer,
+                    // "address": "Clientstreet 456",
+                    // "zip": "4567 CD",
+                    // "city": "Clientcity",
+                    // "country": "Clientcountry"
+                },
+                "information": {
+                    // Invoice number
+                    "number": orderID,
+                    // Invoice data
+                    "date": orderDate,
+                    // Invoice due date
+
+                },
+                // The products you would like to see on your invoice
+                // Total values are being calculated automatically
+                "products": invoiceArr,
+                // The message you would like to display on the bottom of your invoice
+                "bottom-notice": "Kindly pay your invoice within 15 days.",
+                // Settings to customize your invoice
+                "settings": {
+                    "currency": "IND", // See documentation 'Locales and Currency' for more info. Leave empty for no currency.
+                    // "locale": "nl-NL", // Defaults to en-US, used for number formatting (See documentation 'Locales and Currency')        
+                    // "margin-top": 25, // Defaults to '25'
+                    // "margin-right": 25, // Defaults to '25'
+                    // "margin-left": 25, // Defaults to '25'
+                    // "margin-bottom": 25, // Defaults to '25'
+                    // "format": "A4", // Defaults to A4, options: A3, A4, A5, Legal, Letter, Tabloid
+                    // "height": "1000px", // allowed units: mm, cm, in, px
+                    // "width": "500px", // allowed units: mm, cm, in, px
+                    // "orientation": "landscape", // portrait or landscape, defaults to portrait
+                },
+                // Translate your invoice to your preferred language
+                "translate": {
+                    // "invoice": "FACTUUR",  // Default to 'INVOICE'
+                    // "number": "Nummer", // Defaults to 'Number'
+                    // "date": "Datum", // Default to 'Date'
+                    // "due-date": "Verloopdatum", // Defaults to 'Due Date'
+                    // "subtotal": "Subtotaal", // Defaults to 'Subtotal'
+                    // "products": "Producten", // Defaults to 'Products'
+                    // "quantity": "Aantal", // Default to 'Quantity'
+                    // "price": "Prijs", // Defaults to 'Price'
+                    // "product-total": "Totaal", // Defaults to 'Total'
+                    // "total": "Totaal", // Defaults to 'Total'
+                    // "vat": "btw" // Defaults to 'vat'
+                },
+            };
+
+//Create your invoice! Easy!
+easyinvoice.createInvoice(data, function (result) {
+    //The response will contain a base64 encoded PDF file
+    console.log('PDF base64 string: ', result.pdf);
+    easyinvoice.download('invoice.pdf')
+});
         }
     </script>
     

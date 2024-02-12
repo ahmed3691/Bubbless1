@@ -7,6 +7,8 @@ const {updateStock} = require('../config/userDBHelpers')
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const { resolve } = require("path");
+const { WalletModel } = require("../model/walletModel");
+const {PaymentModel} = require('../model/paymentModel')
 
 async function sendOtpMail(userEmail) {
   let randomNumber = Math.floor(1000 + Math.random() * 9000);
@@ -107,31 +109,41 @@ function razorPayRequest(orderId, amount) {
 }
 
 const placeOrder = async (body,userId,userName,orderId)=>{
-  console.log('order placement started........')
-  console.log('form data in placeOrder as body=====',body)
-  const {
-      fullName,
-      phoneNUmber,
-      email,
-      house,
-      landMark,
-      city,
-      district,
-      state,
-      pincode,
-      selectedAddress,
-      deliveryInstruction,
-      totalPrice,
-      productId,
-      orderProductQty,
+
+
+  const {fullName,phoneNUmber,email,house,landMark,city,district,state,pincode,selectedAddress,deliveryInstruction,totalPrice,productId,orderProductQty,
       productPrice,
       paymentMethod,
       cartId,
   } = body;
-  console.log('body=====',body)
-  console.log('totalproce',body.totalPrice)
-  const { products } = convertToArray(productId,orderProductQty,productPrice);
-  console.log('products====',products)
+
+
+
+  let products = [];
+
+  if (cartId) {
+    
+    const userCart = await CartModel.findOne(
+      { _id: cartId },
+      {
+         'items._id':0,
+          _id: 0,
+          userId:0, 
+      }
+    );
+    products =  userCart.items;
+    await CartModel.deleteOne({_id:cartId})
+  
+}else{
+  let obj = {
+    productId: productId,
+    quantity: orderProductQty,
+    totalPrice: productPrice
+  }
+  products.push(obj)
+}
+
+
   const addedAddress =
       fullName +
       "\n" +
@@ -149,6 +161,37 @@ const placeOrder = async (body,userId,userName,orderId)=>{
       "\n" +
       pincode;
   let deliveryAddress = addedAddress.trim() || selectedAddress;
+
+  if(paymentMethod == 'Wallet Payment'){
+    const updateWallet = await WalletModel.updateOne(
+      {userId},
+      {$inc:{amount:-totalPrice}}
+    )
+    
+    const newPayment = new PaymentModel({
+      userId,
+      paymentFor: 'Wallet Debit',
+      paymentIntitatedFor:'Placed Order',
+      entity: 'order',
+      amount:totalPrice,
+      amount_paid: totalPrice,
+      amount_due: 0,
+      currenc: 'INR',
+      receipt: orderId,
+      offer_id: null,
+      status: 'success',
+      attempts: 0
+    })
+
+    newPayment.save()
+      .then(()=>{
+        console.log('Wallet payment saved')
+      })
+      .catch((error)=>{
+        console.log('Error saving wallet Payment ',error)
+      })
+  }
+
   const newOrder = new OrdersModel({
       userId: userId,
       userName: userName,
@@ -160,9 +203,6 @@ const placeOrder = async (body,userId,userName,orderId)=>{
       paymentMethod: paymentMethod,
   });
 
-  if (cartId) {
-      await CartModel.deleteOne({ _id: cartId });
-  }
 
   newOrder.save()
       .then(() =>{

@@ -1,0 +1,187 @@
+<%- include("../admin/layouts/header") %>
+
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Offers List</h2>
+            
+        </div>
+        
+        <div>
+            <a href="/admin/create-offer" class="btn btn-primary btn-sm rounded">Create new offer</a>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <div id="errorMessage"></div>
+        <header class="card-header">
+            <div class="row align-items-center">
+                <div class="col col-check flex-grow-0">
+                    <div class="form-check ms-2">
+                        <input class="form-check-input" type="checkbox" value="" />
+                    </div>
+                </div>
+                <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
+                    <select class="form-select">
+                        <option selected>All category</option>
+                        <option>Electronics</option>
+                        <option>Clothes</option>
+                        <option>Automobile</option>
+                    </select>
+                </div>
+                <div class="col-md-2 col-6">
+                    <input type="date" value="02.05.2021" class="form-control" />
+                </div>
+                <div class="col-md-2 col-6">
+                    <select class="form-select">
+                        <option selected>Status</option>
+                        <option>Active</option>
+                        <option>Disabled</option>
+                        <option>Show all</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+        <div class="card-header">
+            <article class="itemlist text-center">
+                <div class="row align-items-center">
+                    <div class=" col-sm-3  flex-grow-1 col-name">
+                        <a class="itemside" href="#">
+                            <div class="info">
+                                <h4 class="mb-0">OFFER TITLE</h4>
+                            </div>
+                        </a>
+                    </div>
+                    <div class=" col-sm-3 col-4 col-price "><span ><h4>OFFER TYPE</h4></span></div>
+                    <div class=" col-sm-3 col-4 col-price"><span><h4>OFFER </h4></span></div>
+                    <div class=" col-sm-3 col-4 col-action ">
+                        <h4>ACTION</h4>
+                    </div>
+                </div>
+            </article>
+        </div>
+        <div class="card-body">
+
+            <% offers.forEach(offer=>{ %>
+            <article class="itemlist text-center">
+                <div class="row align-items-center">
+                    <div class=" col-sm-3 flex-grow-1 col-name">
+                        <a class="itemside" href="#">
+                            <div class="info">
+                                <h6 class="mb-0"><%= offer.offerTitle %></h6>
+                            </div>
+                        </a>
+                    </div>
+                   
+                    <div class=" col-sm-3 col-4 col-price"><span><%= offer.offerType %></span></div>
+                    <% if(offer.offerType=='percentage'){ %>
+                        <div class=" col-sm-3 col-4 col-date">
+                            <span><%= offer.percentage %>% Reduction</span>
+                        </div>
+                    <% }else if(offer.offerType=='fixedAmount'){ %>
+                        <div class="c col-sm-3 col-4 col-date">
+                            <span>&#x20B9; <%= offer.fixedAmount %> Reduction</span>
+                        </div>
+                    <% }else if(offer.offerType == 'buyXgetY'){ %>
+                        <div class="c col-sm-3 col-4 col-date">
+                            <span>Buy: <%= offer.buy %> Get: <%= offer.get %></span>
+                        </div>   
+                    <% } %>
+                    <div class="c col-sm-3 col-4 col-action ">
+                        <% if(offer.offerAppliedFor){ %>
+                            <a href="/admin/remove-offer/<%= offer._id %>" class="btn btn-sm  font-sm rounded " style="background-color: #F57D1F;"> Un List </a>
+                        <% }else{ %>
+                            <a href="/admin/apply-offer/<%= offer._id %>" class="btn btn-sm  font-sm rounded " style="background-color: #F3B95F;">List </a>
+                        <% } %>
+                        
+                        <a href="/admin/edit-offer/<%= offer._id %>" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Edit </a>
+                        <a  class="btn btn-sm font-sm btn-light rounded deleteBtn"> <i class="material-icons md-delete_forever"></i> Delete </a>
+                        <span id="offerIdspan" hidden><%= offer._id %></span>
+                    </div>
+                </div>
+            </article>
+            <% }) %>
+        </div>
+    </div>
+    <!-- <div class="pagination-area mt-30 mb-50">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-start">
+                <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                <li class="page-item"><a class="page-link" href="#">02</a></li>
+                <li class="page-item"><a class="page-link" href="#">03</a></li>
+                <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                <li class="page-item"><a class="page-link" href="#">16</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
+                </li>
+            </ul>
+        </nav>
+    </div> -->
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded',function(){
+        const deleteBtn = document.querySelectorAll('.deleteBtn')
+        
+        console.log(deleteBtn)
+
+        deleteBtn.forEach(btn=>{
+
+            btn.addEventListener('click',function(event){
+            event.preventDefault();
+            const offerIdSpan = this.nextElementSibling;
+            const offerId = offerIdSpan.innerText;
+         
+          
+            Swal.fire({
+                title: "Are you sure?",
+                text: "This offer will be removed from appplied products",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#EF4040",
+                cancelButtonColor: "#B4B4B8",
+                confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                if (result.isConfirmed) {
+
+                    fetch('/admin/offers',{
+                        method: 'DELETE',
+                        headers:{
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({offerId})
+                    })
+                    .then((response=>{
+                        return(response.json())
+                    }))
+                    .then((data)=>{
+                        if(data.deleted){
+                            Swal.fire({
+                                title: "Deleted!",
+                                text: "This offer has been removed",
+                                icon: "success"
+                                })
+                                .then(result=>{
+                                if(result.isConfirmed){
+                                        window.location = '/admin/offers';    
+                                }
+                            })
+                        }else{
+                            document.getElementById('errorMessage').innerHTML = " <div class='alert-danger alert'>Delete failed</div>"
+                        }
+                    })
+                    
+                    
+                    
+                }
+                });
+        })
+
+        })
+        
+    })
+</script>
+
+
+
+<%- include("../admin/layouts/footer") %>

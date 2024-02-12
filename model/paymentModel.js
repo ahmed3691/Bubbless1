@@ -10,6 +10,8 @@ connect.then(()=>{
 
 const paymentSchema = new Schema({
     userId: Schema.Types.ObjectId,
+    paymentFor:String,
+    paymentIntitatedFor:String,
     id: String,
     entity: String,
     amount: Number,

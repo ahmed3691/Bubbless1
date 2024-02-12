@@ -24,7 +24,7 @@
                         <h6>Summary</h6>
                         <p  class="text-danger">Status: <%= order.status %>  </p>
                         <p>Amount: &#x20B9; <%= order.totalPrice %></p> 
-                        <p>Order date: <%= new Date(order.orderDate)
+                        <p>Order date: <%= new Date(order.createdAt)
                         .toLocaleString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'numeric',hour12:true}) %></p>
                         <% if(order.status== 'Pending' ){ %>  
                         <p class="text-info">Expected delivery: Within 9 days from the date of order</p> 

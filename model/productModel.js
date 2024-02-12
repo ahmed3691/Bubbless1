@@ -10,14 +10,16 @@ connect
     console.log(`DB error ${err}`);
   });
 
-const productSchema = mongoose.Schema({
+const productSchema = new mongoose.Schema({
   productName: { type: String, required: true },
   stockQty: { type: Number, required: true, min: 0 },
   brand : {type: String,required: true},
   color : {type: String,required: true},
   ageGap: {type: String, required:true},
+  appliedOffer:{type:Schema.Types.ObjectId,ref:'offers',default:null},
   price: { type: Number, required: true },
   desc: { type: String, default: "Clothes" },
+  offerPrice:{type:Number,default:null},
   // size: { type: String, required: true },
   category: { type: String, required: true },
   categoryId: {type: Schema.Types.ObjectId, ref:"categories", required: true},
@@ -29,4 +31,4 @@ const productSchema = mongoose.Schema({
 
 const ProductModel = mongoose.model("products", productSchema);
 
-module.exports = { ProductModel };
+module.exports = {ProductModel};

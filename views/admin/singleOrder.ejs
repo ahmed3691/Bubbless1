@@ -15,14 +15,20 @@
                     <small class="text-muted">Order ID: <%= order.orderId %></small>
                 </div>
                 <div class="col-lg-6 col-md-6 ms-auto text-md-end">
-                    <select class="form-select d-inline-block mb-lg-0 mr-5 mw-200">
-                        <option>Change status</option>
-                        <option>Awaiting payment</option>
-                        <option>Confirmed</option>
-                        <option>Shipped</option>
-                        <option>Delivered</option>
-                    </select>
-                    <a class="btn btn-primary" href="#">Save</a>
+                    <div class="dropdown col-md-4" >
+                        <a href="#" data-bs-toggle="dropdown"
+                            class="btn btn-light rounded btn-sm font-sm"> <i
+                                class="material-icons md-more_horiz"></i> </a>
+                        <div class="dropdown-menu">
+                            <% if(order.status == 'Pending'){ %>
+                                <a class="dropdown-item text-danger" onclick="return confirm('Are you sure')" 
+                                href="/admin/cancel-order/Cancelled/<%= order._id %>">Cancel order</a>
+                                <a class="dropdown-item text-success" onclick="return confirm('Are you sure')"  
+                                href="/admin/cancel-order/Delivered/<%= order._id %>">Confirm Delivery</a>
+                            <% } %>     
+                        </div>
+                    </div>
+                    <!-- <a class="btn btn-primary" href="#">Save</a> -->
                     <a class="btn btn-secondary print ms-2" href="#"><i class="icon material-icons md-print"></i></a>
                 </div>
             </div>

@@ -34,8 +34,18 @@
                             <%= product.brand %>
                         </p>
                         <div class="price_single">
-                            <span class="reducedfrom item_price">&#x20B9;<%= product.price %></span>
-                            <a href="#">click for offer</a>
+                            <% if(product.appliedOffer  && product?.appliedOffer?.offerType == 'percentage'){ %>
+                                <span class="reducedfrom item_price"><strike>&#x20B9; <%= product.price %></strike></span>
+                                <span style="margin-left: 20px;" class="reducedfrom item_price">&#x20B9; <%= Math.ceil(product.offerPrice) %></span>
+                                <span style="margin-left: 20px;"  class="reducedfrom item_price"><%= product.appliedOffer.percentage %>% OFF</span>
+                            <% }else if(product.appliedOffer  && product?.appliedOffer?.offerType == 'fixedAmount'){ %>
+                                <span class="reducedfrom item_price"><strike>&#x20B9; <%= product.price %></strike></span>
+                                <span style="margin-left: 20px;" class="reducedfrom item_price">&#x20B9; <%= Math.ceil(product.offerPrice) %></span>
+                                <span style="margin-left: 20px;"  class="reducedfrom item_price"> &#x20B9; <%= product.appliedOffer.fixedAmount %> OFF</span>
+                            <% }else{ %>
+                                <span class="reducedfrom item_price">&#x20B9; <%= product.price %></span>
+                            <% } %>
+                            
                             <div class="clearfix"></div>
                         </div>
                         <h4 class="quick">Quick Overview:</h4>

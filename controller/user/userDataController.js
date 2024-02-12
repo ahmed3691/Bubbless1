@@ -1,12 +1,15 @@
 const { ProductModel } = require("../../model/productModel");
-const { SubCatModel, CatModel } = require("../../model/categoryModel");
 const { CartModel } = require("../../model/cartModel");
-const userConfig = require("../../config/userConfig");
 const { AddressModel } = require("../../model/addressModel");
 const { UserModel } = require("../../model/usersModel");
 const {OrdersModel} = require("../../model/ordersModel");
-
+const {WalletModel} = require('../../model/walletModel');
+const {PaymentModel} = require('../../model/paymentModel')
+const{razorPayRequest,generateOrderId} = require('../../config/userConfig');
+const {confirmPayment} = require('../../config/userDBHelpers')
+ 
 const session = require("express-session");
+const { response } = require("express");
 
 const getUserProfile = async (req, res) => {
   const isAuthenticated = req.cookies.userAccessToken || false;
@@ -71,7 +74,7 @@ const removeFromCart = async (req, res) => {
     { userId: userId },
     { 
       $pull: {items: { productId: productId }},
-      $inc:{totalPrice:-productPrice,totalProducts:-1,totalQuantity:-removeQuantity}
+      $inc:{totalPrice:-productPrice,totalProducts:-1,totalQuantity:-removeQuantity} 
     },
   );
 
@@ -223,7 +226,7 @@ const userOrders = async(req,res)=>{
   const isAuthenticated = req.cookies.userAccessToken ? true : false;
   const cartQty = req.cookies.cartQty;
 
-  const allOrders = await OrdersModel.find({userId:userId}).populate('products.productId')
+  const allOrders = await OrdersModel.find({userId:userId}).sort({createdAt:-1}).populate('products.productId');
 
   res.render('./user/allOrders',{userId,isAuthenticated,cartQty,allOrders});
 }
@@ -236,7 +239,7 @@ const orderDetails = async (req,res)=>{
     const orderId = req.params.id;
     const order = await OrdersModel.findOne({_id:orderId}).populate('products.productId')
     let message = req.flash('message')
-    console.log(message)
+
     
     res.render('./user/orderDetails',{order,isAuthenticated,cartQty,message})
   }catch(err){
@@ -244,7 +247,127 @@ const orderDetails = async (req,res)=>{
   }
 }
 
+const returnOrder = async (req,res)=>{
+  try {
+    const orderId = req.params.id;
+    const userId = req.user;
+    const order = await OrdersModel.findOne({_id:orderId})
 
+    const price = order.totalPrice;
+    
+    const updateOrder = await OrdersModel.updateOne({_id: orderId},{$set:{status:'Returned'}});
+    const updateWallet = await WalletModel.updateOne(
+      {userId:userId},
+      {$inc:{amount:price}},
+      {upsert: true}) 
+    const newPayment = new PaymentModel({
+      userId,
+      paymentFor: 'Wallet Credit',
+      paymentIntitatedFor:'Returned Order',
+      entity: 'order',
+      amount:price,
+      amount_paid: price,
+      amount_due: 0,
+      currenc: 'INR',
+      receipt: orderId,
+      offer_id: null,
+      status: 'success',
+      attempts: 0
+    });
+
+    newPayment.save()
+      .then(()=>{
+        console.log('Payment saved for returned order');
+      })
+      .catch((error)=>{
+        console.log('Error in saving payment info for returned order', error)
+      })
+    req.flash('message', 'Order return request has been processed!');
+    res.redirect(`/order-details/${orderId}`)
+  } catch (error) {
+    console.log(error)
+  } 
+}
+
+const getWallet = async (req,res)=>{
+  const isAuthenticated = req.cookies.userAccessToken ? true : false;
+  const cartQty = req.cookies.cartQty;
+  const userId = req.user;
+  console.log(userId);
+  const wallet = await WalletModel.findOne({userId:userId});
+  
+  if(!wallet){
+    const newWallet = new WalletModel({ userId, amount:0})
+    await newWallet.save();
+    res.render('./user/wallet',{wallet:newWallet,isAuthenticated,cartQty});
+  }else{
+    res.render('./user/wallet',{wallet,isAuthenticated,cartQty});
+  }
+  
+}
+
+const sendRazorpayRequestForWallet = (req,res)=>{
+  const userId = req.user;
+  const amount = parseInt(req.body.amount);
+  const transactionId = generateOrderId();
+
+  razorPayRequest(transactionId,amount)
+    .then((response)=>{
+      
+      const newPayment = new PaymentModel({
+        userId,
+        paymentIntitatedFor: 'Money added to wallet',
+        paymentFor:'Wallet Credit',
+        ...response
+      })
+
+    newPayment.save()
+      .then(()=>res.json(response))
+      .catch(()=>res.json(response));
+
+    })
+    .catch(err=>{
+      console.log(err);
+      res.status(500);
+    })
+}
+
+const walletDeposit = async (req,res)=>{
+  try {
+    const userId = req.user;
+    console.log('updating wallet....');
+    if(req.body.response.razorpay_signature){
+
+      const depositAmount = req.body.responseOrder.amount / 100;
+      await WalletModel.updateOne({userId},{$inc:{amount:depositAmount}});
+      confirmPayment(req.body.responseOrder.receipt,req.body.responseOrder.amount); 
+      res.send({wallet_updated:true})
+    }else{
+      res.send({wallet_updated: false})
+    }
+    
+  } catch (error) {
+    console.log(error)
+  }
+  
+}
+
+const walletTransactions =  async (req,res)=>{
+  const userId = req.user;
+
+  const userWallet = await WalletModel.findOne({userId});
+
+  const transactions = await PaymentModel.find(
+    {
+      userId,
+      paymentFor:{$in:['Wallet Debit','Wallet Credit']}
+    }
+  ).sort({createdAt:-1})
+
+
+
+  res.send({transactions,userWallet})
+}
 
 module.exports = {
   getUserProfile,
@@ -258,5 +381,11 @@ module.exports = {
   editAddress,
   userOrders,
   orderDetails,
-  editCartQuantity
+  editCartQuantity,
+  returnOrder,
+  getWallet,
+  sendRazorpayRequestForWallet,
+  walletDeposit,
+  walletTransactions
 };
+

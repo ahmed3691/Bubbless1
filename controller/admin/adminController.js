@@ -49,6 +49,7 @@ const adminLogout = (req,res)=>{
 }
 
 const adminPanel =async (req,res)=>{
+
     const {adminName,password}= req.body;
     const admin = await AdminModel.findOne({adminName:adminName})
     if(admin && admin.password == password){
@@ -71,14 +72,13 @@ const adminPanel =async (req,res)=>{
 
 const analytics = async (req,res)=>{
    
-
     const ordersAnalytics = await OrdersModel.aggregate([
         {
             $facet:{
                 totalOrders:[
                     {
                         $group: {
-                            _id: { $dayOfYear: "$createdAt" },
+                            _id: { $dayOfMonth: "$createdAt" },
                             orders: { $sum: 1 }
                         }     
                     },
@@ -90,7 +90,7 @@ const analytics = async (req,res)=>{
                     },
                     {
                         $group:{
-                            _id:{$dayOfYear:'$completionDate'},
+                            _id:{$dayOfMonth:'$completionDate'},
                             orders:{$sum:1}
                         }
                     },
@@ -102,7 +102,7 @@ const analytics = async (req,res)=>{
                     },
                     {
                         $group:{
-                            _id:{$dayOfYear:'$completionDate'},
+                            _id:{$dayOfMonth:'$completionDate'},
                             orders:{$sum:1}
                         }
                     },
@@ -114,7 +114,7 @@ const analytics = async (req,res)=>{
                     },
                     {
                         $group:{
-                        _id:{$dayOfYear:"$completionDate"},
+                        _id:{$dayOfMonth:"$completionDate"},
                         orders:{$sum:1}
                         }
                     },
@@ -126,7 +126,7 @@ const analytics = async (req,res)=>{
                     },
                     {
                         $group:{
-                            _id:{$dayOfYear:'$createdAt'},
+                            _id:{$dayOfMonth:'$createdAt'},
                             orders:{$sum:1}
                         }
                     },
@@ -178,7 +178,6 @@ const analytics = async (req,res)=>{
    ])
 
 
-
     function ordersArray(orders){
         let orderArray  = Array.from({length:(new Date).getDate()},(_,index)=>{
             const orderDate = orders.find((order)=> order._id === index+1);
@@ -192,11 +191,11 @@ const analytics = async (req,res)=>{
     const cancelledOrders = ordersArray(ordersAnalytics[0].cancelledOrders);
     const returnedOrders  = ordersArray(ordersAnalytics[0].returnedOrders);
     const pendingOrders  = ordersArray(ordersAnalytics[0].pendingOrders)
-    console.log('placed orders',placedOrders);
-    console.log('delveredOrders',deliveredOrders)
-    console.log('cancelledOrders',cancelledOrders)
-    console.log('returndeOrders',returnedOrders)
-    console.log('pendingOrders',pendingOrders)
+    // console.log('placed orders',placedOrders);
+    // console.log('delveredOrders',deliveredOrders)
+    // console.log('cancelledOrders',cancelledOrders)
+    // console.log('returndeOrders',returnedOrders)
+    // console.log('pendingOrders',pendingOrders)
 
     res.send({
         placedOrders,

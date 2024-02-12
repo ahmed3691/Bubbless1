@@ -4,17 +4,20 @@ const {OrdersModel} = require('../../model/ordersModel')
 const { UserModel } = require('../../model/usersModel')
 
 const getOrders = async (req,res)=>{
+    const pageNumber = parseInt(req.params.pageNumber);
+    const ordersPerPage = 6;
+    console.log(pageNumber)
+    const totalPages =  Math.ceil(await( OrdersModel.countDocuments())/ordersPerPage)
     const orders = await OrdersModel.find({})
-    console.log(orders)
-    res.render('./admin/adminOrders',{orders})
+        .skip(pageNumber* ordersPerPage).
+        limit(ordersPerPage)
+
+    res.render('./admin/adminOrders',{orders,totalPages,pageNumber})
 }
 
-const orderDetails = (req,res)=>{
 
-    res.render('./admin/orderDetails')
-}
 
-const cancelOrder = async (req,res)=>{
+const editOrderStatus = async (req,res)=>{
     try{
         const orderId = req.params.id;
         const action = req.params.action;
@@ -27,8 +30,11 @@ const cancelOrder = async (req,res)=>{
             },
             {upsert:true}
             );
+        if(action == 'Delivered'){
+            await OrdersModel.updateOne({_id:orderId},{$set:{paymentStatus:'Completed'}})
+        }
 
-        res.redirect('/admin/orders')
+        res.redirect('back')
     }catch(error){
         console.log(error)
     }
@@ -52,7 +58,6 @@ const singleOrder = async  (req,res)=>{
 }
 module.exports ={
     getOrders,
-    orderDetails,
-    cancelOrder,
+    editOrderStatus,
     singleOrder
 }

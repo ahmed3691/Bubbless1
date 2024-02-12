@@ -13,20 +13,21 @@ const updateStock = async (products) => {
     }
   };
 
-const confirmPayment = async (orderId,amount_paid)=>{
+const confirmPayment = async (receipt,amount_paid)=>{
     console.log('payment updating.....')
     const pay = await PaymentModel.updateOne(
-      {receipt:orderId},
+      {receipt},
       {$set:
         {
           amount_paid,
-          amount_due:0
+          amount_due:0,
+          status: 'success'
         }
       }
       )
 
     const updateOrder = await OrdersModel.updateOne(
-      {orderId:orderId},
+      {orderId:receipt},
       {$set:{paymentStatus:'Completed'}}
     )
     return; 

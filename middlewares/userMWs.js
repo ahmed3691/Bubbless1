@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 const {UserModel}= require('../model/usersModel')
 
 const userAuthentication = async (req,res,next)=>{
-    // try{
+
         const token = req.cookies.userAccessToken;
         
         if(token ){
@@ -15,7 +15,7 @@ const userAuthentication = async (req,res,next)=>{
                     req.userEmail = user.userEmail;
                     req.userName= user.userName;
                     console.log('User is already logged in');
-                    next();
+                    next(); 
                 }else{
                     console.log('Token exist, but User credentials doesnot match')
                     res.render('./user/home')
@@ -27,8 +27,7 @@ const userAuthentication = async (req,res,next)=>{
                     res.clearCookie('userId')
                     res.clearCookie('cartQty')
                     req.session.destroy();
-                    res.redirect('/')
-                    // res.render('./user/userLogin')
+                    res.redirect('/');
                 }
             }
            
@@ -40,9 +39,6 @@ const userAuthentication = async (req,res,next)=>{
             if(req.path === '/register') return res.render('./user/userRegister');            
             res.render('./user/home');
         }
-    // }catch(err){
-    //     console.log('error from admin Auth: ',err) 
-    // }
 }
 
 module.exports = {

@@ -14,6 +14,7 @@
 			<div class="col-md-9">
 				<div class="mid-popular">
 					<!-- starting of column 1 -->
+					
 					<% for(let i=0;i<allProducts.length;i++){ %>
 						<div class="col-md-4 item-grid1 simpleCart_shelfItem">
 							<div class=" mid-pop">
@@ -36,6 +37,12 @@
 													<%= allProducts[i].productName %>
 												</a></h6>
 										</div>
+
+										<% if(allProducts[i].appliedOffer && allProducts[i]?.appliedOffer?.offerType == 'percentage'){ %>
+											<span><%= allProducts[i].appliedOffer?.percentage %>% OFF</span>
+										<% }else if(allProducts[i].appliedOffer && allProducts[i]?.appliedOffer?.offerType == 'fixedAmount'){ %>
+											<span><%= '\u20B9' + allProducts[i].appliedOffer?.fixedAmount %> OFF</span>
+										<% } %>
 										<div class="img item-add">
 											<% if(locals.isAuthenticated){ %>
 												<% if(cartItems && cartItems.indexOf((allProducts[i]._id).toString())!==-1){ %>
@@ -48,13 +55,20 @@
 										<div class="clearfix"></div>
 									</div>
 									<div class="mid-2">
-										<p><em class="item_price">
-												<%= '\u20B9' +allProducts[i].price %>
-											</em></p>
+											<% if(allProducts[i].appliedOffer){ %>
+												<p><em class="item_price">
+													<strike><%= '\u20B9' +allProducts[i].price %></strike>
+												</em></p>
+											<p class="offerPrice" style="margin-left: 10px;"><%= '\u20B9' + Math.ceil(allProducts[i].offerPrice) %></p>
+											<% }else{ %>
+												<p><em class="item_price">
+													<%= '\u20B9' +allProducts[i].price %>
+												</em></p>
+											<% } %>
 										<div class="block">
 											<div class="starbox small ghosting"> </div>
 										</div>
-
+										<div class="product" hidden><% allProducts[i] %></div>
 										<div class="clearfix"></div>
 									</div>
 
@@ -64,6 +78,18 @@
 						<% } %>
 							<div class="clearfix"></div>
 				</div>
+				<script>
+					$(document).ready(function(){
+						const originalPrice = $('.item_price');
+						const offerPrice = $('.offerPrice');
+						const product = $('.product');
+						console.log(product)
+
+						originalPrice.each(function(){
+							console.log($(this).text())
+						})
+					})
+				</script>
 				<div class="container">
 					<nav aria-label="Page navigation example">
 						<ul class="pagination" >

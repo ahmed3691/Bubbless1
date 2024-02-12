@@ -35,7 +35,7 @@ connect
             required: true,
             default: 1
         },
-        price: {
+        totalPrice: {
             type: Number,
             required: true
         }
@@ -64,7 +64,7 @@ connect
     paymentMethod: {
         type: String,
         required:true,
-        enum: ['COD', 'Online Payment']
+        enum: ['COD', 'Online Payment', 'Wallet Payment']
     },
     paymentStatus:{
         type: String,

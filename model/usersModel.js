@@ -20,7 +20,6 @@ const userSchema = {
         type: Number,
         required: true
     }
-    // retPass : {type : String, required: true}
 }
 
 // userSchema.virtual("id").get(function(){     creates a virtual id field in the document , which is not actually stored it the collection.

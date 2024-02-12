@@ -1,0 +1,185 @@
+<%- include("../user/layouts/header") %>
+
+
+<div class="container">
+    <%- include("../user/layouts/profileHeader") %>
+    <div  id="responseMessage">
+
+    </div>
+    <div class=" " >
+        <h3 class=" h3">Current Balance: &#x20B9; <span id="walletBalance"><%= wallet.amount %></span> </h3>
+        <button  class="btn btn-primary" id="addMoney">Add money to Wallet</button>
+    </div>
+    <div hidden id="walletAmountContainer">
+        <input id="walletAmount" type="number" style="margin: 10px 0px;" class=" form-control " placeholder="Amount" id="">
+        <button id="sendRequest" style="margin: 10px 0px;" class="btn btn-primary">Add with razorPay</button>
+    </div> 
+   
+    <h4>Recent Transactions:</h4>
+    <div class="table-responsive">
+        <table class="table table-hover text-center">
+            <thead>
+                <tr >
+                    <th class="text-center">Date</th>
+                    <th class="text-center" scope="col" >paymentID</th>
+                    <th class="text-center" scope="col" >Description</th>
+                    <th  class="text-center"scope="col" >Type</th>
+                    <th class="text-center" scope="col" >Amount</th>
+                </tr>
+            </thead>
+            <tbody id="tableContents">
+                <!-- transactions details from fetchTransactions goes here  -->
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    $(document).ready(function(){
+        const tableContents = $('#tableContents');
+        const walletBalance = $('#walletBalance');
+        fetchTransactions();
+        function fetchTransactions(){
+            $.ajax({
+                url:'/wallet-transactions',
+                method: 'GET',
+                success:function(response){
+                    
+                    updateTable(response.transactions,response.userWallet);
+                },
+                error: function(error){
+                    console.log(error)
+                }
+            })
+        }
+
+        function updateTable(transactions,userWallet){
+            tableContents.empty();
+            walletBalance.text(userWallet.amount);
+            // walletBalance.val() = userWallet.amount;
+
+            transactions.forEach(transaction => {
+                const amount = transaction.paymentFor == 'Wallet Credit' ? `+${transaction.amount}`
+                            : transaction.paymentFor == 'Wallet Debit' ? `-${transaction.amount}`
+                            : `${transaction.amount}`;
+   
+                let tableRow = $('<tr></tr>');
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                const fullDate = new Date(transaction.createdAt);
+                const day = days[fullDate.getDay()];
+                const date = fullDate.getDate();
+                const month = months[fullDate.getMonth()];
+                const year = fullDate.getFullYear();
+
+                tableRow.html(`
+                    <td >${day}, ${date}th ${month} ${year}</td>
+                    <td >${transaction._id}</td>
+                    <td >${transaction.paymentIntitatedFor}</td>
+                    <td >${transaction.paymentFor.split(' ')[1]}</td>
+                    <td >${amount}</td>
+                `
+                )
+                tableContents.append(tableRow);
+            });
+        }
+
+        $('#addMoney').click(function(){
+            $('#walletAmountContainer').toggle();
+        })
+        $('#walletAmount').on('keydown input',function(e){
+            if (e.key === '-' || e.key === '.' ) {
+                e.preventDefault();
+            }
+            if (this.value.length === 0 && e.key === '0') {
+                e.preventDefault();
+            }
+            if(this.value.includes('-')){
+                this.value= ''
+            }
+        })
+
+        $('#sendRequest').click(function(){
+            console.log('razorpay request');
+            const amount = $('#walletAmount').val();
+           if(amount){
+                   $.ajax({
+                    url:'/razorpay-request',
+                    method: 'POST',
+                    data: {amount},
+                    success: function(response){
+                        console.log(response);
+                        razorPayPayment(response)
+                    }
+                   })
+           }
+
+           function razorPayPayment(responseOrder){
+                
+                var options = {
+                    "key": "rzp_test_EbOxVRcWySzIRR",
+                    "amount": responseOrder.amount,
+                    "currency": responseOrder.currency,
+                    "name": "Bubbles",
+                    "description": "Test Transaction",
+                    // "image": "https://example.com/your_logo",
+                    "order_id": responseOrder.id, 
+                    "handler": function (response){
+                        console.log('success response',response)
+                        alert('Payment Successfull');
+                        verifyWalletPayment(response,responseOrder);
+                    },
+                    "prefill": { 
+                    "name": "Gaurav Kumar", 
+                    "email": "gaurav.kumar@example.com", 
+                    "contact": "9000090000"  
+                    },
+                    "notes": {
+                        "address": "Razorpay Corporate Office"  
+                    },
+                    "theme": {
+                        "color": "#3399cc"
+                    }
+                }
+
+                var rzp1 = new Razorpay(options);
+                rzp1.on('payment.failed', function (response){
+                    alert('Payment Failed');
+                    console.log('failed response', response);
+                    verifyWalletPayment(response,responseOrder)
+                });
+                rzp1.open();
+            }
+
+        function verifyWalletPayment(response,responseOrder){
+            $.ajax({
+                url:'/verify-wallet-deposit',
+                method: 'POST',
+                contentType: 'application/json',
+                data:JSON.stringify({
+                    response,
+                    responseOrder
+                }),
+                success:function(response){
+                    console.log('response after wallet deposit',response)
+                    if(response.wallet_updated){
+                        $('#responseMessage').html('<p class ="text-success"> Money added to wallet successfully</p>');
+                        fetchTransactions();
+                    }else{
+                        $('#responseMessage').html('<p class ="text-danger"> Depositing failed. Please try again</p>')
+                    }
+                },
+                error: function(error){
+                    console.log(error)
+                }
+            })
+        }
+        })
+    })
+</script>
+
+<%- include("../user/layouts/footer") %>
+
+
+ </body>
+</html>

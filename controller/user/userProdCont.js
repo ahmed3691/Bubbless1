@@ -23,7 +23,8 @@ const viewAllProducts = async (req, res) => {
       stockQty: { $gt: 0 }
     })
     .skip(pageNumber * productsPerPage)
-    .limit(productsPerPage);
+    .limit(productsPerPage)
+    .populate('appliedOffer');
   const mainCat = await CatModel.find({});
   const userCart = await CartModel.find({ userId: userId });
 
@@ -62,7 +63,7 @@ const singleProduct = async (req, res) => {
   const prodId = req.params.prodId;
   const userId = getUserId(req.cookies.userAccessToken);
   const cartQty = await getCartQty(userId);
-  const product = await ProductModel.findOne({ _id: prodId });
+  const product = await ProductModel.findOne({ _id: prodId }).populate('appliedOffer');
   const userCart = await CartModel.find({ userId: userId });
   cartItems = userCart[0]?.items.map((item) => {
     return item?.productId.toString();

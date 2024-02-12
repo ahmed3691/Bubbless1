@@ -46,6 +46,10 @@ time, mark, audio, video {
   overflow: auto; /* Enables scrolling if the content is too long */
 }
 
+.alert:empty {
+  display: none;
+}
+
 /*modified css...............................................................................*/
 thead {
   font-weight: 600;

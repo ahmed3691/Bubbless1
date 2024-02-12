@@ -9,6 +9,8 @@ const adminUserController = require("../controller/admin/adminUserCont");
 const adminProdController = require("../controller/admin/adminProductController")
 const adminCatController = require("../controller/admin/categoryController")
 const adminOrderController = require('../controller/admin/adminOrderController');
+const adminSalesController = require('../controller/admin/reportController');
+const adminDiscountController = require('../controller/admin/discountsController')
 
 
 const storage = multer.diskStorage({
@@ -85,14 +87,38 @@ adminRouter.route('/delete-category')
 
 // order management 
 
-adminRouter.route('/orders')
+adminRouter.route('/orders/:pageNumber')
   .get(adminAuth,adminOrderController.getOrders)
-adminRouter.route('/order-details')
-  .get(adminAuth,adminOrderController.orderDetails)
 adminRouter.route('/cancel-order/:action/:id')
-  .get(adminAuth,adminOrderController.cancelOrder);
+  .get(adminAuth,adminOrderController.editOrderStatus);
 adminRouter.route('/order-details/:id')
   .get(adminAuth,adminOrderController.singleOrder)
+
+  //reports.................................
+
+adminRouter.route('/sales-report')
+  .get(adminAuth,adminSalesController.salesReport)
+adminRouter.route('/sales-data/:from/:to')
+  .get(adminAuth,adminSalesController.salesData);
+
+
+  //offers and discounts.....................
+
+  adminRouter.route('/offers')  
+    .get(adminAuth,adminDiscountController.getOffers)
+    .post(adminAuth,adminDiscountController.createOffer)
+    .put(adminAuth,adminDiscountController.editOffer)
+    .delete(adminAuth,adminDiscountController.deleteOffer)
+  adminRouter.route('/create-offer')
+    .get(adminAuth,adminDiscountController.getCreateOffer);
+  adminRouter.route('/edit-offer/:id')
+    .get(adminAuth,adminDiscountController.getEditOffer);
+  adminRouter.route('/apply-offer/:id')
+    .get(adminAuth,adminDiscountController.getApplyOffer)
+    .post(adminAuth,adminDiscountController.applyOffer);
+  adminRouter.route('/remove-offer/:id')
+    .get(adminAuth,adminDiscountController.removeOffer)
+  
 
 module.exports = adminRouter;
 

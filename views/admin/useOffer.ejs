@@ -1,0 +1,184 @@
+<%- include("../admin/layouts/header") %>
+
+<section class="content-main">
+    <div class="row">
+        <div class="col-9">
+            <div class="content-header">
+                <h2 class="content-title">Apply Offer</h2>
+            </div>
+        </div>
+        <div class=" row col-md-9 card-header  card-body ">
+            <div class="col-md-4">
+                <label class="mb-2 form-check form-check-inline " >
+                    <input class="form-check-input applyFor " value="mainCategory"  name="applyOffer" type="radio" >
+                    <span class="form-check-label"> Main Category </span>
+                </label>
+            </div>
+            <div class="col-md-4">
+                <label class="mb-2 form-check form-check-inline " >
+                    <input class="form-check-input applyFor" value="subCategory"   name="applyOffer" type="radio" >
+                    <span class="form-check-label"> Sub Category </span>
+                </label>
+            </div>
+            <div class="col-md-4">
+                <label class="mb-2 form-check form-check-inline " >
+                    <input class="form-check-input applyFor" value="product"  name="applyOffer" type="radio" >
+                    <span class="form-check-label"> Products </span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 ">
+            <form id="categoryForm" action="/admin/apply-offer/<%= offerId %>"    method="post">
+                <div class="col-md-12">
+                    <div class="card mb-4" id="mainCategoryDiv" hidden>
+                        <div class="card-body">
+                            <h4 >Main Categories</h4>
+                        </div>
+                        <div class="card-body row">
+                            <div class="col-md-12 row">
+                             
+                                <div class="form-check col-md-3">
+                                    <input class="form-check-input mainCatInput" type="checkbox" name="mainCategory" value="Boys" id="product-cat" />
+                                    <label class="form-check-label" for="product-cat"> Boys </label>
+                                </div>
+                                <div class="form-check col-md-3">
+                                    <input class="form-check-input mainCatInput" type="checkbox" name="mainCategory" value="Girls" id="product-cat-1" />
+                                    <label class="form-check-label" for="product-cat-1"> Girls </label>
+                                </div>
+                                <div class="form-check col-md-3">
+                                    <input class="form-check-input mainCatInput" type="checkbox" name="mainCategory" value="Unisex" id="product-cat-2" />
+                                    <label class="form-check-label" for="product-cat-2"> Unisex </label>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="submit" class="btn btn-success" value="Apply for selected categories">
+                    </div>
+                </div>
+                <div class="card mb-4 col-md-12" hidden id="subCategoryDiv">
+                    <h4 class="card-body">Sub Categories</h4>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Select</th>
+                                    <th scope="col">Main Category</th>
+                                    <th scope="col">Sub Category</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% categories.forEach(category=>{ %>
+                                <tr>
+                                    <td>
+                                        <div class="form-check">
+                                            <input class="form-check-input subCatInput" name="subCategoryIds" type="checkbox" value="<%= category._id %>" />
+                                        </div>
+                                    </td>
+                                    <td><%= category.category %></td>
+                                    <td><%= category.subCatName %></td>
+                                </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                       
+                    </div>
+                    <input type="submit" id="catBtn" class="btn btn-success" value="Apply for these categories">
+                </div>
+               
+            </form>
+        </div>
+        <div class="col-md-12" hidden id="productDiv">
+            <form id="productForm" action="/admin/apply-offer/<%= offerId %>" method="post">
+                <div class=" card card-body">
+                    <h4>Produts</h4>
+                    <% products.forEach(product =>{ %>
+                    <article class="itemlist">
+                        <div class="row align-items-center">
+                            <div class="col col-check flex-grow-0">
+                                <div class="form-check">
+                                    <input class="form-check-input " name="productIds" value="<%= product._id %>" type="checkbox" />
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
+                                <a class="itemside" href="#">
+                                    <div class="left">
+                                        <img src="<%= product.productImages[0] %>" class="img-sm img-thumbnail" alt="Item" />
+                                    </div>
+                                    <div class="info">
+                                        <h6 class="mb-0"><%= product.productName %></h6>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-lg-2 col-sm-2 col-4 col-price"><span><%= product.category %></span></div>
+                            <div class="col-lg-2 col-sm-2 col-4 col-price"><span>&#x20B9; <%= product.price %></span></div>
+                        </div>
+                        <!-- row .// -->
+                    </article>
+                    <% }) %>
+                    <input type="submit" id="productBtn" class="btn btn-success" value="Apply for selected products">
+            </div>
+           
+        </form>
+    </div>
+    
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded',function(){
+        const applyFor = document.querySelectorAll('.applyFor');
+        const mainCategoryDiv = document.getElementById('mainCategoryDiv');
+        const subCategoryDiv = document.getElementById('subCategoryDiv');
+        const productDiv = document.getElementById('productDiv');
+        const mainCatInput = document.querySelectorAll('.mainCatInput');
+        const subCatInput = document.querySelectorAll('.subCatInput');
+        const categoryForm = document.getElementById('categoryForm');
+        const productForm = document.getElementById('productForm');
+        const catBtn = document.getElementById('catBtn');
+        const productBtn = document.getElementById('productBtn');
+
+        applyFor.forEach(item=>{
+            item.addEventListener('change',function(){
+                console.log(this.value)
+                if(this.value == 'mainCategory'){
+                    mainCategoryDiv.hidden = false;
+                    subCategoryDiv.hidden = true;
+                    productDiv.hidden = true;
+
+                    subCatInput.forEach(input=>{
+                        input.disabled = true;
+                    });
+                    mainCatInput.forEach(input=>{
+                        input.disabled = false;
+                    });
+                    productForm.disabled = true;
+
+                }else if(this.value == 'subCategory'){
+                    mainCategoryDiv.hidden = true;
+                    subCategoryDiv.hidden = false;
+                    productDiv.hidden = true;
+
+                    mainCatInput.forEach(input=>{
+                        input.disabled = true;
+                    });
+                    subCatInput.forEach(input=>{
+                        input.disabled = false;
+                        
+                    });
+                    productForm.disabled = true;
+                }else if(this.value == 'product'){
+                    
+                    mainCategoryDiv.hidden = true;
+                    subCategoryDiv.hidden = true;
+                    productDiv.hidden = false;
+
+                    categoryForm.disabled = true;
+                    productForm.disabled = false;
+                }
+            })
+        })
+    })
+</script>
+
+
+<%- include("../admin/layouts/footer") %>

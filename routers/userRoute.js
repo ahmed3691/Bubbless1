@@ -73,11 +73,24 @@ router.route('/delete-adress/:id')
     .get(userAuthentication,userDataController.deleteAddress)
 router.route('/edit-address/:id')
     .get(userAuthentication,userDataController.getEditAdress)
-    .post(userAuthentication,userDataController.editAddress)
+    .post(userAuthentication,userDataController.editAddress);
+router.route('/wallet-transactions')
+    .get(userAuthentication,userDataController.walletTransactions)
+
+// user order management.............................................
+
 router.route('/orders')
-    .get(userAuthentication,userDataController.userOrders)
+    .get(userAuthentication,userDataController.userOrders);
 router.route('/order-details/:id')
-    .get(userAuthentication,userDataController.orderDetails)
+    .get(userAuthentication,userDataController.orderDetails);
+router.route('/return-order/:id')
+    .post(userAuthentication,userDataController.returnOrder)
+router.route('/wallet')
+    .get(userAuthentication,userDataController.getWallet)
+router.route('/razorpay-request')
+    .post(userAuthentication,userDataController.sendRazorpayRequestForWallet);
+router.route('/verify-wallet-deposit')
+    .post(userAuthentication,userDataController.walletDeposit)
 
 //user checkout and Payment options.......................................
 
@@ -90,7 +103,8 @@ router.route('/cancel-order/:id')
 router.route('/order-success')
     .get(userAuthentication,userBuyController.successOrder)
 router.route('/verify-payment')
-    .post(userAuthentication,userBuyController.verifyPayment)
+    .post(userAuthentication,userBuyController.verifyPayment);
+
 
 
 
