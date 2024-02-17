@@ -12,102 +12,132 @@ const session = require("express-session");
 const { response } = require("express");
 
 const getUserProfile = async (req, res) => {
-  const isAuthenticated = req.cookies.userAccessToken || false;
-  const cartQty = req.cookies.cartQty;
-  const userId = req.user;
-  const userData = await UserModel.findOne({_id:userId})
+  try {
+    const isAuthenticated = req.cookies.userAccessToken || false;
+    const cartQty = req.cookies.cartQty;
+    const userId = req.user;
+    const userData = await UserModel.findOne({_id:userId})
   res.render("./user/userProfile", { isAuthenticated, cartQty,userData });
+  } catch (error) {
+    console.log(error);
+    res.render('./user/404')
+  }
+  
 };
 
 const getUserCart = async (req, res) => {
-  const isAuthenticated = req.cookies.userAccessToken || false;
-  let cartQty = req.cookies.cartQty;
-  const userId = req.user;
-  const cartItems = await CartModel.findOne({ userId: userId }).populate("items.productId");
-  res.render("./user/cart", { isAuthenticated, cartQty, cartItems });
+  try {
+    const isAuthenticated = req.cookies.userAccessToken || false;
+    let cartQty = req.cookies.cartQty;
+    const userId = req.user;
+    const cartItems = await CartModel.findOne({ userId: userId }).populate("items.productId");
+    res.render("./user/cart", { isAuthenticated, cartQty, cartItems });
+  } catch (error) {
+    console.log(error);
+    res.render('./user/404')
+  }
+  
 };
 
 const addToCart = async (req, res) => {
-  const productId = req.params.productId;
+  try {
+    const productId = req.params.productId;
 
-  const quantity = req.body.cartQuantity ?? 1;
+    const quantity = req.body.cartQuantity ?? 1;
 
-  const userId = req.user;
+    const userId = req.user;
 
-  const product = await ProductModel.findOne({_id:productId})
+    const product = await ProductModel.findOne({_id:productId})
 
-  const productPrice = product.price
+    const productPrice = product.price
+    
+    const totalPrice = productPrice * quantity
+
+      await CartModel.updateOne(
+        { userId: userId },
+        {
+          $addToSet: { items:
+            { productId, quantity,totalPrice }
+            },
+          $inc:{
+            totalPrice:totalPrice,
+            totalProducts:1,
+            totalQuantity:quantity
+          }
+        },
+        { upsert: true }, 
+      );
+
+    res.redirect("back");
+  } catch (error) {
+    console.log(error);
+    res.render('./user/404')
+  }
   
-  const totalPrice = productPrice * quantity
-
-    await CartModel.updateOne(
-      { userId: userId },
-      {
-        $addToSet: { items:
-           { productId, quantity,totalPrice }
-           },
-        $inc:{
-          totalPrice:totalPrice,
-          totalProducts:1,
-          totalQuantity:quantity
-        }
-      },
-      { upsert: true }, 
-    );
-
-  res.redirect("back");
 };
 
 const removeFromCart = async (req, res) => {
-
-  const productId = req.params.productId;
-  const userId = req.user
-
-  // const product = await ProductModel.findOne({_id:productId})
+  try {
+    const productId = req.params.productId;
+    const userId = req.user
   
-  const productMatch = await CartModel.findOne({userId:userId,'items.productId':productId},{'items.$':1})
+    // const product = await ProductModel.findOne({_id:productId})
+    
+    const productMatch = await CartModel.findOne({userId:userId,'items.productId':productId},{'items.$':1})
+  
+    const removeQuantity = productMatch.items[0].quantity;
+    const productPrice = productMatch.items[0].totalPrice;
+   
+    const updateCart = await CartModel.updateOne(
+      { userId: userId },
+      { 
+        $pull: {items: { productId: productId }},
+        $inc:{totalPrice:-productPrice,totalProducts:-1,totalQuantity:-removeQuantity} 
+      },
+    );
+  
+    res.redirect("back");
+  } catch (error) {
+    console.log(error);
+    res.render('./user/404')
+  }
 
-  const removeQuantity = productMatch.items[0].quantity;
-  const productPrice = productMatch.items[0].totalPrice;
  
-  const updateCart = await CartModel.updateOne(
-    { userId: userId },
-    { 
-      $pull: {items: { productId: productId }},
-      $inc:{totalPrice:-productPrice,totalProducts:-1,totalQuantity:-removeQuantity} 
-    },
-  );
-
-  res.redirect("back");
 };
 
 const editCartQuantity = async (req,res)=>{
-  const userId = req.user;
-  let productId = req.params.productId;
-  let newProductQuantity = parseInt(req.params.productQuantity);
-  const cart = await CartModel.findOne({userId,'items.productId':productId},{'items.$':1,totalPrice:1,totalQuantity:1,totalProducts:1})
- 
-  const initialProductQty = cart.items[0].quantity;
-  const initialProductPrice = cart.items[0].totalPrice;
-  const initialCartPrice = cart.totalPrice;
-  const initialCartQty = cart.totalQuantity;
-  const pricePerProduct = initialProductPrice/initialProductQty;
-  const newProductPrice = newProductQuantity * pricePerProduct
-  const newCartPrice = initialCartPrice - initialProductPrice + newProductPrice
-  const newCartQty = initialCartQty - initialProductQty + newProductQuantity;
+  try {
+    const userId = req.user;
+    let productId = req.params.productId;
+    let newProductQuantity = parseInt(req.params.productQuantity);
+    const cart = await CartModel.findOne({userId,'items.productId':productId},{'items.$':1,totalPrice:1,totalQuantity:1,totalProducts:1})
+  
+    const initialProductQty = cart.items[0].quantity;
+    const initialProductPrice = cart.items[0].totalPrice;
+    const initialCartPrice = cart.totalPrice;
+    const initialCartQty = cart.totalQuantity;
+    const pricePerProduct = initialProductPrice/initialProductQty;
+    const newProductPrice = newProductQuantity * pricePerProduct
+    const newCartPrice = initialCartPrice - initialProductPrice + newProductPrice
+    const newCartQty = initialCartQty - initialProductQty + newProductQuantity;
 
-  await CartModel.updateOne(
-    {userId:userId,'items.productId':productId},
-    {$set:{
-      totalPrice:newCartPrice,
-      totalQuantity:newCartQty,
-      'items.$.quantity':newProductQuantity,
-      'items.$.totalPrice': newProductPrice
-    }}
-    );
+    await CartModel.updateOne(
+      {userId:userId,'items.productId':productId},
+      {$set:{
+        totalPrice:newCartPrice,
+        totalQuantity:newCartQty,
+        'items.$.quantity':newProductQuantity,
+        'items.$.totalPrice': newProductPrice
+      }}
+      );
 
 
-  res.send({newCartPrice,newCartQty})
+    res.send({newCartPrice,newCartQty})
+  } catch (error) {
+    console.log(error);
+    res.render('./user/404')
+  }
+  
 }
 
 
@@ -123,37 +153,41 @@ const getAdress = async (req, res) => {
       { addresses: true },
     );
     res.render("./user/adresses", { isAuthenticated, cartQty, userAdress,message });
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.log(error);
+    res.render('./user/404')
   }
 };
 
 const addAdress = async (req, res) => {
+  try {
+    const {title,receiverName,phoneNumber,house,locality,city,district,state,pincode} = req.body;
+    const userId = req.user;
 
+    const newAddress = {
+      title: title,
+      fullName: receiverName,
+      houseName: house,
+      locality: locality,
+      city: city,
+      pinCode: pincode,
+      district: district,
+      state: state,
+      phoneNumber: phoneNumber,
+    };
 
-  const {title,receiverName,phoneNumber,house,locality,city,district,state,pincode} = req.body;
-  const userId = req.user;
-
-  const newAddress = {
-    title: title,
-    fullName: receiverName,
-    houseName: house,
-    locality: locality,
-    city: city,
-    pinCode: pincode,
-    district: district,
-    state: state,
-    phoneNumber: phoneNumber,
-  };
-
-  const updateAddress = await AddressModel.updateOne(
-    { userId: userId },
-    { $addToSet: { addresses: newAddress } },
-    { upsert: true },
-  );
-  const address = await AddressModel.find();
-  req.flash('message','Addres added')
-  res.redirect("/user-address");
+    const updateAddress = await AddressModel.updateOne(
+      { userId: userId },
+      { $addToSet: { addresses: newAddress } },
+      { upsert: true },
+    );
+    const address = await AddressModel.find();
+    req.flash('message','Addres added')
+    res.redirect("/user-address");
+  } catch (error) {
+    console.log(error);
+    res.render('./user/404')
+  }
 };
 
 const deleteAddress = async (req, res) => {
@@ -168,7 +202,8 @@ const deleteAddress = async (req, res) => {
     req.flash('message','Address removed')
     res.redirect("/user-address");
   } catch (err) {
-    console.log("catch err:", err);
+    console.log(error);
+    res.render('./user/404')
   }
 };
 
@@ -184,8 +219,8 @@ const getEditAdress = async (req, res) => {
         );
     res.render("./user/editAddress", {isAuthenticated,cartQty,addressToEdit,});
   } catch (err) {
-    console.log(err);
-    res.status(500).send(err);
+    console.log(error);
+    res.render('./user/404')
   }
 };
 
@@ -216,19 +251,25 @@ const editAddress = async (req, res) => {
     req.flash('message','Address edited successfully')
     res.redirect('/user-address')
   } catch (err) {
-    console.log(err);
-    res.status(500).send(err);
+    console.log(error);
+    res.render('./user/404')
   }
 };
 
 const userOrders = async(req,res)=>{
-  const userId = req.user;
-  const isAuthenticated = req.cookies.userAccessToken ? true : false;
-  const cartQty = req.cookies.cartQty;
-
-  const allOrders = await OrdersModel.find({userId:userId}).sort({createdAt:-1}).populate('products.productId');
-
-  res.render('./user/allOrders',{userId,isAuthenticated,cartQty,allOrders});
+  try {
+    const userId = req.user;
+    const isAuthenticated = req.cookies.userAccessToken ? true : false;
+    const cartQty = req.cookies.cartQty;
+  
+    const allOrders = await OrdersModel.find({userId:userId}).sort({createdAt:-1}).populate('products.productId');
+  
+    res.render('./user/allOrders',{userId,isAuthenticated,cartQty,allOrders});
+  } catch (error) {
+    console.log(error);
+    res.render('./user/404')
+  }
+ 
 }
 
 const orderDetails = async (req,res)=>{
@@ -244,6 +285,7 @@ const orderDetails = async (req,res)=>{
     res.render('./user/orderDetails',{order,isAuthenticated,cartQty,message})
   }catch(err){
     console.log(err)
+    res.render('./user/404')
   }
 }
 
@@ -286,50 +328,63 @@ const returnOrder = async (req,res)=>{
     res.redirect(`/order-details/${orderId}`)
   } catch (error) {
     console.log(error)
+    res.render('./user/404')
   } 
 }
 
 const getWallet = async (req,res)=>{
-  const isAuthenticated = req.cookies.userAccessToken ? true : false;
-  const cartQty = req.cookies.cartQty;
-  const userId = req.user;
-  console.log(userId);
-  const wallet = await WalletModel.findOne({userId:userId});
-  
-  if(!wallet){
-    const newWallet = new WalletModel({ userId, amount:0})
-    await newWallet.save();
-    res.render('./user/wallet',{wallet:newWallet,isAuthenticated,cartQty});
-  }else{
-    res.render('./user/wallet',{wallet,isAuthenticated,cartQty});
+  try {
+    const isAuthenticated = req.cookies.userAccessToken ? true : false;
+    const cartQty = req.cookies.cartQty;
+    const userId = req.user;
+    console.log(userId);
+    const wallet = await WalletModel.findOne({userId:userId});
+    
+    if(!wallet){
+      const newWallet = new WalletModel({ userId, amount:0})
+      await newWallet.save();
+      res.render('./user/wallet',{wallet:newWallet,isAuthenticated,cartQty});
+    }else{
+      res.render('./user/wallet',{wallet,isAuthenticated,cartQty});
+    }
+  } catch (error) {
+    console.log(error)
+    res.render('./user/404')
   }
+  
   
 }
 
 const sendRazorpayRequestForWallet = (req,res)=>{
-  const userId = req.user;
-  const amount = parseInt(req.body.amount);
-  const transactionId = generateOrderId();
+  try {
+    const userId = req.user;
+    const amount = parseInt(req.body.amount);
+    const transactionId = generateOrderId();
 
-  razorPayRequest(transactionId,amount)
-    .then((response)=>{
-      
-      const newPayment = new PaymentModel({
-        userId,
-        paymentIntitatedFor: 'Money added to wallet',
-        paymentFor:'Wallet Credit',
-        ...response
+    razorPayRequest(transactionId,amount)
+      .then((response)=>{
+        
+        const newPayment = new PaymentModel({
+          userId,
+          paymentIntitatedFor: 'Money added to wallet',
+          paymentFor:'Wallet Credit',
+          ...response
+        })
+
+      newPayment.save()
+        .then(()=>res.json(response))
+        .catch(()=>res.json(response));
+
       })
-
-    newPayment.save()
-      .then(()=>res.json(response))
-      .catch(()=>res.json(response));
-
-    })
-    .catch(err=>{
-      console.log(err);
-      res.status(500);
-    })
+      .catch(err=>{
+        console.log(err);
+        res.status(500);
+      })
+  } catch (error) {
+    console.log(error)
+    res.render('./user/404')
+  }
+  
 }
 
 const walletDeposit = async (req,res)=>{
@@ -348,25 +403,32 @@ const walletDeposit = async (req,res)=>{
     
   } catch (error) {
     console.log(error)
+    res.render('./user/404')
   }
   
 }
 
 const walletTransactions =  async (req,res)=>{
-  const userId = req.user;
+  try {
+    const userId = req.user;
 
-  const userWallet = await WalletModel.findOne({userId});
+    const userWallet = await WalletModel.findOne({userId});
 
-  const transactions = await PaymentModel.find(
-    {
-      userId,
-      paymentFor:{$in:['Wallet Debit','Wallet Credit']}
-    }
-  ).sort({createdAt:-1})
+    const transactions = await PaymentModel.find(
+      {
+        userId,
+        paymentFor:{$in:['Wallet Debit','Wallet Credit']}
+      }
+    ).sort({createdAt:-1})
 
 
 
-  res.send({transactions,userWallet})
+    res.send({transactions,userWallet})
+  } catch (error) {
+    console.log(error)
+    res.render('./user/404')
+  }
+  
 }
 
 module.exports = {

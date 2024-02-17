@@ -20,6 +20,9 @@
       </header>
       <h4>Enter OTP Code</h4>
       <form action="/verify-otp" method="post">
+        <% if(locals.refferalCode){ %>
+          <input type="hidden" value="<%= refferalCode %>" name="refferalCode">
+        <% } %>
         
         <input type="hidden" name="userEmail" value="<%= locals.userEmail %>">
         <div class="input-field">
@@ -28,6 +31,9 @@
         <input id="submitBtn" class="btn btn-success" type="submit" value="submit" disabled>
       </form>
       <form action="/resend-otp" method="post">
+        <% if(locals.refferalCode){ %>
+          <input type="hidden" value="<%= refferalCode %>" name="refferalCode">
+        <% } %>
         <input type="hidden" name="userEmail" value="<%= locals.userEmail %>">
         <div>OTP expires in:</div>
         <div id="timer">2:00</div>

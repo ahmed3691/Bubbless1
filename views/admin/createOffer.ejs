@@ -24,10 +24,10 @@
                                 <input class="form-check-input offerType" value="percentage"  name="offerType" type="radio" required>
                                 <span class="form-check-label"> Percentage </span>
                             </label>
-                            <label class="mb-2 form-check form-check-inline col-md-3" style="width: 30%;">
+                            <!-- <label class="mb-2 form-check form-check-inline col-md-3" style="width: 30%;">
                                 <input class="form-check-input offerType" value="fixedAmount"  name="offerType" type="radio" required>
                                 <span class="form-check-label"> Fixed amount </span>
-                            </label>
+                            </label> -->
                             <!-- <label class="mb-2 form-check form-check-inline col-md-3" style="width: 30%;">
                                 <input class="form-check-input offerType" value="buyXgetY" name="offerType" type="radio" required>
                                 <span class="form-check-label"> Buy X Get Y </span>
@@ -38,10 +38,10 @@
                                 <label for="percentageInput" id="discountLabel"  class="form-label">Percentage discount </label>
                                 <input id="percentageInput" min="0" max="100"  type="number" name="percentage" placeholder="Type here" class="form-control offerInput"  />
                             </div>
-                            <div hidden id="fixedAmountDiv" class="col-md-6 mb-3">
+                            <!-- <div hidden id="fixedAmountDiv" class="col-md-6 mb-3">
                                 <label for="fixedAmount"  class="form-label"> Price discount </label>
                                 <input id="fixedAmountInput" min="0"  type="number" name="fixedAmount" placeholder="Type here" class="form-control offerInput"  />
-                            </div>
+                            </div> -->
                             <!-- <div hidden id="buyDiv" class="col-md-6 mb-3">
                                 <label for="buyInput"  class="form-label"> Buy </label>
                                 <input id="buyInput" min="1"   type="number" name="buy" placeholder="X" class="form-control offerInput"  />
@@ -67,11 +67,11 @@
         const offerInput = document.querySelectorAll('.offerInput');
         const offerTypes = document.querySelectorAll('.offerType');
         const percentageDiv = document.getElementById('percentageDiv');
-        const fixedAmountDiv = document.getElementById('fixedAmountDiv');
+        // const fixedAmountDiv = document.getElementById('fixedAmountDiv');
         // const getDiv = document.getElementById('getDiv');
         // const buyDiv = document.getElementById('buyDiv');
         const percentageInput = document.getElementById('percentageInput');
-        const fixedAmountInput = document.getElementById('fixedAmountInput');
+        // const fixedAmountInput = document.getElementById('fixedAmountInput');
         // const getInput = document.getElementById('getInput');
         // const buyInput = document.getElementById('buyInput');
 
@@ -84,7 +84,7 @@
         });
 
         percentageInput.addEventListener('input',function(){
-            if(this.value > 100){
+            if(this.value > 99){
                 this.value = this.value.slice(0,-1)
             }
         })
@@ -94,32 +94,33 @@
                 if(this.value == 'percentage'){
                     // getDiv.hidden = true;
                     // buyDiv.hidden = true;
-                    fixedAmountDiv.hidden = true;
+                    // fixedAmountDiv.hidden = true;
                     percentageDiv.hidden = false;
                     percentageInput.required  = true;
-                    fixedAmountInput.required = false;
+                    // fixedAmountInput.required = false;
                     // getInput.required = false;
                     // buyInput.required = false;
 
                     percentageInput.disabled  = false;
-                    fixedAmountInput.disabled = true;
-                    // getInput.disabled = true;
-                    // buyInput.disabled = true;
-                }else if(this.value == 'fixedAmount'){
-                    // getDiv.hidden = true;
-                    // buyDiv.hidden = true;
-                    percentageDiv.hidden = true;
-                    fixedAmountDiv.hidden = false;
-                    percentageInput.required  = false;
-                    fixedAmountInput.required = true;
-                    // getInput.required = false;
-                    // buyInput.required = false;
-
-                    percentageInput.disabled  = true;
-                    fixedAmountInput.disabled = false;
+                    // fixedAmountInput.disabled = true;
                     // getInput.disabled = true;
                     // buyInput.disabled = true;
                 }
+                // else if(this.value == 'fixedAmount'){
+                //     getDiv.hidden = true;
+                //     buyDiv.hidden = true;
+                //     percentageDiv.hidden = true;
+                //     fixedAmountDiv.hidden = false;
+                //     percentageInput.required  = false;
+                //     fixedAmountInput.required = true;
+                //     getInput.required = false;
+                //     buyInput.required = false;
+
+                //     percentageInput.disabled  = true;
+                //     fixedAmountInput.disabled = false;
+                //     getInput.disabled = true;
+                //     buyInput.disabled = true;
+                // }
                 // else if(this.value == 'buyXgetY'){
                 //     getDiv.hidden = false;
                 //     buyDiv.hidden = false;

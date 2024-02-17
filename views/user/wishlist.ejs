@@ -1,0 +1,75 @@
+<%- include("../user/layouts/header") %>
+
+    <div class="banner-top">
+        <div class="container">
+            <h1>Wishlist</h1>
+            <em></em>
+            <h2><a href="index.html">Home</a><label>/</label>Wishlist</h2>
+        </div>
+    </div>
+    <div class="container">
+        <div class="bs-example4" data-example-id="simple-responsive-table">
+            <% if(wishlist.length == 0){ %>
+                <div class="container">
+                    <div class="wishlist">
+                        	
+                        <p>No products were added to the wishlist</p>
+                    </div>
+                </div>
+            <% }else{%>
+                <div class="table-responsive">
+                    <table class="table-heading simpleCart_shelfItem">
+                        <thead>
+                            <tr>
+                                <th class="table-grid">Item</th>
+                                <th>Prices</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <% wishlist.forEach(product=>{ %>
+                            <tr class="cart-header">
+                                <td class="ring-in"><a href="single.html" class="at-in"><img src="<%= product.productImages[0] %>"
+                                            class="img-responsive" alt=""></a>
+                                    <div class="sed">
+                                        <h5><a href="/single-product/<%= product._id %>"><%= product.productName %></a></h5>
+                                        <p style="color: black; font-size: 12px;"><%= product.color %> <%= product.ageGap %> </p>
+                                    </div>
+                                    <div class="clearfix"> </div>
+                                </td>
+                                <td>&#x20B9; <%= product.price %></td>
+                                <td class="add-check"><a data-productid="<%= product._id %>" class="item_add hvr-skew-backward remove-item" href="#">Remove</a></td>
+                            </tr>
+                        <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } %>
+        </div>
+     
+    </div>
+    <script>
+        $(document).ready(function(){
+            $('.remove-item').click(function(){
+                const productId = $(this).data('productid');
+                $.ajax({
+                    url:'/wishlist',
+                    method:'DELETE',
+                    data: {productId},
+                    success: function(response){
+                        console.log(response)
+                        if(response.deleted){
+                            window.location = '/wishlist'
+                        }
+                    }
+                })
+            })
+        })
+    </script>
+
+
+    <%- include("../user/layouts/footer") %>
+
+
+        </body>
+
+        </html>

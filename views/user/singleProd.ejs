@@ -36,17 +36,14 @@
                         <div class="price_single">
                             <% if(product.appliedOffer  && product?.appliedOffer?.offerType == 'percentage'){ %>
                                 <span class="reducedfrom item_price"><strike>&#x20B9; <%= product.price %></strike></span>
-                                <span style="margin-left: 20px;" class="reducedfrom item_price">&#x20B9; <%= Math.ceil(product.offerPrice) %></span>
+                                <span style="margin-left: 20px;" id="reducedPrice" class="reducedfrom item_price">&#x20B9; <%= Math.ceil(product.offerPrice) %></span>
                                 <span style="margin-left: 20px;"  class="reducedfrom item_price"><%= product.appliedOffer.percentage %>% OFF</span>
-                            <% }else if(product.appliedOffer  && product?.appliedOffer?.offerType == 'fixedAmount'){ %>
-                                <span class="reducedfrom item_price"><strike>&#x20B9; <%= product.price %></strike></span>
-                                <span style="margin-left: 20px;" class="reducedfrom item_price">&#x20B9; <%= Math.ceil(product.offerPrice) %></span>
-                                <span style="margin-left: 20px;"  class="reducedfrom item_price"> &#x20B9; <%= product.appliedOffer.fixedAmount %> OFF</span>
                             <% }else{ %>
-                                <span class="reducedfrom item_price">&#x20B9; <%= product.price %></span>
+                                <span class="reducedfrom item_price" id="originalPrice">&#x20B9; <%= product.price %></span>
                             <% } %>
+                        
+                            <div  class="clearfix"></div>
                             
-                            <div class="clearfix"></div>
                         </div>
                         <h4 class="quick">Quick Overview:</h4>
                         <p class="quick_desc">
@@ -54,17 +51,40 @@
                         </p>
                         <div class="wish-list">
                             <ul>
-                                <li class="wish"><a href="#"><span class="glyphicon glyphicon-check"
-                                            aria-hidden="true"></span>Add to Wishlist</a></li>
+                                <li class="wish"><a href="#" id="add-wishlist" data-productid="<%= product._id %>">
+                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                        Add to Wishlist
+                                    </a>
+                                </li>
                                 <li class="compare">
                                     <form action="/checkout/<%= product._id %>" method="post">
+                                        <input type="hidden" value="" id="selectedCoupon" name="selectedCoupon">
                                         <input type="hidden" name="productQty" value='1' id="productQty">
                                         <input class="btn btn-primary" type="submit" value="Buy now">
                                     </form>                                  
                                 </li>
                             </ul>
                         </div>
-                        
+                        <script>
+                            $(document).ready(function(){
+                                    $('#add-wishlist').click(function(event){
+                                        event.preventDefault();
+                                        const productId = $(this).data('productid');
+                                        $(this).html('<span class="glyphicon glyphicon-ok" aria-hidden="true"> Added to wishlist');
+                                        $(this).prop('disabled',true)
+                                        $.ajax({
+                                            url:'/wishlist',
+                                            method:'POST',
+                                            data:{productId},
+                                            success:function(response){
+                                                console.log(response)
+                                            }
+                                        })
+
+                                    })
+                           
+                            })
+                        </script>
                         <div >stock: <span id="stockQty"><%= product.stockQty %></span> </div>
                         <div class="quantity">
                             <div class="quantity-select">
@@ -142,12 +162,6 @@
                                     </li>
                                     <li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Product Tested
                                     </li>
-                                    <!-- <li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>System
-                                        integration</li>
-                                    <li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Verification,
-                                        Validation and Testing</li>
-                                    <li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Maintenance and
-                                        Support</li> -->
                                 </ul>
                             </div>
 

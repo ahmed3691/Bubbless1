@@ -27,7 +27,7 @@ const productSchema = new mongoose.Schema({
   subCategoryId:{type: Schema.Types.ObjectId}, 
   productImages: [String],
   isListed: {type: Boolean, default: true}
-});
+},{timestamps:true});
 
 const ProductModel = mongoose.model("products", productSchema);
 

@@ -20,7 +20,8 @@ const adminAuth = async (req,res,next)=>{
             res.redirect('/admin/login')
         }
     }catch(err){
-        console.log('error from admin Auth: ',err) 
+        console.log('error from admin Auth: ',err);
+        res.render('./admin/404') 
     }
     
 }

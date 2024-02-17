@@ -13,18 +13,32 @@
 		<div class="container">
 			<div class="col-md-9">
 				<div class="mid-popular">
-					<!-- starting of column 1 -->
-					
 					<% for(let i=0;i<allProducts.length;i++){ %>
 						<div class="col-md-4 item-grid1 simpleCart_shelfItem">
 							<div class=" mid-pop">
-								<div class="pro-img">
+								<div class="pro-img" style="position: relative;">
 									<img src="<%= allProducts[i].productImages[0] %>" class="img-responsive products-img" alt="">
+									<div  style="position: absolute; top: 5px ; right: 5px;">
+										<% if(wishlist?.includes(allProducts[i]._id)){ %>
+											<i class="fa-solid fa-heart wishlist-icon " data-productid="<%= allProducts[i]._id %>" style="
+												font-size: 30px; 
+												color:rgb(255, 0, 0); 
+												transition: 0.4s; 
+												cursor: pointer;"></i>
+										<% }else{ %>
+											<i class="fa-solid fa-heart wishlist-icon " data-productid="<%= allProducts[i]._id %>" style="
+												font-size: 30px; 
+												color: white; 
+												transition: 0.4s;
+												cursor: pointer;"></i>
+										<% } %>
+										
+									</div>
+									
 									<div class="zoom-icon ">
 										<a class="picture" href="<%= allProducts[i].productImages[0] %>" rel="title"
 											class="b-link-stripe b-animate-go  thickbox"><i
 												class="glyphicon glyphicon-search icon "></i></a>
-										<!-- <a href="single.html"><i class="glyphicon glyphicon-menu-right icon"></i></a> -->
 									</div>
 								</div>
 								<div class="mid-1">
@@ -38,9 +52,9 @@
 												</a></h6>
 										</div>
 
-										<% if(allProducts[i].appliedOffer && allProducts[i]?.appliedOffer?.offerType == 'percentage'){ %>
+										<% if(allProducts[i].appliedOffer && allProducts[i]?.appliedOffer?.offerType == 'percentage' ){ %>
 											<span><%= allProducts[i].appliedOffer?.percentage %>% OFF</span>
-										<% }else if(allProducts[i].appliedOffer && allProducts[i]?.appliedOffer?.offerType == 'fixedAmount'){ %>
+										<% }else if(allProducts[i].appliedOffer && allProducts[i]?.appliedOffer?.offerType == 'fixedAmount' ){ %>
 											<span><%= '\u20B9' + allProducts[i].appliedOffer?.fixedAmount %> OFF</span>
 										<% } %>
 										<div class="img item-add">
@@ -79,14 +93,49 @@
 							<div class="clearfix"></div>
 				</div>
 				<script>
+					
+				</script>
+				<script>
 					$(document).ready(function(){
 						const originalPrice = $('.item_price');
 						const offerPrice = $('.offerPrice');
 						const product = $('.product');
-						console.log(product)
+					
 
 						originalPrice.each(function(){
-							console.log($(this).text())
+							
+						})
+
+						$('.wishlist-icon').click(function(event){
+							event.preventDefault();
+							event.stopPropagation();
+							const currentColor = $(this).css('color')
+							const productId = $(this).data('productid')
+							let method;
+							console.log(productId)
+
+							if(currentColor == 'rgb(255, 255, 255)'){
+								$(this).css('color','red');
+								method = 'POST'
+							}else if(currentColor == 'rgb(255, 0, 0)'){
+								$(this).css('color','white')
+								method = 'DELETE'
+							}
+						
+							$.ajax({
+								url:`/wishlist`,
+								method: method,
+								data:{
+									productId,
+									
+								},
+								success:function(response){
+									console.log(response)
+									if(response.added){
+										$(this)
+									}
+								}
+							})
 						})
 					})
 				</script>

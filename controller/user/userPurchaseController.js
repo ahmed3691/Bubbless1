@@ -10,24 +10,41 @@ const crypto = require("crypto");
 const { response } = require("express");
 const { truncate } = require("fs");
 const { errorMonitor } = require("events");
+const { CouponModel } = require("../../model/couponModel");
+const {UserModel} = require('../../model/usersModel');
+const { default: mongoose } = require("mongoose");
 
 // await placeOrder(formData,userId,userName,orderId);
 
 const getChekout = async (req, res) => {
     try {
+        console.log(req.body)
+        const {productQty,selectedCoupon} = req.body;
         const isAuthenticated = req.cookies.userAccessToken || false;
         const userId = req.user;
+
+        let user = await UserModel.findOne({_id:userId})
+        const usedCoupons = user.usedCoupons;
+        
+        if( user?.refferalCompleted !== 0){
+            var coupons = await CouponModel.find({_id:{$nin:usedCoupons}})
+        }else{
+            var coupons = await CouponModel.find({_id:{$nin:usedCoupons},couponType:"General"})
+        }
+        
+        
         // cart checkout.........................
         const cartId = req.params.id;
         const userCart = await CartModel.findOne({ _id: cartId }).populate(
             "items.productId",
         );
-
+        
+        
         const userWallet = await WalletModel.findOne({userId})
         //single product checkout.................................
         const cartQty = req.cookies.cartQty;
         const productId = req.params.id;
-        const productQty = req.body.productQty;
+  
         const product = await ProductModel.findOne({ _id: productId });
         const savedAddress = await AddressModel.findOne(
             { userId: userId },
@@ -40,18 +57,32 @@ const getChekout = async (req, res) => {
             productQty,
             product,
             userCart,
-            userWallet
+            userWallet,
+            coupons
         });
     } catch (err) {
         console.log(err);
+        res.render('./user/404')
     }
 };
 
 const orderConfirmation = async (req, res) => {
     try {
-        const {paymentMethod,totalPrice} = req.body
-        console.log(totalPrice)
+        const {paymentMethod,totalPrice,selectedCoupon} = req.body 
+        
+        console.log(req.body)
         const userId = req.user;
+        if(selectedCoupon){
+            const coupon = await CouponModel.findOne({_id:new mongoose.Types.ObjectId(selectedCoupon)})
+            if(coupon.couponType != 'Refferal'){
+                const updateUser = await UserModel.updateOne(
+                    {_id:userId},
+                    {$push:{usedCoupons: new mongoose.Types.ObjectId(selectedCoupon)}}
+                    )
+            }else{
+                const updateUser = await UserModel.updateOne({_id:userId},{$inc:{refferalCompleted:-1}})
+            }
+        }
         const userName = req.userName;
         if(paymentMethod == 'Online Payment'){
             const orderId = generateOrderId();
@@ -77,6 +108,7 @@ const orderConfirmation = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
+        res.render('./user/404')
     }
 };
 
@@ -102,64 +134,78 @@ const verifyPayment = async  (req,res)=>{
         }  
     } catch (error) {
         res.send(error);
+        res.render('./user/404')
     }
 }
 
 const successOrder = (req,res)=>{
-    const cartQty = req.cookies.cartQty;
-    const isAuthenticated = req.cookies.userAccessToken || false;
+    
+    try {
+        const cartQty = req.cookies.cartQty;
+        const isAuthenticated = req.cookies.userAccessToken || false;
 
-    res.render('./user/orderSummary',{isAuthenticated,cartQty});
+        res.render('./user/orderSummary',{isAuthenticated,cartQty});
+    } catch (error) {
+        res.send(error);
+        res.render('./user/404')
+    }
+    
 }
 
 const cancelOrder = async (req, res) => {
-    const orderId = req.params.id;
-    const userId = req.user;
-
-    const order = await OrdersModel.findOne({ _id: orderId }).populate(
-        "products.productId",
-    );
-    const price = order.totalPrice;
-    if (order.status !== "Delivered" && order.status !== "Returned") {
-        const updateOrderStatus = await OrdersModel.updateOne(
-            { _id: orderId },
-            { $set:
-                { status: "Cancelled",completionDate: Date.now()}
-            },
+    try {
+        const orderId = req.params.id;
+        const userId = req.user;
+    
+        const order = await OrdersModel.findOne({ _id: orderId }).populate(
+            "products.productId",
         );
-        req.flash("message", "Order cancellation is successsfull");
+        const price = order.totalPrice;
+        if (order.status !== "Delivered" && order.status !== "Returned") {
+            const updateOrderStatus = await OrdersModel.updateOne(
+                { _id: orderId },
+                { $set:
+                    { status: "Cancelled",completionDate: Date.now()}
+                },
+            );
+            req.flash("message", "Order cancellation is successsfull");
+        }
+        if(order.paymentMethod == 'Online Payment' || order.paymentMethod == 'Wallet Payment'){
+            
+            const updateWallet = await WalletModel.updateOne(
+                {userId:userId},
+                {$inc:{amount:price}},
+                {upsert: true});
+    
+            const newPayment = new PaymentModel({
+                userId,
+                paymentFor: 'Wallet Credit',
+                paymentIntitatedFor:'Cancelled Order',
+                entity: 'order',
+                amount:price,
+                amount_paid: price,
+                amount_due: 0,
+                currenc: 'INR',
+                receipt: orderId,
+                offer_id: null,
+                status: 'success',
+                attempts: 0
+            });
+            
+            newPayment.save()
+            .then(()=>{
+                console.log('Payment saved for cancelled order');
+            })
+            .catch((error)=>{
+                console.log('Error in saving payment info for cancelled order: ',error)
+            })
+        }
+        res.redirect(`/order-details/${orderId}`);
+    } catch (error) {
+        res.send(error);
+        res.render('./user/404')
     }
-    if(order.paymentMethod == 'Online Payment' || order.paymentMethod == 'Wallet Payment'){
-        
-        const updateWallet = await WalletModel.updateOne(
-            {userId:userId},
-            {$inc:{amount:price}},
-            {upsert: true});
-
-        const newPayment = new PaymentModel({
-            userId,
-            paymentFor: 'Wallet Credit',
-            paymentIntitatedFor:'Cancelled Order',
-            entity: 'order',
-            amount:price,
-            amount_paid: price,
-            amount_due: 0,
-            currenc: 'INR',
-            receipt: orderId,
-            offer_id: null,
-            status: 'success',
-            attempts: 0
-        });
-        
-        newPayment.save()
-        .then(()=>{
-            console.log('Payment saved for cancelled order');
-        })
-        .catch((error)=>{
-            console.log('Error in saving payment info for cancelled order: ',error)
-        })
-    }
-    res.redirect(`/order-details/${orderId}`);
+   
 };
 
 

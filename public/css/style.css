@@ -71,6 +71,42 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     border-width: 5px;
 }
 /*modified css.........................................................................*/
+
+.coupon-container{
+    margin-bottom: 10px; 
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.coupon-title{
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.coupon-applyBtn{
+    font-size: 13px; 
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: #F67777; /* Button color */
+    color: #fff; /* Text color */
+    text-decoration: none;
+    border-radius: 3px;
+}
+
+.banner-image{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    z-index: 0;
+}
+
+
+/* ................................... */
 html,body{
 	background:#ffffff;
 	font-size: 100%;
@@ -289,7 +325,7 @@ a.item_add {
 	width: 100%;
     height: 700px;
     display: block;
-    background: url(../images/bannerBack3.jpeg)no-repeat right top;
+    /* background: url(../images/bannerBack3.jpeg)no-repeat right top; */
     background-size: cover;
 	overflow-x:hidden;
 }

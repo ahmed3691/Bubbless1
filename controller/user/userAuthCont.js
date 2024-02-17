@@ -3,31 +3,32 @@ const validator = require("validator");
 const { UserModel } = require("../../model/usersModel");
 const jwt = require("jsonwebtoken");
 const { sendOtpMail } = require("../../config/userConfig");
-const {CartModel} = require('../../model/cartModel')
+const {CartModel} = require('../../model/cartModel');
+const {ProductModel} = require('../../model/productModel')
 const{getUserId,getCartQty} = require('../../config/userConfig')
 
-const home = (req, res) => {
+const home = async (req, res) => {
   try {
     const isAuthenticated = req.cookies.userAccessToken ?  true : false;
     const userId = req.userId;
     const cartQty = req.cookies.cartQty;
-    res.render("./user/home", { isAuthenticated,userId,cartQty });
-  } catch (err) {
-    res.send(err);
+    const products = await ProductModel.find({}).limit(8).populate('appliedOffer')
+    res.render("./user/home", { isAuthenticated,userId,cartQty,products });
+  } catch (error) {
+    console.log(error);
+    res.render('./user/404')
   }
 };
 
 const login = (req, res) => {
   try {
     if (req.session.user) return res.redirect("/");
-    const isAuthenticated = req.cookies.userAccessToken || false;
-    const userId = req.cookies.userId;
-    const cartQty = req.cookies.cartQty;
     let message = req.flash("message");
-    console.log('flash message=====>',message)
+ 
     res.render("./user/userLogin", { message });
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.log(error);
+    res.render('./user/404')
   }
 };
 
@@ -62,9 +63,9 @@ const loginUser = async (req, res) => {
       req.flash("message", "invalid credentials");
       res.redirect("/login");
     }
-  } catch (err) {
-    console.log(err);
-    return res.send(err);
+  } catch (error) {
+    console.log(error);
+    res.render('./user/404')
   }
 };
 
@@ -75,21 +76,29 @@ const logout = (req, res) => {
     res.clearCookie('cartQty')
     req.session.destroy();
     res.redirect("/");
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.log(error);
+    res.render('./user/404')
   }
 };
 
 const getRegister = (req, res) => {
-  if (req.session.user) return res.redirect("/");
-  message = req.flash("message");
-  console.log(message);
-  res.render("./user/userRegister", { message: message });
+  try {
+    if (req.session.user) return res.redirect("/");
+    message = req.flash("message");
+    
+    res.render("./user/userRegister", { message: message });
+  } catch (error) {
+    console.log(error);
+    res.render('./user/404')
+  }
+ 
 };
 
 const registerUser = async (req, res) => {
   try {
-    const { userName, userPh, userEmail, userPassword } = req.body;
+    
+    const { userName, userPh, userEmail, userPassword,refferalCode } = req.body;
     if (userName.trim() === "") {
       req.flash("message", "Username cannot be empty");
       return res.redirect("/register");
@@ -104,7 +113,7 @@ const registerUser = async (req, res) => {
       req.flash("message", "Passwords must contain more than 4 charactors");
       return res.redirect("/register");
     }
-
+    console.log('validation completed')
     const userExist = await UserModel.findOne({
       userEmail: { $regex: new RegExp(userEmail, "i") },
     });
@@ -112,7 +121,7 @@ const registerUser = async (req, res) => {
       req.flash("message", "This user already exists");
       return res.redirect("/register");
     }
-    // let randomNumber = Math.floor(1000 + Math.random() * 9000);
+   
     const hashedPassword = await bcrypt.hash(userPassword, 10);
     const newUser = new UserModel({
       userName: userName,
@@ -120,127 +129,162 @@ const registerUser = async (req, res) => {
       userEmail: userEmail,
       userPassword: hashedPassword,
       isVerified: false,
-      
     });
-
-    setTimeout(async () => {
-      await UserModel.updateOne(
-        { userEmail: userEmail },
-        { $unset: { userOtp: {} } },
-      );
-      console.log("otp removed");
-    }, 120000);
-
-    sendOtpMail( userEmail);
-
-    req.session.newUser = userEmail;
-    req.newUser;
 
     newUser
       .save()
       .then((user) => {
+        req.session.refferalCode = refferalCode
+        req.session.newUser = userEmail;
+
+        sendOtpMail( userEmail);
+
+        setTimeout(async () => {
+          await UserModel.updateOne(
+            { userEmail: userEmail },
+            { $unset: { userOtp: {} } },
+          );
+        }, 120000);
+
         res.redirect("/otp");
       })
       .catch((err) => {
+        console.log('error saving user')
         console.log(err);
-        res.send(err);
       });
-  } catch (err) {
-    console.log(err);
-    res.send(err);
+   
+  } catch (error) {
+    console.log(error);
+    res.render('./user/404')
   }
 };
 
 const resendOtp = async (req, res) => {
   try {
-    const { userEmail } = req.body;
-    if (updateOtp) {
+    const { userEmail,refferalCode } = req.body;
+   
       sendOtpMail(userEmail);
       setTimeout(async () => {
         await UserModel.updateOne(
           { userEmail: userEmail },
           { $unset: { userOtp: {} } },
         );
-        console.log("otp removed");
+      
       }, 120000);
+      req.session.refferalCode = refferalCode
       res.redirect("/otp");
-    }
-  } catch (err) {
-    console.log(err);
+    
+  } catch (error) {
+    console.log(error);
+    res.render('./user/404',)
   }
 };
 
 const loadOtp = async (req, res) => {
-  if (req.session.user) {
-    res.redirect("/");
+  try {
+    if (req.session.user) {
+      res.redirect("/");
+    }
+
+    const refferalCode = req.session.refferalCode;
+    
+
+    let newUser = req.session.newUser;
+   
+    console.log(newUser,refferalCode)
+    let message = req.flash("message");
+    console.log("message from redirect", message);
+    res.render("./user/otp", {
+      userEmail: newUser,
+      message: message,
+      refferalCode
+    });
+  } catch (error) {
+    console.log(error);
+    res.render('./user/404')
   }
-  console.log(req.session.newUser);
-  let newUser = req.session.newUser;
-  let message = req.flash("message");
-  console.log("message from redirect", message);
-  res.render("./user/otp", {
-    userEmail: newUser,
-    message: message,
-  });
+  
 };
 
 const verifyOtp = async (req, res) => {
-  const { userOtp, userEmail } = req.body;
+  try {
+    const { userOtp, userEmail,refferalCode } = req.body;
+    console.log('reffere code from verifyOtp:', refferalCode)
+    req.session.newUser = userEmail;
+    const dbOtp = await UserModel.findOne({ userEmail: userEmail }).select("userOtp");
+  
+    if (dbOtp && userOtp == dbOtp.userOtp) {
+      await UserModel.updateOne(
+        { userEmail: userEmail },
+        { $set: { isVerified: true }, $unset: { userOtp: {} } },
+      );
 
-  req.session.newUser = userEmail;
-  const dbOtp = await UserModel.findOne({ userEmail: userEmail }).select(
-    "userOtp",
-  );
+      if(refferalCode){
+        const refferedUser = await UserModel.updateOne(
+          {refferalCode},
+          {$inc:{refferalCompleted:1}})
+      }
 
-  if (dbOtp && userOtp == dbOtp.userOtp) {
-    await UserModel.updateOne(
-      { userEmail: userEmail },
-      { $set: { isVerified: true }, $unset: { userOtp: {} } },
-    );
-
-    req.flash(
-      "message",
-      "Account created successfully. Please login to proceed",
-    );
-    res.redirect("/login");
-  } else {
-    console.log("OTP verification failed");
-    req.flash("message", "OTP verifiation failed. Try resending the OTP");
-    res.redirect("/otp");
+      req.flash(
+        "message",
+        "Account created successfully. Please login to proceed",
+      );
+      res.redirect("/login");
+    } else {
+      console.log("OTP verification failed");
+      req.flash("message", "OTP verifiation failed. Try resending the OTP");
+      res.redirect("/otp");
+    }
+  } catch (error) {
+    console.log(error);
+    res.render('./user/404')
   }
+  
 };
 
 const sendOtpForNewPassword = (req,res)=>{
-  const userId = req.userId
-  const userEmail = req.userEmail;
-  sendOtpMail(userEmail)
-  res.render('./user/changePasswordOtp')
+  try {
+    const userId = req.userId
+    const userEmail = req.userEmail;
+    sendOtpMail(userEmail)
+    res.render('./user/changePasswordOtp')
+  } catch (error) {
+    console.log(error);
+    res.render('./user/404')
+  }
+  
 }
 
 const verifyOtpForNewPassword = async (req,res)=>{
-  const userId = req.userId;
-  const userEmail = req.userEmail;
-  const userOtp = req.body.userOtp;
-  const dbOtp = await UserModel.findOne({ userEmail: userEmail }).select(
-    "userOtp",
-  );
+  try {
+    const userId = req.userId;
+    const userEmail = req.userEmail;
+    const userOtp = req.body.userOtp;
+    const dbOtp = await UserModel.findOne({ userEmail: userEmail }).select(
+      "userOtp",
+    );
 
-  if (dbOtp && userOtp == dbOtp.userOtp) {
-    await UserModel.updateOne(
-      { userEmail: userEmail },
-      { $set: { isVerified: true }, $unset: { userOtp: {} } },
-    );
-    req.flash(
-      "message",
-      "Account created successfully. Please login to proceed",
-    );
-    
-   res.render('./user/changePassword')
-  } else {
-    console.log("OTP verification failed");
-    req.flash("message", "OTP verifiation failed. Try resending the OTP");
-    res.redirect("/otp");
+    if (dbOtp && userOtp == dbOtp.userOtp) {
+      await UserModel.updateOne(
+        { userEmail: userEmail },
+        { $set: { isVerified: true }, $unset: { userOtp: {} } },
+      );
+      req.flash(
+        "message",
+        "Account created successfully. Please login to proceed",
+      );
+      
+    res.render('./user/changePassword')
+    } else {
+      console.log("OTP verification failed");
+      req.flash("message", "OTP verifiation failed. Try resending the OTP");
+      res.redirect("/otp");
+    }
+  } catch (error) {
+    console.log(error);
+    res.render('./user/404')
   }
+  
 }
 
 const changePassword = async (req,res) =>{
@@ -260,9 +304,68 @@ const changePassword = async (req,res) =>{
     res.redirect("/login");
     
   }catch(err){
-    console.log(err)
+    console.log(err);
+    res.render('./user/404')
+  }
+}
+
+const sendResetPasswordEmail = (req,res)=>{
+  try {
+    res.render('./user/forgotPasswordEmail')
+  } catch (error) {
+    console.log(error);
+    res.render('./user/404')
   }
  
+}
+
+const sendOTP = async (req,res)=>{
+  try {
+    const{userEmail} = req.body;
+    const user = await UserModel.findOne({userEmail});
+  
+    if(!user) return res.render('./user/forgotPasswordEmail',{message:'This email is not registered  '});
+    
+    sendOtpMail(userEmail);
+    res.render('./user/forgotPasswordOTP',{userEmail})
+  } catch (error) {
+    console.log(error);
+    res.render('./user/404')
+  }
+
+}
+
+const resetPasswordOtp = async (req,res)=>{
+  try {
+    const {userOtp,userEmail} = req.body;
+    console.log(req.body);
+
+    const user = await UserModel.findOne({userEmail})
+
+    if(!(user.userOtp == userOtp)) return res.render('./user/forgotPasswordOTP',{message:'Enterd OTP is wrong'});
+
+    await UserModel.updateOne({userEmail},{$unset:{userOtp}});
+
+    res.render('./user/forgotPassword',{userEmail})
+  } catch (error) {
+    console.log(error);
+    res.render('./user/404')
+  }
+}
+
+const resetPassword = async (req,res)=>{
+  try {
+    console.log(req.body);
+    const {newPassword,userEmail} = req.body;
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    const updatePassword = await UserModel.updateOne({userEmail},{$set:{userPassword:hashedPassword}});
+
+    res.render('./user/userLogin')
+  } catch (error) {
+    console.log(error);
+    res.render('./user/404')
+  }
 }
 
 module.exports = {
@@ -277,5 +380,9 @@ module.exports = {
   resendOtp,
   sendOtpForNewPassword,
   verifyOtpForNewPassword,
-  changePassword
+  changePassword,
+  sendResetPasswordEmail,
+  sendOTP,
+  resetPasswordOtp,
+  resetPassword
 };

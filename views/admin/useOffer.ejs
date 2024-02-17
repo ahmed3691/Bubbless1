@@ -97,7 +97,7 @@
                         <div class="row align-items-center">
                             <div class="col col-check flex-grow-0">
                                 <div class="form-check">
-                                    <input class="form-check-input " name="productIds" value="<%= product._id %>" type="checkbox" />
+                                    <input class="form-check-input selectProduct " name="productIds" value="<%= product._id %>" type="checkbox" />
                                 </div>
                             </div>
                             <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
@@ -111,7 +111,7 @@
                                 </a>
                             </div>
                             <div class="col-lg-2 col-sm-2 col-4 col-price"><span><%= product.category %></span></div>
-                            <div class="col-lg-2 col-sm-2 col-4 col-price"><span>&#x20B9; <%= product.price %></span></div>
+                            <div class="col-lg-2 col-sm-2 col-4 col-price productPrice"><span>&#x20B9; <%= product.price %></span></div>
                         </div>
                         <!-- row .// -->
                     </article>
@@ -136,7 +136,8 @@
         const productForm = document.getElementById('productForm');
         const catBtn = document.getElementById('catBtn');
         const productBtn = document.getElementById('productBtn');
-
+     
+        
         applyFor.forEach(item=>{
             item.addEventListener('change',function(){
                 console.log(this.value)

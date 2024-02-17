@@ -22,17 +22,15 @@
 					<input type="password" placeholder="Password" name="userPassword" required="">
 					<i class="glyphicon glyphicon-lock"></i>
 				</div>
-				   <!-- <a class="news-letter " href="#">
-						 <label class="checkbox1"><input type="checkbox" name="checkbox" ><i> </i>Forget Password</label>
-					   </a> -->
+				   
 				<label class="hvr-skew-backward">
 					<input type="submit" value="login">
 				</label>
-				<!-- <div><p  onclick="sendOTP()" style="cursor: pointer; "  class="text-danger link-info ">Forgot Password?</p></div>
-				<div id="sendOTPBtn" hidden>
-					<a href="/forgot-password">Send OTP to reset password</a>
-				</div>
-				 -->
+				<div><a href="/reset-password-email"   style="cursor: pointer; "  class="text-danger link-info ">Forgot Password?</a></div>
+				<!-- <div id="sendOTPBtn" hidden>
+					<a href="/reset-password">Send OTP to reset password</a>
+				</div> -->
+				
 				
 				<%  if(locals.message){ %>
 					<div style="color: red;" >  <%= message %> </div>

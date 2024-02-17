@@ -25,6 +25,10 @@
 					</div>
 					<div class="login-mail">
 						<input type="text" onchange="validateEmail()" id="userEmail" placeholder="Email" name="userEmail" required="">
+						<% if(locals.refferalCode){ %>
+							<input type="hidden" value="<%= refferalCode %>" name="refferalCode">
+						<% } %>
+						<input type="hidden" >
 						<i class="glyphicon glyphicon-envelope"></i>
 						<div id="userEmailAlert" hidden  style="color: red;">Enter a valid mail address</div>
 					</div>

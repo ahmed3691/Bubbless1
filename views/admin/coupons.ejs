@@ -1,0 +1,132 @@
+<%- include("../admin/layouts/header") %>
+
+<section class="content-main">
+    <div class="row">
+        <div class="col-9">
+            <div class="content-header">
+                <h2 class="content-title">Manage Coupons</h2>
+            </div>
+            <% if(locals.message){ %>
+                <div class="alert alert-success"><%= message %></div>
+                <% }else if(locals.errorMessage){ %>
+                    <div class="alert alert-danger"> <%= errorMessage %></div>
+                <% } %>
+        </div>
+        <div class="col-lg-6">
+            <form action="/admin/coupons" method="post">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="mb-4">
+                        <label for="couponTitle" class="form-label">Coupon Title</label>
+                        <input type="text" placeholder="Type here" name="couponTitle" class="form-control" id="couponTitle" required />
+                    </div>
+                    <div class="row gx-3">
+                        <div class="col-md-4 mb-3">
+                            <label for="reducedAmount" class="form-label">Reduction Amount</label>
+                            <input type="text" placeholder="Type here" name="couponAmount" class="form-control" id="reducedAmount" required />
+                        </div>
+                    </div>
+                    <p>Coupon Type</p>
+                    <div class="mb-4 row col-md-12" style="padding-left: 12px;">
+                        <label class="mb-2 form-check form-check-inline col-md-3" style="width: 30%;">
+                            <input class="form-check-input " value="General"  name="couponType" type="radio" required>
+                            <span class="form-check-label"> General </span>
+                        </label>
+                        <label class="mb-2 form-check form-check-inline col-md-3" style="width: 30%;">
+                            <input class="form-check-input offerType" value="Refferal"  name="couponType" type="radio" required>
+                            <span class="form-check-label"> Refferal  </span>
+                        </label>
+                    </div>
+                    <input type="submit" class="btn btn-success" value="Create coupon">
+                </div>
+            </div>
+        </form>
+        </div>
+        <script>
+                document.addEventListener('DOMContentLoaded',function(event){
+                    const reducedAmount = document.getElementById('reducedAmount');
+
+                    reducedAmount.addEventListener('input',function(event){
+                        console.log('typing....')
+                        if(this.value.includes('-')){
+                            console.log('- typed')
+                            this.value = this.value.replace(/-/g, '');
+                        }
+                    })
+                })
+        </script>
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr class="text-center">
+                                    <th>Coupon Title</th>
+                                    <th scope="col">Coupon Value</th>
+                                    <th scope="col">Coupon type</th>
+                                    <th scope="col">Action</th>
+                                   
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% coupons.forEach(coupon =>{ %>
+                                    <tr class="text-center">
+                                        <td><%= coupon.couponTitle %></td>
+                                        <td>&#x20B9; <b><%= coupon.couponAmount %></b></td>
+                                        <td> <b><%= coupon.couponType %></b></td>
+                                        <td>
+                                            <% if(coupon.isListed){ %>
+                                                <a href="/admin/toggle-coupon/<%= coupon._id %>" class="btn btn-success btn-sm">Unlist</a>
+                                            <% }else{ %>
+                                                <a href="/admin/toggle-coupon/<%=coupon._id %>" class="btn btn-warning btn-sm">List</a>
+                                            <% } %>
+                                            
+                                            <a href="/admin/delete-coupon/<%= coupon._id %>" class="btn btn-danger btn-sm deleteBtn">Delete</a>
+                                            <!-- <a href="" style="background-color: yellow;" class="btn btn-sm ">Edit</a> -->
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- table-responsive //end -->
+                </div>
+                <!-- card-body end// -->
+            </div>
+            <!-- card end// -->
+        </div>
+    </div>
+</section>
+<script>
+    document.addEventListener('DOMContentLoaded',function(){
+        const deleteBtn = document.querySelectorAll('.deleteBtn')
+
+        deleteBtn.forEach(btn =>{
+            btn.addEventListener('click',function(event){
+                event.preventDefault();
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "This coupon will be deleted ",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#EF4040",
+                    cancelButtonColor: "#B4B4B8",
+                    confirmButtonText: "Yes, delete it!"
+                    })
+                    .then(result=>{
+                        if(result.isConfirmed){
+                            window.location = btn.href;
+                        }
+                    })
+
+            })
+        })
+    })
+</script>
+
+
+
+<%- include("../admin/layouts/footer") %>

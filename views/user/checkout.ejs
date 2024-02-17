@@ -136,42 +136,52 @@
                                 <% if(product){ %>
                                     <h6 class="mb-3 " style="font-weight: bolder; font-size: larger;">Summary</h6>
                                     <hr />
+                                    
                                     <div class="d-flex col-md-12 justify-content-between">
-                                        <p class="mb-2">Total price:</p>
+                                        <a href="" id="viewCoupons" > view available coupons</a>
+                                        <div hidden  id="couponsPreview" class="row">
+                                            <% coupons.forEach(coupon=>{ %>
+
+                                                <div   class="col-sm-12 row coupon-container" >
+                                                    <small class="col-sm-6 coupon-title" ><%= coupon.couponTitle %></small>
+                                                    <small class="col-sm-4 couponAmount" style="font-size: 14px;" >&#x20B9; <%= coupon.couponAmount %> OFF</small>
+                                                    <a href=""  class="col-sm-2 applyBtn coupon-applyBtn" >Apply</a>
+                                                    <input type="hidden" value="<%= coupon._id %>" class="couponId">
+                                                </div>
+                                                <% }) %>
+                                        </div>
+                                        <p hidden class="mb-2 fw-bold" id="realPrice">&#x20B9; <%= product.price*productQty %></p>
+                                        <p  class="mb-2">Total price:</p>
                                         <% if(product.appliedOffer){ %>
                                             <input type="hidden" value="<%=  Math.ceil(product.offerPrice)*productQty %>" id="totalPrice" name="totalPrice">
+                                            <input type="hidden" name="selectedCoupon" value="" id="selectedCoupon">
                                             <strike><p class="mb-2 fw-bold">&#x20B9; <%= product.price*productQty %></strike>
-                                            <span>Offer Price:</span><p class="mb-2 fw-bold">&#x20B9; <%= Math.ceil(product.offerPrice)*productQty %>
+                                            <span>Offer Price:</span><p class="mb-2 fw-bold" id="reducedPrice">&#x20B9; <%= Math.ceil(product.offerPrice)*productQty %></p>
                                         <% }else{ %>
+                                            <input type="hidden" name="selectedCoupon" value="" id="selectedCoupon">
                                             <input type="hidden" value="<%= product.price %>" id="totalPrice" name="totalPrice">
-                                            <p class="mb-2 fw-bold">&#x20B9; <%= product.price*productQty %>
+                                            <p class="mb-2 fw-bold" id="originalPrice">&#x20B9; <%= product.price*productQty %></p>
                                         <% } %>
-                                        
-                                        
-                                        </p>
                                     </div>
-
-                                    <div class="input-group mt-3 mb-4">
+                                    <!-- <div class="input-group mt-3 mb-4">
                                         <input type="text" class="form-control border" name=""
                                             placeholder="Promo code" />
                                         <button class="btn btn-light text-primary border">Apply</button>
-                                    </div>
+                                    </div> -->
                                     <div class="col-md-12">
-                                        <p> <b>Wallet Balance:</b> &#x20B9;<span id="walletBalance"><%= userWallet.amount %></span></p>
+                                        <p> <b>Wallet Balance:</b> &#x20B9;<span id="walletBalance"><%= userWallet?.amount %></span></p>
                                     </div>
                                     <div>
                                         <h5>Choose a payment method</h5>
                                         <div class="custom-control custom-radio">
                                             <input type="radio" name="paymentMethod" value="COD" id="paymentCOD"
                                                 class="paymentOptions custom-control-input">
-                                            <label class="custom-control-label" for="paymentCOD">Cash on
-                                                Delivery</label>
+                                            <label class="custom-control-label" for="paymentCOD">Cash on Delivery</label>
                                         </div>
                                         <div class="custom-control custom-radio">
                                             <input type="radio" name="paymentMethod" value="Online Payment" id="onlinePayment"
                                                 class="paymentOptions custom-control-input">
-                                            <label class="custom-control-label" for="onlinePayment">Online
-                                                Payment</label>
+                                            <label class="custom-control-label" for="onlinePayment">Online Payment</label>
                                         </div>
                                         <div class="custom-control custom-radio">
                                             <input type="radio" name="paymentMethod" value="Wallet Payment" id="walletPayment"
@@ -181,7 +191,6 @@
                                     </div>
                                     <hr />
                                     <h6 class="text-dark my-4">Items:</h6>
-
                                     <div class="d-flex col-md-12 align-items-center mb-4">
                                         <div class="me-3 col-md-4 position-relative">
                                             <img src="<%= product.productImages[0] %>" style="height: 96px; width: 96x;"
@@ -189,9 +198,7 @@
                                         </div>
                                         <div class="col-8">
                                             <input type="hidden" name="productId" value="<%= product._id %>">
-                                            <a class="nav-link">
-                                                <%= product.productName %>
-                                            </a>
+                                            <a class="nav-link"><%= product.productName %></a>
                                             <% if(product.appliedOffer){ %>
                                                 <input type="hidden" name="productPrice" value="<%= Math.ceil(product.offerPrice) %>">
                                                 <div class="price ">&#x20B9; <%= Math.ceil(product.offerPrice) %></div>
@@ -199,25 +206,47 @@
                                                 <input type="hidden" name="productPrice" value="<%= product.price %>">
                                                 <div class="price ">&#x20B9;  <%= product.price %></div>
                                             <% } %>
-                                            
                                             <input type="hidden" name="orderProductQty" value="<%= productQty %>">
-                                            <div class="">Quantity: <%= productQty %>
-                                            </div>
+                                            <div class="">Quantity: <%= productQty %></div>
                                         </div>
                                     </div>
+                                    <script>
+                                        
+                                    </script>
                                     <% } else{%>
                                         <div>Cart Checkout</div>
-
                                         <h6 class="mb-3 " style="font-weight: bolder; font-size: larger;"> Summary</h6>
                                         <hr />
                                         <div class="d-flex col-md-12 justify-content-between">
-                                            <p  class="mb-2">Total price:</p>
+                                            <a href="" id="viewCoupons" > view available coupons</a>
+                                            <div hidden  id="couponsPreview" class="row">
+                                                <% coupons.forEach(coupon=>{ %>
+                                                    <div   class="col-sm-12 row coupon-container">
+                                                        <small class="col-sm-6 coupon-title"><%= coupon.couponTitle %></small>
+                                                        <small class="col-sm-4 couponAmount" >&#x20B9; <%= coupon.couponAmount %> OFF</small>
+                                                        <a href="" class="col-sm-2 applyBtn coupon-applyBtn" style="font-size: 13px;">Apply</a>
+                                                        <input type="hidden" value="<%= coupon._id %>" class="couponId">
+                                                    </div>
+                                                <% }) %>
+                                            </div>
+                                            <div>
+                                                <span  class="mb-2">Total price:</span>
+                                                <span id="realPrice">&#x20B9; <%= userCart.totalPrice %></span>
+                                            </div>
+                                            
+                                            
                                             <input type="hidden" name="cartId" value="<%= userCart._id %>">
+                                            
+                                            <% if(coupons.length){ %>
+                                                <span>Offer Price:</span><p class="mb-2 fw-bold" id="reducedPrice">&#x20B9; <%= userCart.totalPrice %></p>
+                                            <% }else{ %>
+                                                <p class="mb-2 fw-bold" id="originalPrice" >&#x20B9; <%= userCart.totalPrice %></p>
+                                            <% } %>
+                                            <input type="hidden" name="selectedCoupon" value="" id="selectedCoupon">
                                             <input type="hidden" value="<%= userCart.totalPrice %>" id="totalPrice" name="totalPrice">
-                                            <p class="mb-2 fw-bold" >&#x20B9; <%= userCart.totalPrice %></p>
+                                            
                                             <p class="mb-2 fw-bold">Total Products: <%= userCart.totalProducts %></p>
                                         </div>
-
                                         <div class="input-group mt-3 mb-4">
                                             <input type="text" class="form-control border" name="" placeholder="Promo code" />
                                             <button class="btn btn-light text-primary border">Apply</button>
@@ -227,7 +256,6 @@
                                         </div>
                                         <div>
                                             <h5>Choose a payment method</h5>
-
                                             <div class="custom-control custom-radio">
                                                 <input type="radio" name="paymentMethod" value="COD" id="paymentCOD"
                                                     class="paymentOptions custom-control-input">
@@ -245,7 +273,6 @@
                                         </div>
                                         <hr />
                                         <h6 class="text-dark my-4">Items:</h6>
-
                                         <% userCart.items.forEach((item)=>{ %>
                                             <div class="d-flex col-md-12 align-items-center mb-4">
                                                 <div class="me-3 col-md-4 position-relative">
@@ -254,15 +281,13 @@
                                                         class="img-sm rounded border" />
                                                 </div>
                                                 <div class="col-8">
-                                                    <input type="hidden" name="productId" id="productId"
-                                                        value="<%= item.productId._id %>">
+                                                    <input type="hidden" name="productId" id="productId" value="<%= item.productId._id %>">
                                                     <a class="nav-link"> <%= item.productId.productName %> </a>
                                                     <% if(item.productId.appliedOffer){ %>
                                                         <input type="hidden" name="productPrice" id="productPrice"
                                                         value="<%= item.productId.offerPrice %>">
                                                         <div class="price ">&#x20B9; <%= item.productId.offerPrice %> </div>
                                                     <% }else{ %>
-                                                        
                                                         <input type="hidden" name="productPrice" id="productPrice" value="<%= item.productId.price %>">
                                                         <div class="price ">&#x20B9; <%= item.productId.price %> </div>
                                                     <% } %>
@@ -271,13 +296,11 @@
                                                     <div class="">Quantity: <%= item.quantity %> </div>
                                                 </div>
                                             </div>
-
                                             <% }) %>
                                                 <% } %>
                                 <div  id="CODContainer" class="float-end col-md-6" style="margin-top: 2vh;">
                                     <input  id="submitBtn" type="submit" class="btn btn-success " value="Place Order">
                                 </div>
-                               
                              </div>
                         </div>
                     </form>
@@ -405,6 +428,70 @@
     })
 
 
+</script>
+
+
+<script>
+    $(document).ready(function(){
+
+        // select only coupons in the price range of product price
+
+        const realPrice =parseInt($('#realPrice').text().split(' ')[1])
+        console.log('real',realPrice)
+        const coupons = $('.couponAmount');
+        $('.couponAmount').each(function(){
+            const couponValue = parseInt($(this).text().split(' ')[1]);
+            console.log(couponValue)
+            if(couponValue>realPrice){
+                console.log('high')
+                $(this).parent().hide()
+            }
+        })
+        //..........................................................................
+       const originalPrice =parseInt($('#originalPrice').text().split(' ')[1]) ;
+       const reducedPrice = parseInt($('#reducedPrice').text().split(' ')[1]) ;
+        console.log(originalPrice,reducedPrice)
+       
+        $('#viewCoupons').on('click',function(event){
+            event.preventDefault();
+            $('#couponsPreview').toggle();
+        })
+        
+       
+
+        $('.applyBtn').click(function(event){
+            event.preventDefault();
+            if($(this).text() == 'Apply'){
+                console.log($('.applyBtn').not(this))
+                $('.applyBtn').not(this).toggle();
+                $(this).text('Remove');
+                const couponAmount = parseInt($(this).prev('.couponAmount').text().split(' ')[1]);
+                const couponId = $(this).next('.couponId').val();
+                
+                $('#selectedCoupon').val(couponId);
+               
+                if(reducedPrice ){
+                    const newPrice = reducedPrice - couponAmount;
+                    $('#reducedPrice').text('₹ ' + newPrice);
+                    $('#totalPrice').val(newPrice)
+                }else if(originalPrice){
+            
+                    const newPrice = originalPrice - couponAmount;
+                    $('#originalPrice').text( '₹ ' + newPrice);
+                    $('#totalPrice').val(newPrice)
+                }
+                console.log(couponId);
+                console.log('amount',couponAmount);
+
+            }else{
+                $('.applyBtn').not(this).toggle()
+                $(this).text('Apply');
+                $('#reducedPrice').text('₹ ' + reducedPrice)
+                $('#originalPrice').text('₹ ' + originalPrice)
+                $('#selectedCoupon').val('')
+            }
+        })
+    })
 </script>
 
     <%- include("../user/layouts/footer") %>

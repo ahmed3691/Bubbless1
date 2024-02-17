@@ -1,0 +1,79 @@
+<%- include("../admin/layouts/header") %>
+
+
+<div class="content-main">
+    <div class="card mb-4">
+        <form action="/admin/banners" method="post" enctype="multipart/form-data">
+            <div class="card">
+                <div class="card-body" style=" height: 500px;">
+                    <img src="" class="" alt="banner" style="object-fit: contain;
+                    
+                    width: 100%;
+                    height: 100%;
+                    
+                    z-index: 0;">
+                    
+                </div>
+                <div class="card-body"> 
+                    <h5>Change this image</h5>
+                    <input class="form-control banner-input" type="file" accept="image/jpeg, image/jpg, image/png" name="bannerImage" required>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body" style=" height: 500px;">
+                    <img src="" class="" alt="banner" style="object-fit: contain;
+                    
+                    width: 100%;
+                    height: 100%;
+                    
+                    z-index: 0;">
+                    
+                </div>
+                <div class="card-body"> 
+                    <h5>Change this image</h5>
+                    <input class="form-control banner-input" type="file" accept="image/jpeg, image/jpg, image/png" name="bannerImage" required>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body" style=" height: 500px;">
+                    <img src="" class="" alt="banner" style="object-fit: contain;
+                    
+                    width: 100%;
+                    height: 100%;
+                    
+                    z-index: 0;">
+                    
+                </div>
+                <div class="card-body"> 
+                    <h5>Change this image</h5>
+                    <input class="form-control banner-input" type="file" accept="image/jpeg, image/jpg, image/png" name="bannerImage" required>
+                </div>
+            </div>
+            <input type="submit" class="btn btn-success" value="Save">
+        </form>
+        <!--  card-body.// -->
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded',function(){
+        const bannerInput = document.querySelectorAll('.banner-input');
+        console.log(bannerInput)
+        bannerInput.forEach(input=>{
+            input.addEventListener('change',function(event){
+                
+                const bannerImg = input.parentElement.previousElementSibling.querySelector('img')
+                const file = event.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e){
+                    bannerImg.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            })
+        })
+    })
+</script>
+
+
+<%- include("../admin/layouts/footer") %>

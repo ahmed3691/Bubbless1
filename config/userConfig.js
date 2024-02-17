@@ -12,11 +12,13 @@ const {PaymentModel} = require('../model/paymentModel')
 
 async function sendOtpMail(userEmail) {
   let randomNumber = Math.floor(1000 + Math.random() * 9000);
+  console.log('eamil for send otp',userEmail);
   const updateOtp = await UserModel.updateOne(
-    { userEmail: userEmail },
+    { userEmail },
     { $set: { userOtp: randomNumber } },
-    { upsert: true },
+    
   );
+  console.log(updateOtp)
   let transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,

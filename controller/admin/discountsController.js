@@ -3,6 +3,7 @@ const {SubCatModel} = require('../../model/categoryModel');
 
 const mongoose = require('mongoose');
 const { ProductModel } = require('../../model/productModel');
+const {CouponModel} = require('../../model/couponModel')
 
 
 const getOffers = async (req,res)=>{
@@ -208,6 +209,76 @@ const removeOffer = async (req,res)=>{
         res.redirect('/admin/offers')
     } catch (error) {
         console.log(error)
+        res.render('./admin/404')
+    }
+}
+
+const getCoupons = async (req,res)=>{
+    try{ 
+        let message = req.session.message;
+        let errorMessage = req.session.errorMessage
+        req.session.message = ''
+        req.session.errorMessage = ''
+        const coupons = await CouponModel.find({})
+        res.render('./admin/coupons',{message,errorMessage,coupons})
+    } catch (error) {
+        console.log(error)
+        res.render('./admin/404')
+    }
+}
+
+const createCoupons = (req,res)=>{
+    try {
+        console.log(req.body);
+        const{couponTitle,couponAmount,couponType} = req.body;
+        const newCoupon = new CouponModel({
+            couponTitle,
+            couponAmount,
+            couponType
+        })
+
+        newCoupon.save()
+            .then(()=>{
+                req.session.message = 'Coupon added successfully!'
+                res.redirect('/admin/coupons')
+            })
+            .catch((error)=>{
+                console.log('error saving coupon: ',error);
+                req.session.errorMessage = 'Something went wrong, coupon not saved. Please try again later!';
+                res.redirect('/admin/coupons');
+            })
+        
+    } catch (error) {
+        console.log(error)
+        res.render('./admin/404')
+    }
+}
+
+const deleteCoupon = async (req,res)=>{
+    try {
+        console.log(req.params.id);
+       
+        const deleteCoupon = await CouponModel.deleteOne({_id: new mongoose.Types.ObjectId(req.params.id)});
+        console.log(deleteCoupon)
+        res.redirect('/admin/coupons')
+    } catch (error) {
+        console.log(error)
+        res.render('./admin/404')
+    }
+}
+
+const toggleCoupon = async (req,res)=>{
+    try {
+        const coupon = await CouponModel.findOne({_id:req.params.id});
+        const value = coupon.isListed ? false : true;
+        const toggleCoupon = await CouponModel.updateOne (
+            {_id:req.params.id},
+            {$set:{isListed:value}}
+            )
+        res.redirect('/admin/coupons')
+    } catch (error) {
+        console.log(error)
+        res.render('./admin/404')
     }
 }
 
@@ -220,5 +291,9 @@ module.exports = {
     deleteOffer,
     getApplyOffer,
     applyOffer,
-    removeOffer
+    removeOffer,
+    getCoupons,
+    createCoupons,
+    deleteCoupon,
+    toggleCoupon
 }

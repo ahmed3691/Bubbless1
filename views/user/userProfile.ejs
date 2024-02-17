@@ -27,15 +27,11 @@
                                             <label class="form-label">Phone</label>
                                             <div class="form-control"><%= userData.userPh %></div>
                                         </div>
-                                        <!-- <div class="col-lg-12 mb-3">
-                                            <label class="form-label">Member Since</label>
-                                            <div class="form-control">01-2-2023</div>
-                                        </div> -->
                                     </div>
                                 </div>
                             </div>
                             <br />
-                            <!-- <a class="btn btn-primary" type="submit">Edit details</a> -->
+                          
                             <a href="/user-address" class="btn btn-primary" type="submit">Manage adresses</a>
                         </form>
                         <hr class="my-5" />
@@ -54,18 +50,76 @@
                                     <a class="btn float-end btn-light rounded btn-sm font-md" href="#">Delete account</a>
                                 </article>
                             </div>
+                            <div class="col-md"> 
+                                <article class="box mb-3 bg-light">
+                                    <a id="refferalBtn" class="btn float-end btn-light rounded btn-sm " href="#">Invite a friend</a>
+                                    <p hidden id="refferalLink"></p>
+                                </article>
+                            </div>
                         </div>
                     </section>
                 </div>
             </div>
         </div>
     </div>
+   
 </section>
 
 <script>
-    function sendOTPBtn(){
-        $('#sendOtpBtn').toggle()
-    }
+    
+    $(document).ready(function(){
+
+        function sendOTPBtn(){
+            $('#sendOtpBtn').toggle()
+        }   
+
+        $('#refferalBtn').click(function(){
+            let refferalCode;
+            $.ajax({
+                url: '/refferal-code',
+                type: 'PATCH',
+                success:function(response){
+                    if(response.refferalCode){
+                        
+                        refferalCode = response.refferalCode;
+                        refferalLink = `http://localhost:4500/user-signup/${response.refferalCode}`
+                        $('#refferalLink').text(refferalLink)
+                        
+                    
+                        Swal.fire({
+                            title: " <p>Share this link</p>",
+                        
+                            html: `
+                                 <b id="refferalLink">${refferalLink}</b>
+                            `,
+                            showCloseButton: true,
+                            showCancelButton: true,
+                            focusConfirm: true,
+                            confirmButtonText: `
+                                <i class="fa-solid fa-copy"></i> Copy to clipboard
+                            `,
+                            // confirmButtonAriaLabel: "Thumbs up, great!",
+                            cancelButtonText: `
+                                Cancel
+                            `,
+                            // cancelButtonAriaLabel: "Thumbs down"
+                        }).then(result=>{
+                            if(result.isConfirmed){
+                               navigator.clipboard.writeText(refferalLink);
+                            }
+                        });
+                        
+                        console.log(refferalCode)
+                    }
+                    
+                }
+            })
+            
+            
+        })
+
+
+    })
 </script>
 
 

@@ -10,13 +10,14 @@ const adminProdController = require("../controller/admin/adminProductController"
 const adminCatController = require("../controller/admin/categoryController")
 const adminOrderController = require('../controller/admin/adminOrderController');
 const adminSalesController = require('../controller/admin/reportController');
-const adminDiscountController = require('../controller/admin/discountsController')
+const adminDiscountController = require('../controller/admin/discountsController');
+const siteSettingsController = require('../controller/admin//websiteSettingsController')
 
 
 const storage = multer.diskStorage({
   
   destination: function (req, file, cb) {
-    console.log('file from multer'.file)
+    console.log('file from multer',file)
     cb(null, "./public/admin/uploads");
   },
   filename: function (req, file, cb) {
@@ -56,14 +57,14 @@ adminRouter.route('/products')
   .get(adminAuth,adminProdController.viewProducts)
 adminRouter.route("/add-products")
   .get(adminAuth,adminProdController.sendAddProducts)
-  .post(upload.array('croppedImages', 4), adminProdController.addProducts);
+  .post(adminAuth,upload.array('croppedImages', 4), adminProdController.addProducts);
 adminRouter.route('/list-product')
-  .post(adminProdController.listProduct)
+  .post(adminAuth,adminProdController.listProduct)
 adminRouter.route('/unlist-product')
-  .post(adminProdController.unlistProduct)
+  .post(adminAuth,adminProdController.unlistProduct)
 adminRouter.route('/edit-product')
   .get(adminAuth,adminProdController.sendEditProduct)
-  .post(upload.fields([{name:'productImages',maxCount:4}]),adminProdController.editProducts)
+  .post(adminAuth,upload.fields([{name:'productImages',maxCount:4}]),adminProdController.editProducts)
 adminRouter.route('/search-products/:searchKey')
   .get(adminAuth,adminProdController.searchProducts)
 
@@ -74,18 +75,18 @@ adminRouter.route('/categories')
   .get(adminAuth,adminCatController.viewCat)
 adminRouter.route('/add-category')
   .get(adminAuth,adminCatController.sendAddCat)
-  .post(adminCatController.addCat)
+  .post(adminAuth,adminCatController.addCat)
 adminRouter.route('/delete-product')
-  .post(adminProdController.deleteProduct)
+  .post(adminAuth,adminProdController.deleteProduct)
 adminRouter.route('/list-category')
-  .post(adminCatController.listCat)
+  .post(adminAuth,adminCatController.listCat)
 adminRouter.route('/unlist-category')
-  .post(adminCatController.unlistCat)
+  .post(adminAuth,adminCatController.unlistCat)
 adminRouter.route('/edit-category')
   .get(adminAuth,adminCatController.sendEditCategory)
-  .post(adminCatController.editCat)
+  .post(adminAuth,adminCatController.editCat)
 adminRouter.route('/delete-category')
-  .post(adminCatController.deleteCat)
+  .post(adminAuth,adminCatController.deleteCat)
 
 // order management 
 
@@ -120,7 +121,28 @@ adminRouter.route('/sales-data/:from/:to')
     .post(adminAuth,adminDiscountController.applyOffer);
   adminRouter.route('/remove-offer/:id')
     .get(adminAuth,adminDiscountController.removeOffer)
-  
+  adminRouter.route('/coupons')
+    .get(adminAuth,adminDiscountController.getCoupons)
+    .post(adminAuth,adminDiscountController.createCoupons)
+  adminRouter.route('/delete-coupon/:id')
+    .get(adminAuth,adminDiscountController.deleteCoupon)
+  adminRouter.route('/toggle-coupon/:id')
+    .get(adminAuth,adminDiscountController.toggleCoupon)
+
+  //site settings...............................
+
+  adminRouter.route('/banners')
+    .get(adminAuth,siteSettingsController.getBanners)
+    .post(adminAuth,upload.fields([{name:'bannerImage',maxCount:3}]),siteSettingsController.editBanner)
+    
+
+//all other rouuts
+
+adminRouter.route('*')
+    .get((req,res)=>{
+        res.render('./admin/404')
+       
+    })
 
 module.exports = adminRouter;
 
