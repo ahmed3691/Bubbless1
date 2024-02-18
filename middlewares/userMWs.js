@@ -1,14 +1,17 @@
 const jwt = require('jsonwebtoken')
 const {UserModel}= require('../model/usersModel');
-const{ProductModel} = require('../model/productModel')
+const {ProductModel} = require('../model/productModel');
+const {BannerModel} = require('../model/adminBannerModel');
+const {CatModel,SubCatModel} = require('../model/categoryModel');
 
 const userAuthentication = async (req,res,next)=>{
 
         const token = req.cookies.userAccessToken;
-        const products = await ProductModel.find({}).limit(8).populate('appliedOffer')
+        const products = await ProductModel.find({}).limit(8).populate('appliedOffer');
+        const banners = await BannerModel.findOne({})
         if(token ){
             try {
-                console.log('User Authentication checking......')
+               
                 const decode = jwt.verify(token,process.env.JWT_ACCESS_SECRET);
                 const user = await UserModel.findById(decode?.userId).select('-password');
                 if(user){
@@ -16,11 +19,11 @@ const userAuthentication = async (req,res,next)=>{
                     req.user = user._id;
                     req.userEmail = user.userEmail;
                     req.userName= user.userName;
-                    console.log('User is already logged in');
+                  
                     next(); 
                 }else{
-                    console.log('Token exist, but User credentials doesnot match')
-                    res.render('./user/home',{products})
+                  
+                    res.render('./user/home',{products,banners})
                 }
             } catch (error) {
                 console.log('hmmm....expired token',error);
@@ -34,15 +37,50 @@ const userAuthentication = async (req,res,next)=>{
             }
            
         }else{
-            console.log('User is not logged in');
+            
             let message = req.flash("message");
             
             if(req.path === '/login') return res.render('./user/userLogin',{message});
             if(req.path === '/register') return res.render('./user/userRegister');            
-            res.render('./user/home',{products});
+            res.render('./user/home',{products,banners});
         }
 }
 
+const fetchHeaderElements = async (req,res,next)=>{
+    try {
+        const categories = await SubCatModel.aggregate([
+            {
+                $facet:{
+                    boys:[
+                        {$match:{category:'Boys'}},
+                        {$group:{_id:'$subCatName'}},
+                        {$project:{_id:0,category:"$_id"}}
+                    ],
+                    girls:[
+                        {$match:{category:'Girls'}},
+                        {$group:{_id:'$subCatName'}},
+                        {$project:{_id:0,category:'$_id'}}
+                    ],
+                    unisex:[
+                        {$match:{category:'Unisex'}},
+                        {$group:{_id:'$subCatName'}},
+                        {$project:{_id:0,category:'$_id'}}
+                    ]
+                }
+            },
+            
+        ]);
+        
+        res.locals.categories = categories[0]
+        next();
+    } catch (error) {
+        console.log(error);
+        res.render('./user/404')
+    }
+}
+
+
 module.exports = {
-    userAuthentication
+    userAuthentication,
+    fetchHeaderElements
 }

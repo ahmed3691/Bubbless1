@@ -21,8 +21,17 @@ const errorHandler =(err,req,res,next)=>{
     })
 }
 
+const ejsError = (err,req,res,next) =>{
+    console.log('error checking')
+    if(err){
+        console.log(err);
+        res.status(500).render('./user/404')
+    }
+   
+}
 
 module.exports = {
     notFound,
-    errorHandler
+    errorHandler,
+    ejsError
 }

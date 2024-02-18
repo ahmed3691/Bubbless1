@@ -11,12 +11,15 @@ const userProdCont = require('../controller/user/userProdCont')
 const userDataController = require('../controller/user/userDataController')
 const refferalController = require('../controller/user/refferalController')
 
-const {userAuthentication} = require('../middlewares/userMWs')
+const {userAuthentication,fetchHeaderElements} = require('../middlewares/userMWs');
+const {ejsError} = require('../middlewares/errorMW')
 const userBuyController = require('../controller/user/userPurchaseController');
-const wishlistController = require('../controller/user/wishlistController')
+const wishlistController = require('../controller/user/wishlistController');
+
 const { route } = require("./adminRoute");
 
- 
+
+router.use(fetchHeaderElements)
 
 //User login signup....................................................................
 
@@ -139,6 +142,9 @@ router.route('*')
     .get((req,res)=>{
         res.render('./user/404')
     })
+
+router.use(ejsError)
+
 
 
 

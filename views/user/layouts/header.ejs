@@ -1,19 +1,10 @@
-<!--A Design by W3layouts 
-Author: W3layout
-Author URL: http://w3layouts.com
-License: Creative Commons Attribution 3.0 Unported
-License URL: http://creativecommons.org/licenses/by/3.0/
--->
 <!DOCTYPE html>
 <html>
 
 <head>
 	<title>Shopin A Ecommerce Category Flat Bootstrap Responsive Website Template | Home :: w3layouts</title>
 	<link href="/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
-	<!-- Custom Theme files -->
 
-
-	<!--theme-style-->
 	<link href="/css/style.css" rel="stylesheet" type="text/css" media="all" />
 	<!-- goole materials icons -->
 	<link rel="stylesheet"
@@ -59,8 +50,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 			});
 		});
 	</script>
-	<!---//End-rate---->
-
 </head>
 
 <body>
@@ -81,20 +70,23 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 							<li class=".center-icon">
 								<a href="/user-profile">
 									<span class="material-symbols-outlined"
-										id="userAccount">account_circle</span>profile</a>
+										id="userAccount">account_circle</span>profile
+								</a>
 							</li>
-
 							<% }else{ %>
-								<li class=".center-icon"><a href="/login"><span
-											class="material-symbols-outlined">input</span>Login</a></li>
-								<li class=".center-icon"><a href="/register"><span
-											class="material-symbols-outlined">person_add</span>Register</a></li>
+								<li class=".center-icon">
+									<a href="/login">
+										<span class="material-symbols-outlined">input</span>Login
+									</a>
+								</li>
+								<li class=".center-icon">
+									<a href="/register">
+										<span class="material-symbols-outlined">person_add</span>Register
+									</a>
+								</li>
 								<% } %>
-
-
 					</ul>
 				</div>
-
 				<div class="col-sm-5 header-social">
 					<ul>
 						<li><a href="#"><i></i></a></li>
@@ -106,20 +98,14 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 							<li><a href="/logout" class="ic4">Logout</a></li>
 							<% } %>
 					</ul>
-
 				</div>
 				<div class="clearfix"> </div>
 			</div>
 		</div>
-
 		<div class="container position-relative">
-
 			<div class="head-top">
-
 				<div class="col-sm-8 col-md-offset-2 h_menu4">
 					<nav class="navbar nav_bottom" role="navigation">
-
-						<!-- Brand and toggle get grouped for better mobile display -->
 						<div class="navbar-header nav_2">
 							<button type="button" class="navbar-toggle collapsed navbar-toggle1" data-toggle="collapse"
 								data-target="#bs-megadropdown-tabs">
@@ -128,151 +114,127 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 								<span class="icon-bar"></span>
 								<span class="icon-bar"></span>
 							</button>
-
 						</div>
-						<!-- Collect the nav links, forms, and other content for toggling -->
 						<div class="collapse navbar-collapse" id="bs-megadropdown-tabs">
 							<ul class="nav navbar-nav nav_1">
 								<li><a class="color" href="/">Home</a></li>
+								<li class="dropdown mega-dropdown active">
+									<a class="color1" href="#" class="dropdown-toggle" data-toggle="dropdown">Collections<span
+											class="caret"></span></a>
+									<div class="dropdown-menu ">
+										<div class="menu-top">
+											<div class="col1">
+												<div class="h_nav">
+													<h4>Boys</h4>
+													<ul>
+														<li><a href="/categorised-products/Boys/All">All</a></li>
+														<% categories.boys.forEach(cat=>{ %>
+														<li><a href="/categorised-products/Boys/<%= cat.category %>"><%= cat.category %></a></li>
+														<% }) %>
+													</ul>
+												</div>
+											</div>
+											<div class="col1">
+												<div class="h_nav">
+													<h4>Girls</h4>
+													<ul>
+														<li><a href="/categorised-products/Girls/All">All</a></li>
+														<% categories.girls.forEach(cat=>{ %>
+															<li><a href="/categorised-products/Girls/<%= cat.category %>"><%= cat.category %></a></li>
+														<% }) %>
+													</ul>
+												</div>
+											</div>
+											<div class="col1">
+												<div class="h_nav">
+													<h4>Unisex</h4>
+													<ul>
+														<li><a href="/categorised-products/Unisex/All">All</a></li>
+														<% categories.unisex.forEach(cat=>{ %>
+															<li><a href="/categorised-products/Unisex/<%= cat.category %>"><%= cat.category %></a></li>
+														<% }) %>
+													</ul>
+												</div>
+											</div>
+											<div class="col1 col5">
+												<img src="images/me.png" class="img-responsive" alt="">
+											</div>
+											<div class="clearfix"></div>
+										</div>
+									</div>
+								</li>
+								<!-- <li class="dropdown mega-dropdown active">
+									<a class="color2" href="#" class="dropdown-toggle" data-toggle="dropdown">girls<span
+											class="caret"></span></a>
+									<div class="dropdown-menu mega-dropdown-menu">
+										<div class="menu-top">
+											<div class="col1">
+												<div class="h_nav">
+													<h4>Submenu1</h4>
+													<ul>
+														<li><a href="product.html">Accessories</a></li>
+														<li><a href="product.html">Bags</a></li>
+														<li><a href="product.html">Caps & Hats</a></li>
+														<li><a href="product.html">Hoodies & Sweatshirts</a></li>
 
-								<li class="dropdown mega-dropdown active">
-									<a class="color1" href="#" class="dropdown-toggle" data-toggle="dropdown">Boys<span
-											class="caret"></span></a>
-									<!-- <div class="dropdown-menu ">
-                    <div class="menu-top">
-						<div class="col1">
-							<div class="h_nav">
-								<h4>Submenu1</h4>
-									<ul>
-										<li><a href="product.html">Accessories</a></li>
-										<li><a href="product.html">Bags</a></li>
-										<li><a href="product.html">Caps & Hats</a></li>
-										<li><a href="product.html">Hoodies & Sweatshirts</a></li>
-										
-									</ul>	
-							</div>							
-						</div>
-						<div class="col1">
-							<div class="h_nav">
-								<h4>Submenu2</h4>
-								<ul>
-										<li><a href="product.html">Jackets & Coats</a></li>
-										<li><a href="product.html">Jeans</a></li>
-										<li><a href="product.html">Jewellery</a></li>
-										<li><a href="product.html">Jumpers & Cardigans</a></li>
-										<li><a href="product.html">Leather Jackets</a></li>
-										<li><a href="product.html">Long Sleeve T-Shirts</a></li>
-									</ul>	
-							</div>							
-						</div>
-						<div class="col1">
-							<div class="h_nav">
-								<h4>Submenu3</h4>
-									<ul>
-										<li><a href="product.html">Shirts</a></li>
-										<li><a href="product.html">Shoes, Boots & Trainers</a></li>
-										<li><a href="product.html">Sunglasses</a></li>
-										<li><a href="product.html">Sweatpants</a></li>
-										<li><a href="product.html">Swimwear</a></li>
-										<li><a href="product.html">Trousers & Chinos</a></li>
-										
-									</ul>	
-								
-							</div>							
-						</div>
-						<div class="col1">
-							<div class="h_nav">
-								<h4>Submenu4</h4>
-								<ul>
-									<li><a href="product.html">T-Shirts</a></li>
-									<li><a href="product.html">Underwear & Socks</a></li>
-									<li><a href="product.html">Vests</a></li>
-									<li><a href="product.html">Jackets & Coats</a></li>
-									<li><a href="product.html">Jeans</a></li>
-									<li><a href="product.html">Jewellery</a></li>
-								</ul>	
-							</div>							
-						</div>
-						<div class="col1 col5">
-						<img src="images/me.png" class="img-responsive" alt="">
-						</div>
-						<div class="clearfix"></div>
-					</div>                  
-				</div>				 -->
-								</li>
-								<li class="dropdown mega-dropdown active">
-									<a class="color2" href="#" class="dropdown-toggle" data-toggle="dropdown">Girls<span
-											class="caret"></span></a>
-									<!-- <div class="dropdown-menu mega-dropdown-menu">
-                    <div class="menu-top">
-						<div class="col1">
-							<div class="h_nav">
-								<h4>Submenu1</h4>
-									<ul>
-										<li><a href="product.html">Accessories</a></li>
-										<li><a href="product.html">Bags</a></li>
-										<li><a href="product.html">Caps & Hats</a></li>
-										<li><a href="product.html">Hoodies & Sweatshirts</a></li>
-										
-									</ul>	
-							</div>							
-						</div>
-						<div class="col1">
-							<div class="h_nav">
-								<h4>Submenu2</h4>
-								<ul>
-										<li><a href="product.html">Jackets & Coats</a></li>
-										<li><a href="product.html">Jeans</a></li>
-										<li><a href="product.html">Jewellery</a></li>
-										<li><a href="product.html">Jumpers & Cardigans</a></li>
-										<li><a href="product.html">Leather Jackets</a></li>
-										<li><a href="product.html">Long Sleeve T-Shirts</a></li>
-									</ul>	
-							</div>							
-						</div>
-						<div class="col1">
-							<div class="h_nav">
-								<h4>Submenu3</h4>
-								
-<ul>
-										<li><a href="product.html">Shirts</a></li>
-										<li><a href="product.html">Shoes, Boots & Trainers</a></li>
-										<li><a href="product.html">Sunglasses</a></li>
-										<li><a href="product.html">Sweatpants</a></li>
-										<li><a href="product.html">Swimwear</a></li>
-										<li><a href="product.html">Trousers & Chinos</a></li>
-										
-									</ul>	
-								
-							</div>							
-						</div>
-						<div class="col1">
-							<div class="h_nav">
-								<h4>Submenu4</h4>
-								<ul>
-									<li><a href="product.html">T-Shirts</a></li>
-									<li><a href="product.html">Underwear & Socks</a></li>
-									<li><a href="product.html">Vests</a></li>
-									<li><a href="product.html">Jackets & Coats</a></li>
-									<li><a href="product.html">Jeans</a></li>
-									<li><a href="product.html">Jewellery</a></li>
-								</ul>	
-							</div>							
-						</div>
-						<div class="col1 col5">
-						<img src="images/me1.png" class="img-responsive" alt="">
-						</div>
-						<div class="clearfix"></div>
-					</div>                  
-				</div>				 -->
-								</li>
+													</ul>
+												</div>
+											</div>
+											<div class="col1">
+												<div class="h_nav">
+													<h4>Submenu2</h4>
+													<ul>
+														<li><a href="product.html">Jackets & Coats</a></li>
+														<li><a href="product.html">Jeans</a></li>
+														<li><a href="product.html">Jewellery</a></li>
+														<li><a href="product.html">Jumpers & Cardigans</a></li>
+														<li><a href="product.html">Leather Jackets</a></li>
+														<li><a href="product.html">Long Sleeve T-Shirts</a></li>
+													</ul>
+												</div>
+											</div>
+											<div class="col1">
+												<div class="h_nav">
+													<h4>Submenu3</h4>
+
+													<ul>
+														<li><a href="product.html">Shirts</a></li>
+														<li><a href="product.html">Shoes, Boots & Trainers</a></li>
+														<li><a href="product.html">Sunglasses</a></li>
+														<li><a href="product.html">Sweatpants</a></li>
+														<li><a href="product.html">Swimwear</a></li>
+														<li><a href="product.html">Trousers & Chinos</a></li>
+
+													</ul>
+
+												</div>
+											</div>
+											<div class="col1">
+												<div class="h_nav">
+													<h4>Submenu4</h4>
+													<ul>
+														<li><a href="product.html">T-Shirts</a></li>
+														<li><a href="product.html">Underwear & Socks</a></li>
+														<li><a href="product.html">Vests</a></li>
+														<li><a href="product.html">Jackets & Coats</a></li>
+														<li><a href="product.html">Jeans</a></li>
+														<li><a href="product.html">Jewellery</a></li>
+													</ul>
+												</div>
+											</div>
+											<div class="col1 col5">
+												<img src="images/me1.png" class="img-responsive" alt="">
+											</div>
+											<div class="clearfix"></div>
+										</div>
+									</div>
+								</li> -->
 								<li><a class="color3" href="/products/0">Store</a></li>
 								<li><a class="color4" href="404.html">About</a></li>
 								<li><a class="color5" href="typo.html">Short Codes</a></li>
 								<li><a class="color6" href="contact.html">Contact</a></li>
 							</ul>
-						</div><!-- /.navbar-collapse -->
-
+						</div>
 					</nav>
 				</div>
 				<div class="col-sm-2 search-right">
@@ -283,7 +245,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 							</a>
 						</li>
 						<script>
-							$('#searchIcon').click(function(){
+							$('#searchIcon').click(function () {
 								$('#searchBar').toggle();
 								$('#searchInput').focus();
 							})
@@ -309,10 +271,10 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 				<link href="/css/popuo-box.css" rel="stylesheet" type="text/css" media="all" />
 				<script src="/js/jquery.magnific-popup.js" type="text/javascript"></script>
 				<div class="clearfix"></div>
-				
+
 			</div>
 			<style>
-				#searchBar{
+				#searchBar {
 					position: absolute;
 					top: 120px;
 					left: 5%;
@@ -322,33 +284,34 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					overflow-y: auto;
 				}
 			</style>
-		
-			<div id="searchBar"   hidden >
-				<form action="/search-products"  method="get">
+
+			<div id="searchBar" hidden>
+				<form action="/search-products" method="get">
 					<div class="input-group" style="width: 90%;">
-						<input id="searchInput" name="searchKey" class="form-control"   data-search-product type="search" >
-					
+						<input id="searchInput" name="searchKey" class="form-control" data-search-product type="search">
+
 					</div>
 				</form>
 			</div>
 			<div id="productContainer"></div>
-				<style>
-					#productContainer{
-						position: absolute;
-						top: 155px;
-						left:0;
-						z-index: 999;
-						left: 5%;
-						background-color: white;
-						width: 90%;
-						max-height: 200px;
-						overflow-y: auto;
-					}
-				</style> 
+			<style>
+				#productContainer {
+					position: absolute;
+					top: 155px;
+					left: 0;
+					z-index: 999;
+					left: 5%;
+					background-color: white;
+					width: 90%;
+					max-height: 200px;
+					overflow-y: auto;
+				}
+			</style>
 			<template data-product-template>
 				<div class="card">
-					<div class="list-group"> 
-						<a href="" data-productName class=" list-group-item list-group-item-action">A second link item</a>
+					<div class="list-group">
+						<a href="" data-productName class=" list-group-item list-group-item-action">A second link
+							item</a>
 					</div>
 				</div>
 			</template>
@@ -357,22 +320,22 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 			const searchTemplate = document.querySelector('[data-product-template]');
 			const searchInput = document.getElementById('searchInput');
 			const productContainer = document.getElementById('productContainer')
-			searchInput.addEventListener('input',()=>{
+			searchInput.addEventListener('input', () => {
 				console.log('typing.....')
 				productContainer.innerHTML = '';
 				fetch(`/search-products/${searchInput.value}`)
-				.then(response => response.json())
-				.then(data =>{
-				   
-					data.forEach(product=>{
-						const card = searchTemplate.content.cloneNode(true).children[0];
-						const productList  = card.querySelector('[data-productName]')
-						productList.textContent = product.productName;
-						productList.setAttribute('href',`/single-product/${product._id}`)
-						productContainer.append(card)
-					})
-				}).catch(error=>{console.log(error)})
+					.then(response => response.json())
+					.then(data => {
+
+						data.forEach(product => {
+							const card = searchTemplate.content.cloneNode(true).children[0];
+							const productList = card.querySelector('[data-productName]')
+							productList.textContent = product.productName;
+							productList.setAttribute('href', `/single-product/${product._id}`)
+							productContainer.append(card)
+						})
+					}).catch(error => { console.log(error) })
 			})
 		</script>
-		
+
 	</div>

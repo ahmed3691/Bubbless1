@@ -4,51 +4,23 @@
 <div class="content-main">
     <div class="card mb-4">
         <form action="/admin/banners" method="post" enctype="multipart/form-data">
+            <% banners.images.forEach(image=>{ %>
             <div class="card">
+                
                 <div class="card-body" style=" height: 500px;">
-                    <img src="" class="" alt="banner" style="object-fit: contain;
-                    
+                    <img src="<%= image %>" class="" alt="banner" style="object-fit: contain;
                     width: 100%;
                     height: 100%;
-                    
                     z-index: 0;">
-                    
                 </div>
                 <div class="card-body"> 
                     <h5>Change this image</h5>
-                    <input class="form-control banner-input" type="file" accept="image/jpeg, image/jpg, image/png" name="bannerImage" required>
+                    <input class="form-control banner-input" type="file" accept="image/jpeg, image/jpg, image/png" name="bannerImage" >
                 </div>
             </div>
-            <div class="card">
-                <div class="card-body" style=" height: 500px;">
-                    <img src="" class="" alt="banner" style="object-fit: contain;
-                    
-                    width: 100%;
-                    height: 100%;
-                    
-                    z-index: 0;">
-                    
-                </div>
-                <div class="card-body"> 
-                    <h5>Change this image</h5>
-                    <input class="form-control banner-input" type="file" accept="image/jpeg, image/jpg, image/png" name="bannerImage" required>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-body" style=" height: 500px;">
-                    <img src="" class="" alt="banner" style="object-fit: contain;
-                    
-                    width: 100%;
-                    height: 100%;
-                    
-                    z-index: 0;">
-                    
-                </div>
-                <div class="card-body"> 
-                    <h5>Change this image</h5>
-                    <input class="form-control banner-input" type="file" accept="image/jpeg, image/jpg, image/png" name="bannerImage" required>
-                </div>
-            </div>
+            <% }) %>
+            
+            
             <input type="submit" class="btn btn-success" value="Save">
         </form>
         <!--  card-body.// -->

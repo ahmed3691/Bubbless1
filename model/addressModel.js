@@ -5,7 +5,7 @@ let connect = mongoose.connect(process.env.MONGO_URL);
 
 connect
   .then(() => {
-    console.log(`Adress DB connected`);
+   
   })
   .catch((err) => {
     console.log(`Adress model ${err}`);

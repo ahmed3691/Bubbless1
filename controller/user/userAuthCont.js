@@ -5,15 +5,24 @@ const jwt = require("jsonwebtoken");
 const { sendOtpMail } = require("../../config/userConfig");
 const {CartModel} = require('../../model/cartModel');
 const {ProductModel} = require('../../model/productModel')
-const{getUserId,getCartQty} = require('../../config/userConfig')
+const{getUserId,getCartQty} = require('../../config/userConfig');
+const {BannerModel} = require('../../model/adminBannerModel')
 
 const home = async (req, res) => {
   try {
+    
     const isAuthenticated = req.cookies.userAccessToken ?  true : false;
     const userId = req.userId;
     const cartQty = req.cookies.cartQty;
+    const banners = await BannerModel.findOne({})
     const products = await ProductModel.find({}).limit(8).populate('appliedOffer')
-    res.render("./user/home", { isAuthenticated,userId,cartQty,products });
+    res.render("./user/home", {
+      isAuthenticated,
+      userId,
+      cartQty,
+      products,
+      banners
+    });
   } catch (error) {
     console.log(error);
     res.render('./user/404')

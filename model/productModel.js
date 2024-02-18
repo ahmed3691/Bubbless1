@@ -4,7 +4,7 @@ let connect = mongoose.connect(process.env.MONGO_URL);
 
 connect
   .then(() => {
-    console.log(`product DB connected `);
+    
   })
   .catch((err) => {
     console.log(`DB error ${err}`);

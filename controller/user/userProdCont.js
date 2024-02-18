@@ -106,10 +106,12 @@ const categorisedProduct = async (req, res) => {
     const isAuthenticated = req.cookies.userAccessToken || false;
     const userId = getUserId(req.cookies.userAccessToken);
     const catName = req.params.catName;
-    const subCatName = req.params.subCatName;
+    const subCatName = req.params.subCatName=='All'? {$exists:true} : req.params.subCatName;
+    
     const cartQty = req.cookies.cartQty
     const pageNumber = parseInt(req.params.pageNumber || 0);
     const productsPerPage = 3;
+    const wishlist = await WishlistModel.findOne({userId})
     const totalPages = Math.ceil(await (ProductModel.countDocuments({
       isListed: true, category: catName, subCategory: subCatName
     })) / productsPerPage);
@@ -139,7 +141,8 @@ const categorisedProduct = async (req, res) => {
       cartQty,
       totalPages,
       pageNumber,
-      cartItems
+      cartItems,
+      wishlist: wishlist?.products
     });
   } catch (error) {
     console.log(error);

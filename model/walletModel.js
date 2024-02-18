@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const connect = mongoose.connect(process.env.MONGO_URL)
 
 connect.then(()=>{
-    console.log('wallet model connected')
+    
 }).catch((err)=>{
     console.log(err)
 });

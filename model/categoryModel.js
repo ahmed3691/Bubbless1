@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 let connect = mongoose.connect(process.env.MONGO_URL)
 
 connect.then(()=>{
-    console.log(`Category DB connected`)
+   
 }).catch((err)=>{
     console.log(`Category model ${err}`)
 })

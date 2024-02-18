@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 let connect = mongoose.connect(process.env.MONGO_URL);
 
-connect.then(()=>{ console.log(`Category DB connected`)
+connect.then(()=>{ 
 }).catch((err)=>{
     console.log(`Coupon model ${err}`)
 })
