@@ -174,20 +174,22 @@ const editProducts = async (req, res) => {
     const catId = await CatModel.findOne({ catName: productCat }).select("_id")
     const subCatId = await SubCatModel.findOne({ subCatName: productSubCat }).select("_id");
     const product = await ProductModel.findOne({_id:productId})
-    let newImagePath = product.productImages;
+    let newImagePath = product?.productImages;
     console.log("file names : ", req.files.productImages);
- 
-    for(let i=0;i<req.files.productImages.length;i++){
-      let imagePath = path.join(__dirname,'../../public',product.productImages[i]);
-      console.log(imagePath);
-      fs.unlink(imagePath,(err)=>{
-        if(err){
-          console.log( 'error deleting image',err);
-          return;
-        }
-      })
-      newImagePath[i] = '/admin/uploads/'+req.files.productImages[i].filename
+    if(req.files.productImages){
+      for(let i=0;i<req.files.productImages.length;i++){
+        let imagePath = path.join(__dirname,'../../public',product.productImages[i]);
+        console.log(imagePath);
+        fs.unlink(imagePath,(err)=>{
+          if(err){
+            console.log( 'error deleting image',err);
+            return;
+          }
+        })
+        newImagePath[i] = '/admin/uploads/'+req.files.productImages[i].filename
+      }
     }
+    
     console.log('newpath',newImagePath)
     const updateProd = await ProductModel.findByIdAndUpdate(productId, {
       productName: productName,

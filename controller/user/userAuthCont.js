@@ -180,6 +180,7 @@ const resendOtp = async (req, res) => {
         );
       
       }, 120000);
+      req.session.newUser = userEmail
       req.session.refferalCode = refferalCode
       res.redirect("/otp");
     
@@ -325,7 +326,6 @@ const sendResetPasswordEmail = (req,res)=>{
     console.log(error);
     res.render('./user/404')
   }
- 
 }
 
 const sendOTP = async (req,res)=>{
@@ -351,7 +351,7 @@ const resetPasswordOtp = async (req,res)=>{
 
     const user = await UserModel.findOne({userEmail})
 
-    if(!(user.userOtp == userOtp)) return res.render('./user/forgotPasswordOTP',{message:'Enterd OTP is wrong'});
+    if(!(user.userOtp == userOtp)) return res.render('./user/forgotPasswordOTP',{message:'Enterd OTP is wrong',userEmail});
 
     await UserModel.updateOne({userEmail},{$unset:{userOtp}});
 
@@ -364,13 +364,17 @@ const resetPasswordOtp = async (req,res)=>{
 
 const resetPassword = async (req,res)=>{
   try {
-    console.log(req.body);
+    
     const {newPassword,userEmail} = req.body;
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     const updatePassword = await UserModel.updateOne({userEmail},{$set:{userPassword:hashedPassword}});
-
-    res.render('./user/userLogin')
+    res.clearCookie("userAccessToken");
+    res.clearCookie('userId')
+    res.clearCookie('cartQty')
+    req.session.destroy();
+    res.redirect("/login");
+    // res.render('./user/userLogin')
   } catch (error) {
     console.log(error);
     res.render('./user/404')

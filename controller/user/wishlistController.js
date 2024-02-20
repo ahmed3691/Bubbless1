@@ -33,7 +33,6 @@ const addToWishlist = async (req,res)=>{
             {$addToSet:{products:new mongoose.Types.ObjectId(productId)}},
             {upsert:true}
             )
-        console.log(updateWishlist)
         res.send({added:true})
     } catch (error) {
         console.log(error);
@@ -58,8 +57,17 @@ const removeFromWishlist =  async(req,res)=>{
     }
 }
 
+const contact = async (req,res)=>{
+    const userId = req.user;
+    const isAuthenticated = req.cookies.userAccessToken || false;
+    const cartQty = await getCartQty(userId);
+
+    res.render('./user/contact',{isAuthenticated,cartQty})
+}
+
 module.exports = {
     getWishlist,
     addToWishlist,
-    removeFromWishlist
+    removeFromWishlist,
+    contact
 }

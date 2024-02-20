@@ -1,11 +1,33 @@
 <%- include("../user/layouts/header") %>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/kenwheeler/slick@1.8.1/slick/slick.css"/>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/kenwheeler/slick@1.8.1/slick/slick-theme.css"/>
 
 	<!--banner-->
 	<div class="banner" style="position: relative;">
-		
-		<img src="<%= banners.images[0] %>" id="image-1" class="banner-image" alt="" >
-		<!-- <img src="/images/bannerBack3.jpeg" id="image-2" class="banner-image" alt="" >
-		<img src="/images/bannerBack3.jpeg" id="image-3" class="banner-image" alt="" > -->
+		<div class="banner-slider">
+			<div class="banner-slide">
+				<img src="<%= banners.images[0] %>" id="image-1" class="banner-image" alt="" >
+			</div>
+			<div class="banner-slide">
+				<img src="<%= banners.images[1] %>" id="image-2" class="banner-image" alt="" >
+			</div>
+			<div class="banner-slide">
+				<img src="<%= banners.images[0] %>" id="image-3" class="banner-image" alt="" >
+			</div>
+		</div>
+		<script>
+			// $(document).ready(function() {
+				
+			// 	$('.banner-slider').slick({
+			// 		autoplay: true,
+			// 		autoplaySpeed: 3000,
+			// 		arrows: false,
+			// 		dots: true 
+			// 	});
+			// });
+
+		</script>
+		<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 		<div class="container">
 			<section class="rw-wrapper" >
 				<h1 class="rw-sentence">

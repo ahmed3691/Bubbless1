@@ -70,29 +70,35 @@ const orderConfirmation = async (req, res) => {
     try {
         const {paymentMethod,totalPrice,selectedCoupon} = req.body 
         
-        console.log(req.body)
+        
         const userId = req.user;
-        if(selectedCoupon){
-            const coupon = await CouponModel.findOne({_id:new mongoose.Types.ObjectId(selectedCoupon)})
-            if(coupon.couponType != 'Refferal'){
-                const updateUser = await UserModel.updateOne(
-                    {_id:userId},
-                    {$push:{usedCoupons: new mongoose.Types.ObjectId(selectedCoupon)}}
-                    )
-            }else{
-                const updateUser = await UserModel.updateOne({_id:userId},{$inc:{refferalCompleted:-1}})
+        async function manageCoupon(selectedCoupon){
+            if(selectedCoupon){
+                const coupon = await CouponModel.findOne({_id:new mongoose.Types.ObjectId(selectedCoupon)})
+                if(coupon.couponType != 'Refferal'){
+                    const updateUser = await UserModel.updateOne(
+                        {_id:userId},
+                        {$push:{usedCoupons: new mongoose.Types.ObjectId(selectedCoupon)}}
+                        )
+                console.log('coupon used');
+                }else{
+                    const updateUser = await UserModel.updateOne({_id:userId},{$inc:{refferalCompleted:-1}})
+                }
             }
         }
+        
         const userName = req.userName;
         if(paymentMethod == 'Online Payment'){
             const orderId = generateOrderId();
             razorPayRequest(orderId, parseInt(totalPrice))
-                .then(response=>{
+                .then(async response=>{
                     const newPayment = new PaymentModel({
                         userId,
                         paymentFor: 'Product Purchase',
+                        paymentIntitatedFor:'Placed Order',
                         ...response              
-                    })
+                    });
+                    await manageCoupon(selectedCoupon)
                  newPayment.save()
                     .then(()=>res.json(response))
                     .catch(()=>res.json(response))                             
@@ -103,7 +109,10 @@ const orderConfirmation = async (req, res) => {
                 })   
         }else{
             const orderId = generateOrderId();
-            placeOrder(req.body,userId,userName,orderId)
+            const orderPlace = await placeOrder(req.body,userId,userName,orderId);
+            console.log('orderPlaced',orderPlace)
+            if(!orderPlace) return res.json({COD:false})
+            await manageCoupon(selectedCoupon);
             res.json({ COD: true });
         }
     } catch (error) {

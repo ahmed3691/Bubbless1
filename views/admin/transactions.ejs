@@ -1,0 +1,69 @@
+<%- include("../admin/layouts/header") %>
+
+<section class="content-main">
+    <div class="content-header">
+        <h2 class="content-title">Transactions</h2>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                  
+                    <!-- card-header end// -->
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th>Paid</th>
+                                    <th>Method</th>
+                                    <th>Purpose</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% transactions.forEach((element)=>{ %>
+                                <tr>
+                                    <td><b><%= element._id %></b></td>
+                                    <td>&#x20B9; <%= (element.amount_paid)/100 %></td>
+                                    <td>RazorPay</td>
+                                    <td><%= element.paymentIntitatedFor %></td>
+                                    <td><%= new Date(element.createdAt).toDateString() %></td>
+                                    
+                                </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- table-responsive.// -->
+                </div>
+               
+                <!-- col end// -->
+            </div>
+            <!-- row end// -->
+        </div>
+        <!-- card-body // -->
+    </div>
+    <!-- card end// -->
+    <div class="pagination-area mt-30 mb-50">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-start">
+                <% if (pageNumber>0){ %>
+                    <li class="page-item">
+                        <a class="page-link" href="/admin/transactions/<%= pageNumber-1 %>"><i class="material-icons md-chevron_left"></i></a>
+                    </li>
+                    <% } %>
+                    <% for(let i=0;i<totalPages;i++){ %>
+                    <li class="page-item "><a class="page-link" href="/admin/transactions/<%= i%>"><%= i+1 %></a></li>
+                    <% } %>
+                    <% if(pageNumber<totalPages-1){ %>
+                    <li class="page-item">
+                        <a class="page-link" href="/admin/transactions/<%= pageNumber+1 %>"><i class="material-icons md-chevron_right"></i></a>
+                    </li>
+                <% } %>
+            </ul>
+        </nav>
+    </div>
+</section>
+
+<%- include("../admin/layouts/footer") %>

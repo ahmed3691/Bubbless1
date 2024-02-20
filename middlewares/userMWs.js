@@ -22,8 +22,7 @@ const userAuthentication = async (req,res,next)=>{
                   
                     next(); 
                 }else{
-                  
-                    res.render('./user/home',{products,banners})
+                    res.render('./user/userLogin')
                 }
             } catch (error) {
                 console.log('hmmm....expired token',error);
@@ -32,7 +31,7 @@ const userAuthentication = async (req,res,next)=>{
                     res.clearCookie('userId')
                     res.clearCookie('cartQty')
                     req.session.destroy();
-                    res.redirect('/');
+                    res.render('/user/userLogin')
                 }
             }
            
@@ -42,7 +41,8 @@ const userAuthentication = async (req,res,next)=>{
             
             if(req.path === '/login') return res.render('./user/userLogin',{message});
             if(req.path === '/register') return res.render('./user/userRegister');            
-            res.render('./user/home',{products,banners});
+            // res.render('./user/home',{products,banners});
+            res.render('./user/userLogin')
         }
 }
 

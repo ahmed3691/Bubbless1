@@ -32,13 +32,12 @@
 												transition: 0.4s;
 												cursor: pointer;"></i>
 										<% } %>
-										
 									</div>
-									
 									<div class="zoom-icon ">
 										<a class="picture" href="<%= allProducts[i].productImages[0] %>" rel="title"
-											class="b-link-stripe b-animate-go  thickbox"><i
-												class="glyphicon glyphicon-search icon "></i></a>
+											class="b-link-stripe b-animate-go  thickbox">
+											<i class="glyphicon glyphicon-search icon "></i>
+										</a>
 									</div>
 								</div>
 								<div class="mid-1">
@@ -51,7 +50,6 @@
 													<%= allProducts[i].productName %>
 												</a></h6>
 										</div>
-
 										<% if(allProducts[i].appliedOffer && allProducts[i]?.appliedOffer?.offerType == 'percentage' ){ %>
 											<span><%= allProducts[i].appliedOffer?.percentage %>% OFF</span>
 										<% }else if(allProducts[i].appliedOffer && allProducts[i]?.appliedOffer?.offerType == 'fixedAmount' ){ %>
@@ -79,9 +77,6 @@
 													<%= '\u20B9' +allProducts[i].price %>
 												</em></p>
 											<% } %>
-										<div class="block">
-											<div class="starbox small ghosting"> </div>
-										</div>
 										<div class="product" hidden><% allProducts[i] %></div>
 										<div class="clearfix"></div>
 									</div>
@@ -90,21 +85,13 @@
 							</div>
 						</div>
 						<% } %>
-							<div class="clearfix"></div>
+						<div class="clearfix"></div>
 				</div>
-				<script>
-					
-				</script>
 				<script>
 					$(document).ready(function(){
 						const originalPrice = $('.item_price');
 						const offerPrice = $('.offerPrice');
 						const product = $('.product');
-					
-
-						originalPrice.each(function(){
-							
-						})
 
 						$('.wishlist-icon').click(function(event){
 							event.preventDefault();
@@ -127,7 +114,6 @@
 								method: method,
 								data:{
 									productId,
-									
 								},
 								success:function(response){
 									console.log(response)
@@ -166,30 +152,40 @@
 			<div class="col-md-3 product-bottom">
 				<!--categories-->
 				<div class=" rsidebar span_1_of_left">
-					<h4 class="cate">Categories</h4>
+					<h4 class="cate">Filters</h4>
 					<ul class="menu-drop">
-						<li class="item1"><a href="#"><%= mainCat[0].catName %> </a>
+						<li class="item1"><a href="#">Brand</a>
 							<ul class="cute">
-								<% girlsCat.forEach(doc => { %>
-									<li class="subitem1"><a href="/categorised-products/<%= doc.category %>/<%= doc.subCatName %>"><%= doc.subCatName %> </a></li>
+								<% filters.brand.forEach(brand=>{ %>
+									<li class="subitem1">
+										<a href="/categorised-products?catName=<%= catName %>&subCatName=<%= encodeURIComponent(subCatName)%>&filterKey=brand&filterValue=<%=encodeURIComponent(brand.brand)%>&sort=0"><%= brand.brand %></a>
+									</li>
 								<% }) %>
 							</ul>
 						</li>
-						<li class="item2"><a href="#"><%= mainCat[1].catName %> </a>
+						<li class="item2"><a href="#">Size</a>
 							<ul class="cute">
-								<% boysCat.forEach(doc => { %>
-									<li class="subitem1"><a href="/categorised-products/<%= doc.category %>/<%= doc.subCatName %>"><%= doc.subCatName %> </a></li>
+								<% filters.size.forEach(size=>{ %>
+									<li class="subitem1"><a href="/categorised-products?catName=<%= catName %>&subCatName=<%= encodeURIComponent(subCatName)%>&filterKey=ageGap&filterValue=<%=encodeURIComponent(size.size)%>&sort=0"><%= size.size %></a></li>
 								<% }) %>
 							</ul>
 						</li>
-						<li class="item3"><a href="#"><%= mainCat[2].catName %> </a>
+						<li class="item3"><a href="#">Color</a>
 							<ul class="cute">
-								<% uniCat.forEach(doc => { %>
-									<li class="subitem1"><a href="/categorised-products/<%= doc.category %>/<%= doc.subCatName %>"><%= doc.subCatName %> </a></li>
+								<% filters.color.forEach(color=>{ %>
+									<li class="subitem1"><a href="/categorised-products?catName=<%= catName %>&subCatName=<%= encodeURIComponent(subCatName)%>&filterKey=color&filterValue=<%=encodeURIComponent(color.color)%>&sort=0"><%= color.color %></a></li>
 								<% }) %>
-								<!-- <li class="subitem1"><a href="product.html">Cute Kittens </a></li>
-								<li class="subitem2"><a href="product.html">Strange Stuff </a></li>
-								<li class="subitem3"><a href="product.html">Automatic Fails</a></li> -->
+							</ul>
+						</li>
+					</ul>
+				</div>
+				<div class=" rsidebar span_1_of_left">
+					<h4 class="cate">Sort by</h4>
+					<ul class="menu-drop">
+						<li class="item1"><a href="#">Price</a>
+							<ul class="cute">
+								<li class="subitem1"><a href="/categorised-products?catName=<%= catName %>&subCatName=<%= subCatName %>&sort=1">Low to High</a></li>
+								<li class="subitem1"><a href="/categorised-products?catName=<%= catName %>&subCatName=<%= subCatName %>&sort=-1">High to Low</a></li>
 							</ul>
 						</li>
 					</ul>
@@ -215,63 +211,12 @@
 					});
 				</script>
 				<!--//menu-->
-				<!-- <section class="sky-form">
-					<h4 class="cate">Discounts</h4>
-					<div class="row row1 scroll-pane">
-						<div class="col col-4">
-							<label class="checkbox"><input type="checkbox" name="checkbox" checked=""><i></i>Upto - 10%
-								(20)</label>
-						</div>
-						<div class="col col-4">
-							<label class="checkbox"><input type="checkbox" name="checkbox"><i></i>40% - 50% (5)</label>
-							<label class="checkbox"><input type="checkbox" name="checkbox"><i></i>30% - 20% (7)</label>
-							<label class="checkbox"><input type="checkbox" name="checkbox"><i></i>10% - 5% (2)</label>
-							<label class="checkbox"><input type="checkbox" name="checkbox"><i></i>Other(50)</label>
-						</div>
-					</div>
-				</section> -->
+				
 
 
-				<!---->
-				<!-- <section class="sky-form">
-					<h4 class="cate">Type</h4>
-					<div class="row row1 scroll-pane">
-						<div class="col col-4">
-							<label class="checkbox"><input type="checkbox" name="checkbox" checked=""><i></i>Sofa Cum
-								Beds (30)</label>
-						</div>
-						<div class="col col-4">
-							<label class="checkbox"><input type="checkbox" name="checkbox"><i></i>Bags (30)</label>
-							<label class="checkbox"><input type="checkbox" name="checkbox"><i></i>Caps & Hats
-								(30)</label>
-							<label class="checkbox"><input type="checkbox" name="checkbox"><i></i>Jackets & Coats
-								(30)</label>
-							<label class="checkbox"><input type="checkbox" name="checkbox"><i></i>Jeans (30)</label>
-							<label class="checkbox"><input type="checkbox" name="checkbox"><i></i>Shirts (30)</label>
-							<label class="checkbox"><input type="checkbox" name="checkbox"><i></i>Sunglasses
-								(30)</label>
-							<label class="checkbox"><input type="checkbox" name="checkbox"><i></i>Swimwear (30)</label>
-						</div>
-					</div>
-				</section> -->
-				<!-- <section class="sky-form">
-					<h4 class="cate">Brand</h4>
-					<div class="row row1 scroll-pane">
-						<div class="col col-4">
-							<label class="checkbox"><input type="checkbox" name="checkbox"
-									checked=""><i></i>Roadstar</label>
-						</div>
-						<div class="col col-4">
-							<label class="checkbox"><input type="checkbox" name="checkbox"><i></i>Levis</label>
-							<label class="checkbox"><input type="checkbox" name="checkbox"><i></i>Persol</label>
-							<label class="checkbox"><input type="checkbox" name="checkbox"><i></i>Nike</label>
-							<label class="checkbox"><input type="checkbox" name="checkbox"><i></i>Edwin</label>
-							<label class="checkbox"><input type="checkbox" name="checkbox"><i></i>New Balance</label>
-							<label class="checkbox"><input type="checkbox" name="checkbox"><i></i>Paul Smith</label>
-							<label class="checkbox"><input type="checkbox" name="checkbox"><i></i>Ray-Ban</label>
-						</div>
-					</div>
-				</section> -->
+				
+				
+				
 			</div>
 		
 		</div>

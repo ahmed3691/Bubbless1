@@ -2,10 +2,11 @@ const { ProductModel } = require("../../model/productModel");
 const { SubCatModel, CatModel } = require("../../model/categoryModel");
 const { get } = require("../../routers/userRoute");
 const { CartModel } = require("../../model/cartModel");
-const { getUserId, getCartQty } = require("../../config/userConfig");
+const { getUserId, getCartQty,getFilters } = require("../../config/userConfig");
 const {CouponModel} = require('../../model/couponModel');
 const { UserModel } = require("../../model/usersModel");
 const {WishlistModel} = require('../../model/wishlistModel')
+
 
 
 const viewAllProducts = async (req, res) => {
@@ -13,13 +14,17 @@ const viewAllProducts = async (req, res) => {
     const isAuthenticated = req.cookies.userAccessToken || false;
     const userId = getUserId(req.cookies.userAccessToken)
     const searchKey = req.query.searchKey;
+    const catName =  {$exists:true}
+    const subCatName =  {$exists:true} 
     const wishlist = await WishlistModel.findOne({userId})
     const pageNumber = parseInt(req.params.pageNumber || 0);
-    const productsPerPage = 3;
+    const productsPerPage = 6;
+
     const totalPages = Math.ceil(await (ProductModel.countDocuments({
       isListed: true,
       productName: { $regex: new RegExp(searchKey, 'i') }
     })) / productsPerPage);
+
     const allProducts = await ProductModel
       .find({
         isListed: true,
@@ -29,42 +34,102 @@ const viewAllProducts = async (req, res) => {
       .skip(pageNumber * productsPerPage)
       .limit(productsPerPage)
       .populate('appliedOffer');
-    const mainCat = await CatModel.find({});
+    
     const userCart = await CartModel.find({ userId: userId });
+    
+    const filters = await getFilters(catName,subCatName);
 
-
-    cartItems = userCart[0]?.items.map((item) => {
+    cartItems = userCart[0]?.items.map((item) => { 
       return item?.productId.toString();
     });
-    function getCategory(category) {
-      return SubCatModel.find({ category: `${category}` });
-    }
 
-    const boysCat = await getCategory("Boys");
-    const girlsCat = await getCategory("Girls");
-    const uniCat = await getCategory("Unisex");
     const cartQty = await getCartQty(userId)
 
-
-
     res.render("./user/products", {
-      allProducts: allProducts,
-      mainCat: mainCat,
-      boysCat: boysCat,
-      girlsCat: girlsCat,
-      uniCat: uniCat,
+      allProducts,
       isAuthenticated,
       cartQty,
       userId,
       cartItems,
       pageNumber,
       totalPages,
-      wishlist: wishlist?.products
+      wishlist: wishlist?.products,
+      catName:'All',
+      subCatName:'All',
+      sort:0,
+      filters
     });
     } catch (error) {
       console.log(error)
       res.render('./user/404')
     }
+};
+
+const categorisedProduct = async (req, res) => {
+  try {
+
+    const isAuthenticated = req.cookies.userAccessToken || false;
+    const userId = getUserId(req.cookies.userAccessToken);
+    const filterKey = req.query.filterKey;
+    const filterValue = req.query.filterValue;
+    console.log(filterKey,filterValue)
+    const catName = req.query.catName =='All' ? {$exists:true} : req.query.catName;
+    const subCatName = req.query.subCatName=='All'? {$exists:true} : req.query.subCatName;
+    const sort =  req.query.sort == '0' ? -1 : parseInt(req.query.sort);
+    const sortKey = sort == 0 ? 'createdAt' : 'price';
+    const filters = await getFilters(catName,subCatName);
+    const cartQty = req.cookies.cartQty
+    const pageNumber = parseInt(req.params.pageNumber || 0);
+    const productsPerPage = 6;
+
+    const wishlist = await WishlistModel.findOne({userId})
+    const totalPages = Math.ceil(await (ProductModel.countDocuments({
+      isListed: true, category: catName, subCategory: subCatName,[filterKey]:filterValue
+    })) / productsPerPage);
+
+   
+   
+    const allProducts = await ProductModel
+      .find({
+        $and:[
+          {category: catName},
+          {subCategory: subCatName},
+          {isListed: true},
+          {[filterKey]:filterValue}
+        ] 
+      }) 
+      .skip(pageNumber * productsPerPage)
+      .limit(productsPerPage)
+      .sort({[sortKey]:sort});
+    console.log(allProducts)
+    const userCart = await CartModel.find({ userId: userId });
+
+    cartItems = userCart[0]?.items.map((item) => {
+      return item?.productId.toString();
+    });
+
+    const subCategory = typeof subCatName == 'object' ? "All" : subCatName;
+    const category = typeof catName == 'object' ? 'All' : catName;
+    
+    res.render("./user/products", {
+      allProducts,
+      isAuthenticated,
+      cartQty,
+      totalPages,
+      pageNumber,
+      cartItems,
+      wishlist: wishlist?.products,
+      catName:category,
+      subCatName:subCategory,
+      sort,
+      filters 
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.render('./user/404')
+  }
+  
 };
 
 const singleProduct = async (req, res) => {
@@ -92,7 +157,8 @@ const singleProduct = async (req, res) => {
       isAuthenticated,
       userId,
       cartQty,
-      coupons
+      coupons,
+     
     });
   } catch (error) {
     console.log(error);
@@ -101,55 +167,7 @@ const singleProduct = async (req, res) => {
 
 };
 
-const categorisedProduct = async (req, res) => {
-  try {
-    const isAuthenticated = req.cookies.userAccessToken || false;
-    const userId = getUserId(req.cookies.userAccessToken);
-    const catName = req.params.catName;
-    const subCatName = req.params.subCatName=='All'? {$exists:true} : req.params.subCatName;
-    
-    const cartQty = req.cookies.cartQty
-    const pageNumber = parseInt(req.params.pageNumber || 0);
-    const productsPerPage = 3;
-    const wishlist = await WishlistModel.findOne({userId})
-    const totalPages = Math.ceil(await (ProductModel.countDocuments({
-      isListed: true, category: catName, subCategory: subCatName
-    })) / productsPerPage);
-    const allProducts = await ProductModel
-      .find({ category: catName, subCategory: subCatName, isListed: true })
-      .skip(pageNumber * productsPerPage)
-      .limit(productsPerPage);
 
-    const userCart = await CartModel.find({ userId: userId });
-    const mainCat = await CatModel.find({});
-    const boysCat = await SubCatModel.find({ category: "Boys" });
-    const girlsCat = await SubCatModel.find({ category: "Girls" });
-    const uniCat = await SubCatModel.find({ category: "Unisex" });
-
-    cartItems = userCart[0]?.items.map((item) => {
-      return item?.productId.toString();
-    });
-
-
-    res.render("./user/products", {
-      allProducts,
-      mainCat: mainCat,
-      boysCat: boysCat,
-      girlsCat: girlsCat,
-      uniCat: uniCat,
-      isAuthenticated,
-      cartQty,
-      totalPages,
-      pageNumber,
-      cartItems,
-      wishlist: wishlist?.products
-    });
-  } catch (error) {
-    console.log(error);
-    res.render('./user/404')
-  }
-  
-};
 
 const searchProducts = async (req, res) => {
   try {

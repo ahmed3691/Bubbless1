@@ -92,31 +92,6 @@
                         <canvas id="myChart2" height="217"></canvas>
                     </article>
                 </div>
-                <!-- <div class="card mb-4">
-                    <article class="card-body">
-                        <h5 class="card-title">Marketing Chanel</h5>
-                        <span class="text-muted font-xs">Facebook</span>
-                        <div class="progress mb-3">
-                            <div class="progress-bar" role="progressbar" style="width: 15%">15%</div>
-                        </div>
-                        <span class="text-muted font-xs">Instagram</span>
-                        <div class="progress mb-3">
-                            <div class="progress-bar" role="progressbar" style="width: 65%">65%</div>
-                        </div>
-                        <span class="text-muted font-xs">Google</span>
-                        <div class="progress mb-3">
-                            <div class="progress-bar" role="progressbar" style="width: 51%">51%</div>
-                        </div>
-                        <span class="text-muted font-xs">Twitter</span>
-                        <div class="progress mb-3">
-                            <div class="progress-bar" role="progressbar" style="width: 80%">80%</div>
-                        </div>
-                        <span class="text-muted font-xs">Other</span>
-                        <div class="progress mb-3">
-                            <div class="progress-bar" role="progressbar" style="width: 80%">80%</div>
-                        </div>
-                    </article>
-                </div> -->
             </div>
         </div>
         <div class="card mb-4">
@@ -169,11 +144,10 @@
                                         </td>
                                         <td><%= order.paymentMethod %></td>
                                         <td>
-                                            <a href="#" class="btn btn-xs"> View details</a>
+                                            <a href="/admin/order-details/<%= order._id %>" class="btn btn-xs"> View details</a>
                                         </td>
                                     </tr>
                                     <% }) %>
-                                    
                                 <% } %>
                             </tbody>
                             
@@ -222,9 +196,6 @@
             return response.json();
         })
         .then(data=>{
-           
-    
-            console.log(data)
 
             chart.data.datasets[0].data = data.placedOrders;
             chart.data.datasets[1].data = data.deliveredOrders;
@@ -235,9 +206,14 @@
             myChart.data.datasets[0].data.push(data.inventory[0].totalProducts);
             myChart.data.datasets[0].data.push(data?.inventory[1]?.totalProducts);
             myChart?.data?.datasets[0]?.data?.push(data?.inventory[2]?.totalProducts);
-       
-            myChart2.data.datasets[0].data.push(data.analytics[0].totalRevenue);
-            myChart2.data.datasets[1].data.push(data.analytics[0].productsSold)
+            
+            data.analytics.forEach(element => {
+                myChart2.data.datasets[0].data[(element._id)-1] = element.totalRevenue;
+                myChart2.data.datasets[1].data[(element._id)-1] = element.productsSold;
+            });
+
+            // myChart2.data.datasets[0].data.push(data.analytics[0].totalRevenue);
+            // myChart2.data.datasets[1].data.push(data.analytics[0].productsSold)
             chart.update();
             myChart.update();
             myChart2.update(); 

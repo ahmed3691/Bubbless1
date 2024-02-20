@@ -154,9 +154,9 @@
         productPrice.value = value;
 
       })
-
+      
       productQty.addEventListener('input',()=>{
-        console.log('enter num')
+        
         let value = productQty.value;
         value = value.replace(/^0+/, '');
 

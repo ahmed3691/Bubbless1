@@ -95,6 +95,7 @@
             }
         });
 
+    ///Monthly report...................................................................
 
         var ctx3 = document.getElementById("monthlyData");
         var myChart2 = new Chart(ctx3, {

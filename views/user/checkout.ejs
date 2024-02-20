@@ -163,11 +163,6 @@
                                             <p class="mb-2 fw-bold" id="originalPrice">&#x20B9; <%= product.price*productQty %></p>
                                         <% } %>
                                     </div>
-                                    <!-- <div class="input-group mt-3 mb-4">
-                                        <input type="text" class="form-control border" name=""
-                                            placeholder="Promo code" />
-                                        <button class="btn btn-light text-primary border">Apply</button>
-                                    </div> -->
                                     <div class="col-md-12">
                                         <p> <b>Wallet Balance:</b> &#x20B9;<span id="walletBalance"><%= userWallet?.amount %></span></p>
                                     </div>
@@ -265,10 +260,10 @@
                                                 <input type="radio" name="paymentMethod" value="Online Payment" id="onlinePayment" class="paymentOptions custom-control-input">
                                                 <label class="custom-control-label" >Online Payment</label>
                                             </div>
-                                            <div class="custom-control custom-radio">
+                                            <div class="custom-control custom-radio" >
                                                 <input type="radio" name="paymentMethod" value="Wallet Payment" id="walletPayment"
                                                     class="paymentOptions custom-control-input">
-                                                <label class="custom-control-label" for="walletPayment">Pay Using Wallet Money</label>
+                                                <label class="custom-control-label" for="walletPayment" >Pay Using Wallet Money</label>
                                             </div>  
                                         </div>
                                         <hr />
@@ -316,25 +311,23 @@
             $('#addAddress').toggle();
 
         })
-        $('#checkoutForm').submit(function (event) {
-            console.log('form submitted')
-        })
-
-        const totalPrice = $('#totalPrice').val();
-        const walletBalance = $('#walletBalance').text();
-       
-     
-
+        
+        const walletPayment = $('#walletPayment')
+        const totalPrice = parseInt($('#totalPrice').val());
+        const walletBalance = parseInt($('#walletBalance').text());
+        if(walletBalance<totalPrice){
+            $('#walletPayment').prop('disabled',true);
+        }
+        
         $('#submitBtn').on('click',function(event){
             event.preventDefault();
            
-
             if (!formHasData()) {
                 event.preventDefault();
                 return alert('Please specify an address and payment method')
             }
             function formHasData() {
-                console.log('formaData checking')
+                
                 const addAddres = $('#fullName').val().trim() !== '' && $('#phoneNUmber').val().trim() !== '' &&
                     $('#house').val().trim() !== '' && $('#city').val().trim() !== '' &&
                     $('#pincode').val().trim() !== '';
@@ -354,9 +347,11 @@
                 type: 'POST',
                 data: formData,
                 success: function(response){
-                    
+                    console.log(response)
                     if(response.COD){
                         location.href = '/order-success';
+                    }else if(!response.COD){
+                        return alert('Sorry, Out of Stock')
                     }else{
                         console.log(response)
                         razorPayPayment(response)

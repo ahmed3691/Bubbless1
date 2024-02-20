@@ -58,7 +58,10 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		<div class="container">
 			<div class="head">
 				<div class=" logo">
-					<a href="index.html"><img src="/images/logo.png" alt=""></a>
+					<a href="/">
+						<img src="/images/logo.png" alt="">
+						
+					</a>
 				</div>
 			</div>
 		</div>
@@ -89,13 +92,12 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 				</div>
 				<div class="col-sm-5 header-social">
 					<ul>
-						<li><a href="#"><i></i></a></li>
-						<li><a href="#"><i class="ic1"></i></a></li>
-						<li><a href="#"><i class="ic2"></i></a></li>
-						<li><a href="#"><i class="ic3"></i></a></li>
-						<li><a href="#"><i class="ic4"></i></a></li>
 						<% if(locals.isAuthenticated){ %>
-							<li><a href="/logout" class="ic4">Logout</a></li>
+							<li><a href="/logout" class="">
+								<span class="material-symbols-outlined" style="color:red">
+									settings_power
+									</span>
+							</a></li>
 							<% } %>
 					</ul>
 				</div>
@@ -127,9 +129,11 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 												<div class="h_nav">
 													<h4>Boys</h4>
 													<ul>
-														<li><a href="/categorised-products/Boys/All">All</a></li>
+														<!-- <li><a href="/categorised-products/Boys/All/0">All</a></li> -->
+														<li><a href="/categorised-products?catName=Boys&subCatName=All&sort=0">All</a></li>
 														<% categories.boys.forEach(cat=>{ %>
-														<li><a href="/categorised-products/Boys/<%= cat.category %>"><%= cat.category %></a></li>
+														<li><a href="/categorised-products?catName=Boys&subCatName=<%= cat.category %>&sort=0"><%= cat.category %></a></li>
+														<!-- <li><a href="/categorised-products/Boys/<%= cat.category %>/0"><%= cat.category %></a></li> -->
 														<% }) %>
 													</ul>
 												</div>
@@ -138,9 +142,11 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 												<div class="h_nav">
 													<h4>Girls</h4>
 													<ul>
-														<li><a href="/categorised-products/Girls/All">All</a></li>
+														<!-- <li><a href="/categorised-products/Girls/All/0">All</a></li> -->
+														<li><a href="/categorised-products?catName=Girls&subCatName=All&sort=0">All</a></li>
 														<% categories.girls.forEach(cat=>{ %>
-															<li><a href="/categorised-products/Girls/<%= cat.category %>"><%= cat.category %></a></li>
+															<!-- <li><a href="/categorised-products/Girls/<%= cat.category %>/0"><%= cat.category %></a></li> -->
+															<li><a href="/categorised-products?catName=Girls&subCatName=<%= encodeURIComponent(cat.category.trim()) %>&sort=0"><%= cat.category %></a></li>
 														<% }) %>
 													</ul>
 												</div>
@@ -149,9 +155,11 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 												<div class="h_nav">
 													<h4>Unisex</h4>
 													<ul>
-														<li><a href="/categorised-products/Unisex/All">All</a></li>
+														<!-- <li><a href="/categorised-products/Unisex/All/0">All</a></li> -->
+														<li><a href="/categorised-products?catName=Unisex&subCatName=All&sort=0">All</a></li>
 														<% categories.unisex.forEach(cat=>{ %>
-															<li><a href="/categorised-products/Unisex/<%= cat.category %>"><%= cat.category %></a></li>
+															<li><a href="/categorised-products?catName=Unisex&subCatName=<%= cat.category %>&sort=0"><%= cat.category %></a></li>
+															<!-- <li><a href="/categorised-products/Unisex/<%= cat.category %>/0"><%= cat.category %></a></li> -->
 														<% }) %>
 													</ul>
 												</div>
@@ -163,76 +171,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 										</div>
 									</div>
 								</li>
-								<!-- <li class="dropdown mega-dropdown active">
-									<a class="color2" href="#" class="dropdown-toggle" data-toggle="dropdown">girls<span
-											class="caret"></span></a>
-									<div class="dropdown-menu mega-dropdown-menu">
-										<div class="menu-top">
-											<div class="col1">
-												<div class="h_nav">
-													<h4>Submenu1</h4>
-													<ul>
-														<li><a href="product.html">Accessories</a></li>
-														<li><a href="product.html">Bags</a></li>
-														<li><a href="product.html">Caps & Hats</a></li>
-														<li><a href="product.html">Hoodies & Sweatshirts</a></li>
-
-													</ul>
-												</div>
-											</div>
-											<div class="col1">
-												<div class="h_nav">
-													<h4>Submenu2</h4>
-													<ul>
-														<li><a href="product.html">Jackets & Coats</a></li>
-														<li><a href="product.html">Jeans</a></li>
-														<li><a href="product.html">Jewellery</a></li>
-														<li><a href="product.html">Jumpers & Cardigans</a></li>
-														<li><a href="product.html">Leather Jackets</a></li>
-														<li><a href="product.html">Long Sleeve T-Shirts</a></li>
-													</ul>
-												</div>
-											</div>
-											<div class="col1">
-												<div class="h_nav">
-													<h4>Submenu3</h4>
-
-													<ul>
-														<li><a href="product.html">Shirts</a></li>
-														<li><a href="product.html">Shoes, Boots & Trainers</a></li>
-														<li><a href="product.html">Sunglasses</a></li>
-														<li><a href="product.html">Sweatpants</a></li>
-														<li><a href="product.html">Swimwear</a></li>
-														<li><a href="product.html">Trousers & Chinos</a></li>
-
-													</ul>
-
-												</div>
-											</div>
-											<div class="col1">
-												<div class="h_nav">
-													<h4>Submenu4</h4>
-													<ul>
-														<li><a href="product.html">T-Shirts</a></li>
-														<li><a href="product.html">Underwear & Socks</a></li>
-														<li><a href="product.html">Vests</a></li>
-														<li><a href="product.html">Jackets & Coats</a></li>
-														<li><a href="product.html">Jeans</a></li>
-														<li><a href="product.html">Jewellery</a></li>
-													</ul>
-												</div>
-											</div>
-											<div class="col1 col5">
-												<img src="images/me1.png" class="img-responsive" alt="">
-											</div>
-											<div class="clearfix"></div>
-										</div>
-									</div>
-								</li> -->
 								<li><a class="color3" href="/products/0">Store</a></li>
-								<li><a class="color4" href="404.html">About</a></li>
-								<li><a class="color5" href="typo.html">Short Codes</a></li>
-								<li><a class="color6" href="contact.html">Contact</a></li>
+								<li><a class="color6" href="/contact">Contact</a></li>
 							</ul>
 						</div>
 					</nav>

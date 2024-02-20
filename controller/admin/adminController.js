@@ -138,7 +138,7 @@ const analytics = async (req,res)=>{
 
     const analytics = await OrdersModel.aggregate([
         {$group:{
-            _id:null,
+            _id:{$month:'$createdAt'},
             totalRevenue:{
                 $sum:{
                     $cond:[
@@ -162,7 +162,7 @@ const analytics = async (req,res)=>{
             }
         }}
     ]);
-
+    console.log(analytics);
     const inventory = await ProductModel.aggregate([
     {
         $group:{

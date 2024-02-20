@@ -8,7 +8,8 @@ const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const { resolve } = require("path");
 const { WalletModel } = require("../model/walletModel");
-const {PaymentModel} = require('../model/paymentModel')
+const {PaymentModel} = require('../model/paymentModel');
+const {ProductModel} = require('../model/productModel')
 
 async function sendOtpMail(userEmail) {
   let randomNumber = Math.floor(1000 + Math.random() * 9000);
@@ -110,8 +111,9 @@ function razorPayRequest(orderId, amount) {
   })
 }
 
-const placeOrder = async (body,userId,userName,orderId)=>{
 
+
+const placeOrder = async (body,userId,userName,orderId)=>{
 
   const {fullName,phoneNUmber,email,house,landMark,city,district,state,pincode,selectedAddress,deliveryInstruction,totalPrice,productId,orderProductQty,
       productPrice,
@@ -119,7 +121,18 @@ const placeOrder = async (body,userId,userName,orderId)=>{
       cartId,
   } = body;
 
-  console.log('product price',productPrice)
+  async function checkForStock(products){
+    for(product of products){
+      prod = await ProductModel.findOne({_id:product.productId});
+      if(prod.stockQty < product.quantity){
+        console.log('out of stock');
+        return false
+      }else{
+        console.log('stock is ok')
+      }
+    }
+    return true;
+  }
 
   let products = [];
 
@@ -133,8 +146,11 @@ const placeOrder = async (body,userId,userName,orderId)=>{
           userId:0, 
       }
     );
-    console.log('userCart====>',userCart)
+      
     products =  userCart.items;
+    const stock = await checkForStock(products);
+    if(!stock) return false;
+    console.log('products===>',products)
     await CartModel.deleteOne({_id:cartId})
   
 }else{
@@ -143,7 +159,10 @@ const placeOrder = async (body,userId,userName,orderId)=>{
     quantity: orderProductQty,
     totalPrice: productPrice
   }
-  products.push(obj)
+  products.push(obj);
+  const stock = await checkForStock(products);
+  console.log('stock',stock)
+  if(!stock) return false;
 }
 
 
@@ -176,8 +195,8 @@ const placeOrder = async (body,userId,userName,orderId)=>{
       paymentFor: 'Wallet Debit',
       paymentIntitatedFor:'Placed Order',
       entity: 'order',
-      amount:totalPrice,
-      amount_paid: totalPrice,
+      amount:(totalPrice*100),
+      amount_paid: (totalPrice*100),
       amount_due: 0,
       currenc: 'INR',
       receipt: orderId,
@@ -219,6 +238,36 @@ const placeOrder = async (body,userId,userName,orderId)=>{
   return orderId;
 }
 
+async function getFilters(catName,subCatName){
+
+  filters = await ProductModel.aggregate([
+    {
+      $match:{
+        category:catName,
+        subCategory:subCatName
+      }
+    },
+    {
+      $facet:{
+        brand:[
+          {$group:{_id:'$brand'}},
+          {$project:{_id:0,brand:"$_id"}}
+        ],
+        size:[
+          {$group:{_id:'$ageGap'}},
+          {$project:{_id:0,size:"$_id"}}
+        ],
+        color:[
+          {$group:{_id:"$color"}},
+          {$project:{_id:0,color:"$_id"}}
+        ]
+      }
+    }
+  ]);
+  
+  return filters[0];
+}
+
 module.exports = {
   sendOtpMail,
   getUserId,
@@ -226,5 +275,6 @@ module.exports = {
   generateOrderId,
   convertToArray,
   razorPayRequest,
-  placeOrder
+  placeOrder,
+  getFilters
 };

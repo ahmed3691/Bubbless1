@@ -54,13 +54,9 @@
 
 				</div>
 				<div class="col-md-6 login-right">
-					<h3>Completely Free Account</h3>
+					<h3>Existing user</h3>
 
-					<p>Pellentesque neque leo, dictum sit amet accumsan non, dignissim ac mauris. Mauris rhoncus, lectus
-						tincidunt tempus aliquam, odio
-						libero tincidunt metus, sed euismod elit enim ut mi. Nulla porttitor et dolor sed condimentum.
-						Praesent porttitor lorem dui, in pulvinar enim rhoncus vitae. Curabitur tincidunt, turpis ac
-						lobortis hendrerit, ex elit vestibulum est, at faucibus erat ligula non neque.</p>
+					<p>Already have an account? Login here</p>
 					<a href="/login" class="hvr-skew-backward">Login</a>
 
 				</div>
@@ -94,7 +90,8 @@
 
 		function validatePhoneNUmber(){
 			let inputNumber = $('#phoneNumber').val();
-			if(inputNumber.length>9 && notBlank(inputNumber)){
+			const phNumRegex = /^(?!([0-9])\1+$)\d+$/
+			if(inputNumber.length>9 && inputNumber.length<=15 && notBlank(inputNumber) && phNumRegex.test(inputNumber)){
 				$('#phoneNumberAlert').prop('hidden',true);
 				return true;
 			}else{

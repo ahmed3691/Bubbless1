@@ -6,11 +6,12 @@ const { UserModel } = require('../../model/usersModel')
 const getOrders = async (req,res)=>{
     const pageNumber = parseInt(req.params.pageNumber);
     const ordersPerPage = 6;
-    console.log(pageNumber)
+    console.log(pageNumber);
     const totalPages =  Math.ceil(await( OrdersModel.countDocuments())/ordersPerPage)
     const orders = await OrdersModel.find({})
         .skip(pageNumber* ordersPerPage).
         limit(ordersPerPage)
+        .sort({createdAt:-1})
 
     res.render('./admin/adminOrders',{orders,totalPages,pageNumber})
 }

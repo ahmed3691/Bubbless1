@@ -1,20 +1,15 @@
-const express = require("express")
-const router = express.Router()
-const mongoose = require('mongoose')
-const {ProductModel} = require("../model/productModel");
-const userController = require("../controller/user/userAuthCont")
-const {UserModel} = require("../model/usersModel")
-const bcrypt = require("bcrypt");
-const session = require("express-session");
-const validator = require("validator")
-const userProdCont = require('../controller/user/userProdCont')
-const userDataController = require('../controller/user/userDataController')
-const refferalController = require('../controller/user/refferalController')
+const express = require("express");
+const router = express.Router();
 
-const {userAuthentication,fetchHeaderElements} = require('../middlewares/userMWs');
-const {ejsError} = require('../middlewares/errorMW')
+const userProdCont = require('../controller/user/userProdCont');
+const userDataController = require('../controller/user/userDataController');
+const refferalController = require('../controller/user/refferalController');
+const userController = require("../controller/user/userAuthCont");
 const userBuyController = require('../controller/user/userPurchaseController');
 const wishlistController = require('../controller/user/wishlistController');
+const {userAuthentication,fetchHeaderElements} = require('../middlewares/userMWs');
+const {ejsError} = require('../middlewares/errorMW')
+
 
 const { route } = require("./adminRoute");
 
@@ -24,7 +19,7 @@ router.use(fetchHeaderElements)
 //User login signup....................................................................
 
 router.route(`/`)
-    .get(userAuthentication,userController.home);
+    .get(userController.home);
 router.route("/login")
     .get(userAuthentication,userController.login)
     .post(userController.loginUser);
@@ -41,7 +36,7 @@ router.route("/resend-otp")
     .post(userController.resendOtp);
 router.route('/forgot-password')
     .get(userAuthentication,userController.sendOtpForNewPassword)
-    .post(userAuthentication,userController.verifyOtpForNewPassword)
+    .post(userAuthentication,userController.verifyOtpForNewPassword);
 router.route('/change-password')
     .post(userAuthentication,userController.changePassword);
 router.route('/reset-password-email')
@@ -50,7 +45,7 @@ router.route('/reset-password-email')
 router.route('/send-OTP')
     .post(userController.sendOTP);
 router.route('/reset-password')
-    .post(userController.resetPassword)
+    .post(userController.resetPassword);
 
 //user products management..............................................................
 
@@ -58,7 +53,7 @@ router.route('/products/:pageNumber')
     .get(userProdCont.viewAllProducts);
 router.route('/single-product/:prodId')
     .get(userProdCont.singleProduct);
-router.route('/categorised-products/:catName/:subCatName')
+router.route('/categorised-products')
     .get(userProdCont.categorisedProduct);
 router.route('/search-products/:searchKey')
     .get(userProdCont.searchProducts)
@@ -135,6 +130,10 @@ router.route('/refferal-code')
     .patch(userAuthentication,refferalController.createRefferalCode);
 router.route('/user-signup/:refferalCode')
     .get(refferalController.refferalSignup);
+
+//misc routes.........
+router.route('/contact')
+    .get(wishlistController.contact)
 
 //all other rouuts
 

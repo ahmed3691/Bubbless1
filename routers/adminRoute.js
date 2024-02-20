@@ -11,7 +11,8 @@ const adminCatController = require("../controller/admin/categoryController")
 const adminOrderController = require('../controller/admin/adminOrderController');
 const adminSalesController = require('../controller/admin/reportController');
 const adminDiscountController = require('../controller/admin/discountsController');
-const siteSettingsController = require('../controller/admin//websiteSettingsController')
+const siteSettingsController = require('../controller/admin//websiteSettingsController');
+const {ejsErrorAdmin} = require('../middlewares/errorMW')
 
 
 const storage = multer.diskStorage({
@@ -103,6 +104,8 @@ adminRouter.route('/sales-report')
   .get(adminAuth,adminSalesController.salesReport)
 adminRouter.route('/sales-data/:from/:to')
   .get(adminAuth,adminSalesController.salesData);
+adminRouter.route('/transactions/:pageNumber')
+  .get(adminAuth,adminSalesController.getTransactions)
 
 
   //offers and discounts.....................
@@ -141,8 +144,9 @@ adminRouter.route('/sales-data/:from/:to')
 adminRouter.route('*')
     .get((req,res)=>{
         res.render('./admin/404')
-       
     })
+  
+adminRouter.use(ejsErrorAdmin)
 
 module.exports = adminRouter;
 

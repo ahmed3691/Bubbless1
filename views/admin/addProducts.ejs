@@ -20,10 +20,12 @@
                             <div class="mb-4">
                                 <label for="productName" class="form-label">Product title</label>
                                 <input type="text" placeholder="Product name" class="form-control" id="productName" name="productName" required/>
+                                <p hidden style="color: red;">hi</p>
                             </div>
                             <div class="mb-4">
                                 <label class="form-label" for="productDesc">Full description</label>
                                 <textarea placeholder="Type here" class="form-control" rows="4" id="productDesc" name="productDesc" required></textarea>
+                                <p hidden style="color: red;"></p>
                             </div>
                             <div class="row">
                                 <div class="col-lg-4">
@@ -32,6 +34,7 @@
                                         <div class="row gx-2">
                                             <input placeholder="Brand Name" type="text" class="form-control" id="productBrand" 
                                             name="productBrand"  required/>
+                                            <p hidden style="color: red;"></p>
                                         </div>
                                     </div>
                                 </div>
@@ -41,6 +44,7 @@
                                         <div class="row gx-2">
                                             <input placeholder="Color" type="text" class="form-control" id="productColor" 
                                             name="productColor"  required/>
+                                            <p hidden style="color: red;"></p>
                                         </div>
                                     </div>
                                 </div>
@@ -48,9 +52,10 @@
                                     <div class="mb-4">
                                         <label class="form-label" for="productPrice">Price</label>
                                         <div class="row gx-2">
-                                            <input placeholder="&#8377;" type="text" class="form-control" id="productPrice" 
+                                            <input placeholder="&#8377;" type="number" class="form-control" id="productPrice" 
                                             name="productPrice"  required/>
                                         </div>
+                                        <p hidden style="color: red;"></p>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
@@ -71,19 +76,6 @@
                                             name="productQty" required/>
                                     </div>
                                 </div>
-                                <!-- <div class="col-lg-4">
-                                    <div class="mb-4">
-                                        <label class="form-label" for="productSize">Size</label>
-                                        <select class="form-select" name="productSize" id="productSize" required>
-                                            <option>X-Small</option>
-                                            <option>Small</option>
-                                            <option>Medium</option>
-                                            <option>Large</option>
-                                            <option>X-Large</option>
-                                            <option>XX-Large</option>
-                                        </select>
-                                    </div>
-                                </div> -->
                                 <div class="col-lg-4">
                                     <div class="mb-4">
                                         <label class="form-label" for="productCat">Category</label>
@@ -110,13 +102,63 @@
                                 <div class="card-body">
                                     <div>
                                         <label class="form-label">Choose upto 4 pictures</label>
-                                        <input class="form-control" id="image-input" type="file" multiple name="productImages"  required />
+                                        <input class="form-control" accept="image/jpeg, image/png, image/webp" id="image-input" type="file" multiple name="productImages"  required />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded',function(){
+                        const productName = document.getElementById('productName');
+                        const productDesc = document.getElementById('productDesc');
+                        const productBrand = document.getElementById('productBrand');
+                        const productPrice = document.getElementById('productPrice');
+                        const productColor = document.getElementById('productColor');
+                        const englishLetters = /^[A-Za-z\s]+$/;
+                        const descRegex = /^[a-zA-Z0-9\s!@#$%^&*()-_=+[\]{}|;:'",.<>?/]+$/;
+                        productName.addEventListener('change',function(event){
+                            
+                            if(productName.value.trim().length < 3 || !englishLetters.test(productName.value)){
+                                productName.nextElementSibling.hidden = false;
+                                productName.nextElementSibling.textContent = 'Name should be only Enlgish letters and must contain more than 3 letters'
+                            }else{
+                                productName.nextElementSibling.hidden = true;
+                            }
+                        })
+
+                        productDesc.addEventListener('change',function(event){
+                            
+                            if(productDesc.value.trim().length < 20 || !descRegex.test(productDesc.value)){
+                                productDesc.nextElementSibling.hidden = false;
+                                productDesc.nextElementSibling.textContent = 'Description must be more than 20 letters'
+                            }else{
+                                productDesc.nextElementSibling.hidden = true;
+                            }
+                        })
+
+                        productBrand.addEventListener('change',function(event){
+                            
+                            if(productBrand.value.trim().length < 1 ){
+                                productBrand.nextElementSibling.hidden = false;
+                                productBrand.nextElementSibling.textContent = 'Brand Name should contain some value'
+                            }else{
+                                productBrand.nextElementSibling.hidden = true;
+                            }
+                        })
+
+                        productColor.addEventListener('change',function(event){
+                            
+                            if(productColor.value.trim().length < 2 || !englishLetters.test(productColor.value)  ){
+                                productColor.nextElementSibling.hidden = false;
+                                productColor.nextElementSibling.textContent = 'Enter a valid color'
+                            }else{
+                                productColor.nextElementSibling.hidden = true;
+                            }
+                        })
+                    })
+                </script>
                 <div class="col-lg-6 cropped-image">
                     <div class="card mb-4">
                         <div class="card-header">
@@ -126,9 +168,6 @@
                             <!-- dynamic rendering by script -->
                             <div  id="cropped-images" class="row"></div>
                         </div>
-                        
-                        
-
                         <div class="card-body col-lg-6">
                             <button type="button" id="submitForm" class="btn btn-md rounded font-sm hover-up" disabled> Save Product</button>
                         </div>
@@ -144,19 +183,14 @@
                             <div id="image-preview" class="row"></div>
                         </div>
                         <!--  hidden input field for the cropped images -->
-                    
-                        
                         <div class="card-body col-lg-6">
                             <button type="button" id="crop-button" class="btn btn-md rounded font-sm hover-up" disabled> Crop Images</button>
                         </div>
                     </div>
                 </div>
-                
             </form>
-
-            <!-- ....................................... -->
-            <!-- row.// -->
         </div>
     </section>
+    
     <script src="node_modules/cropperjs/dist/cropper.min.js"></script>
     <%- include("../admin/layouts/footer") %>
