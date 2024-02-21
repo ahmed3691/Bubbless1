@@ -9,8 +9,6 @@ const userBuyController = require('../controller/user/userPurchaseController');
 const wishlistController = require('../controller/user/wishlistController');
 const {userAuthentication,fetchHeaderElements} = require('../middlewares/userMWs');
 const {ejsError} = require('../middlewares/errorMW')
-
-
 const { route } = require("./adminRoute");
 
 
@@ -118,7 +116,6 @@ router.route('/checkout/:id')
     .all(userAuthentication,userBuyController.getChekout);
 router.route('/place-order')
     .post(userAuthentication,userBuyController.orderConfirmation);
-
 router.route('/order-success')
     .get(userAuthentication,userBuyController.successOrder);
 router.route('/verify-payment')

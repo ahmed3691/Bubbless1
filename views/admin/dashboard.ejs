@@ -211,9 +211,6 @@
                 myChart2.data.datasets[0].data[(element._id)-1] = element.totalRevenue;
                 myChart2.data.datasets[1].data[(element._id)-1] = element.productsSold;
             });
-
-            // myChart2.data.datasets[0].data.push(data.analytics[0].totalRevenue);
-            // myChart2.data.datasets[1].data.push(data.analytics[0].productsSold)
             chart.update();
             myChart.update();
             myChart2.update(); 

@@ -5,36 +5,48 @@ const path = require('path')
 
 
 const viewProducts = async (req, res) => {
-  const searchKey = req.query.searchKey;
+  try {
+    const searchKey = req.query.searchKey;
 
-  const category = req.params.category;
-  const categoryTodisplay = (category === "All" || category === undefined) ? { $exists: true } : req.params.category;
+    const category = req.params.category;
+    const categoryTodisplay = (category === "All" || category === undefined) ? { $exists: true } : req.params.category;
 
-  const pageNumber = parseInt(req.params.pageNumber || 0);
-  const productsPerPage = 4;
-  const totalPages = Math.ceil(await ProductModel.countDocuments({
-    category: categoryTodisplay,
-    productName: { $regex: new RegExp(searchKey, 'i') }
-  }) / productsPerPage);
+    const pageNumber = parseInt(req.params.pageNumber || 0);
+    const productsPerPage = 4;
+    const totalPages = Math.ceil(await ProductModel.countDocuments({
+      category: categoryTodisplay,
+      productName: { $regex: new RegExp(searchKey, 'i') }
+    }) / productsPerPage);
 
-  const allProducts = await ProductModel
-    .find({ category: categoryTodisplay, productName: { $regex: new RegExp(searchKey, 'i') } })
-    .skip(pageNumber * productsPerPage)
-    .limit(productsPerPage)
+    const allProducts = await ProductModel
+      .find({ category: categoryTodisplay, productName: { $regex: new RegExp(searchKey, 'i') } })
+      .skip(pageNumber * productsPerPage)
+      .limit(productsPerPage)
 
-  res.render("./admin/adminProducts", { allProducts, pageNumber, totalPages, category });
+    res.render("./admin/adminProducts", { allProducts, pageNumber, totalPages, category });
+  } catch (error) {
+    console.log(error);
+    res.render('./admin/404');
+  }
+  
 };
 
 const sendAddProducts = async (req, res) => {
-  let errorMessage = req.session.message;
-  const categories = await SubCatModel.find({});
-  const catSet = new Set();
-  categories.forEach((cat) => {
-    catSet.add(cat.subCatName);
-  });
+  try {
+    let errorMessage = req.session.message;
+    const categories = await SubCatModel.find({});
+    const catSet = new Set();
+    categories.forEach((cat) => {
+      catSet.add(cat.subCatName);
+    });
+    
+    res.render("./admin/addProducts", { errorMessage, categories: catSet });
+    req.session.message ='';
+  } catch (error) {
+    console.log(error);
+    res.render('./admin/404')
+  }
   
-  res.render("./admin/addProducts", { errorMessage, categories: catSet });
-  req.session.message ='';
 };
 
 const addProducts = async (req, res) => {
@@ -91,43 +103,55 @@ const addProducts = async (req, res) => {
 
   } catch (error) {
     console.log(error);
-    
+    res.render('./admin/404')
   }
 
 };
 
 const listProduct = async (req, res) => {
-  console.log("product unlisitng");
-  const productId = req.query.productId;
-  const listProduct = await ProductModel.findByIdAndUpdate(
-    { _id: productId },
-    { $set: { isListed: true } },
-  );
+  try {
+    console.log("product unlisitng");
+    const productId = req.query.productId;
+    const listProduct = await ProductModel.findByIdAndUpdate(
+      { _id: productId },
+      { $set: { isListed: true } },
+    );
 
-  if (listProduct) {
-    console.log("product listed");
-    res.redirect("/admin/products");
-  } else {
-    console.log(`produt Id: ${productId} not found for listing`);
-    res.redirect("/admin/products");
+    if (listProduct) {
+      console.log("product listed");
+      res.redirect("/admin/products");
+    } else {
+      console.log(`produt Id: ${productId} not found for listing`);
+      res.redirect('/admin/products/All/0');
+    }
+  } catch (error) {
+    console.log(error);
+    res.render('./admin/404')
   }
+  
 };
 
 const unlistProduct = async (req, res) => {
-  const productId = req.query.productId;
-  console.log("product unlisitng");
-  const unlistProduct = await ProductModel.findByIdAndUpdate(
-    { _id: productId },
-    { $set: { isListed: false } },
-  );
-  console.log(unlistProduct);
-  if (unlistProduct) {
-    console.log("product  unlisted");
-    res.redirect("/admin/products");
-  } else {
-    console.log(`produt Id: ${productId} not found for unlisting`);
-    res.redirect("/admin/products");
+  try {
+    const productId = req.query.productId;
+    console.log("product unlisitng");
+    const unlistProduct = await ProductModel.findByIdAndUpdate(
+      { _id: productId },
+      { $set: { isListed: false } },
+    );
+    console.log(unlistProduct);
+    if (unlistProduct) {
+      console.log("product  unlisted");
+      res.redirect("/admin/products");
+    } else {
+      console.log(`produt Id: ${productId} not found for unlisting`);
+      res.redirect('/admin/products/All/0');
+    }
+  } catch (error) {
+    console.log(error);
+    res.render('./admin/404')
   }
+ 
 };
 
 const sendEditProduct = async (req, res) => {
@@ -147,7 +171,8 @@ const sendEditProduct = async (req, res) => {
       res.redirect("/admin/products");
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
+    res.render('./admin/404')
   }
 
 };
@@ -207,13 +232,14 @@ const editProducts = async (req, res) => {
     });
     if (updateProd) {
       console.log(`${productName} updated`)
-      res.redirect('/admin/products')
+      res.redirect('/admin/products/All/0');
     } else {
       console.log(`${productName} cannot be updated`)
       res.redirect('/admin/edit-product')
     }
   } catch (err) {
-    console.log(err)
+    console.log(err);
+    res.render('./admin/404');
   }
 };
 
@@ -223,22 +249,28 @@ const deleteProduct = async (req, res) => {
     console.log(prodId)
     const deleteProduct = await ProductModel.deleteOne({ _id: prodId })
     console.log('product deleted')
-    res.redirect('/admin/products')
+    res.redirect('/admin/products/All/0');
   } catch (err) {
     console.log(err)
-    res.redirect('/admin/products')
+    res.render('./admin/404')
   }
 }
 
 const searchProducts = async (req, res) => {
-  const searchProduct = req.params.searchKey
-  console.log(searchProduct)
-  const products = await ProductModel.find({
-    productName: { $regex: new RegExp(searchProduct, 'i') }
-  })
 
-  console.log(products.length)
-  res.send(products)
+  try {
+    const searchProduct = req.params.searchKey
+    console.log(searchProduct)
+    const products = await ProductModel.find({
+      productName: { $regex: new RegExp(searchProduct, 'i') }
+    });
+    console.log(products.length)
+    res.send(products)
+  } catch (error) {
+    console.log(error);
+    res.render('./admin/404')
+  }
+  
 }
 module.exports = {
   viewProducts,

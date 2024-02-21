@@ -38,18 +38,6 @@
                                 <label for="percentageInput" id="discountLabel"  class="form-label">Percentage discount </label>
                                 <input id="percentageInput" min="0" max="100"  type="number" name="percentage" placeholder="Type here" class="form-control offerInput"  />
                             </div>
-                            <!-- <div hidden id="fixedAmountDiv" class="col-md-6 mb-3">
-                                <label for="fixedAmount"  class="form-label"> Price discount </label>
-                                <input id="fixedAmountInput" min="0"  type="number" name="fixedAmount" placeholder="Type here" class="form-control offerInput"  />
-                            </div> -->
-                            <!-- <div hidden id="buyDiv" class="col-md-6 mb-3">
-                                <label for="buyInput"  class="form-label"> Buy </label>
-                                <input id="buyInput" min="1"   type="number" name="buy" placeholder="X" class="form-control offerInput"  />
-                            </div>
-                            <div hidden id="getDiv" class="col-md-6 mb-3">
-                                <label for="getInput"  class="form-label"> Get </label> 
-                                <input id="getInput"  min="1" type="number" name="get" placeholder="Y" class="form-control offerInput"  />
-                            </div> -->
                         </div>
                     </div>
                     <input type="submit"  class="btn btn-md rounded font-sm hover-up text-center" value="Create">
@@ -67,13 +55,7 @@
         const offerInput = document.querySelectorAll('.offerInput');
         const offerTypes = document.querySelectorAll('.offerType');
         const percentageDiv = document.getElementById('percentageDiv');
-        // const fixedAmountDiv = document.getElementById('fixedAmountDiv');
-        // const getDiv = document.getElementById('getDiv');
-        // const buyDiv = document.getElementById('buyDiv');
         const percentageInput = document.getElementById('percentageInput');
-        // const fixedAmountInput = document.getElementById('fixedAmountInput');
-        // const getInput = document.getElementById('getInput');
-        // const buyInput = document.getElementById('buyInput');
 
         offerInput.forEach(input =>{
             input.addEventListener('keydown',function(event){
@@ -92,50 +74,12 @@
         offerTypes.forEach(type=>{
             type.addEventListener('change',function(){
                 if(this.value == 'percentage'){
-                    // getDiv.hidden = true;
-                    // buyDiv.hidden = true;
-                    // fixedAmountDiv.hidden = true;
                     percentageDiv.hidden = false;
                     percentageInput.required  = true;
-                    // fixedAmountInput.required = false;
-                    // getInput.required = false;
-                    // buyInput.required = false;
 
                     percentageInput.disabled  = false;
-                    // fixedAmountInput.disabled = true;
-                    // getInput.disabled = true;
-                    // buyInput.disabled = true;
                 }
-                // else if(this.value == 'fixedAmount'){
-                //     getDiv.hidden = true;
-                //     buyDiv.hidden = true;
-                //     percentageDiv.hidden = true;
-                //     fixedAmountDiv.hidden = false;
-                //     percentageInput.required  = false;
-                //     fixedAmountInput.required = true;
-                //     getInput.required = false;
-                //     buyInput.required = false;
-
-                //     percentageInput.disabled  = true;
-                //     fixedAmountInput.disabled = false;
-                //     getInput.disabled = true;
-                //     buyInput.disabled = true;
-                // }
-                // else if(this.value == 'buyXgetY'){
-                //     getDiv.hidden = false;
-                //     buyDiv.hidden = false;
-                //     fixedAmountDiv.hidden = true;
-                //     percentageDiv.hidden = true;
-                //     percentageInput.required  = false;
-                //     fixedAmountInput.required = false;
-                //     getInput.required = true;
-                //     buyInput.required = true;
-
-                //     percentageInput.disabled  = true;
-                //     fixedAmountInput.disabled = true;
-                //     getInput.disabled = false;
-                //     buyInput.disabled = false;
-                // }
+            
             })
         })
     });

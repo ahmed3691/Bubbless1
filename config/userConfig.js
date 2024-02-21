@@ -111,7 +111,18 @@ function razorPayRequest(orderId, amount) {
   })
 }
 
-
+async function checkForStock(products){
+  for(product of products){
+    prod = await ProductModel.findOne({_id:product.productId});
+    if(prod.stockQty < product.quantity){
+      console.log('out of stock');
+      return false
+    }else{
+      console.log('stock is ok')
+    }
+  }
+  return true;
+}
 
 const placeOrder = async (body,userId,userName,orderId)=>{
 
@@ -121,18 +132,7 @@ const placeOrder = async (body,userId,userName,orderId)=>{
       cartId,
   } = body;
 
-  async function checkForStock(products){
-    for(product of products){
-      prod = await ProductModel.findOne({_id:product.productId});
-      if(prod.stockQty < product.quantity){
-        console.log('out of stock');
-        return false
-      }else{
-        console.log('stock is ok')
-      }
-    }
-    return true;
-  }
+
 
   let products = [];
 
@@ -276,5 +276,6 @@ module.exports = {
   convertToArray,
   razorPayRequest,
   placeOrder,
-  getFilters
+  getFilters,
+  checkForStock
 };

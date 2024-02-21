@@ -9,6 +9,7 @@ const adminAuth = async (req,res,next)=>{
             console.log('admin authenetication')
             const decode = jwt.verify(token,process.env.JWT_ACCESS_SECRET);
             const admin = await AdminModel.findById(decode?.adminId).select('-password');
+            
             if(admin){
                 req.admin = admin;
                 next();

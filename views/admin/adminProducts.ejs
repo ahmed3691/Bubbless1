@@ -171,26 +171,6 @@
         </nav>
     </div>
 </section>
-<!-- <script>
-    document.addEventListener('DOMContentLoaded',async()=>{
-        const categorySelection = document.getElementById('selectCategory')
-            
-        categorySelection.addEventListener('change',(event)=>{
-            const selectedCategory = categorySelection.value
-            console.log(selectedCategory)
-            let xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function(){
-                if(this.readyState == 4 && this.status == 200){
-                    const allProducts = JSON.parse(this.responseText)
-                    console.log(allProducts)
-                }
-            }
-            xhttp.open('GET',`/admin/categorized-products/${selectedCategory}`,true)
-            xhttp.send();
-        })
-    })
-</script> -->
-
 
 
 <%- include("../admin/layouts/footer") %>

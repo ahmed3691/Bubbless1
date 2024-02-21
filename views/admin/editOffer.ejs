@@ -54,13 +54,7 @@
         const offerInput = document.querySelectorAll('.offerInput');
         const offerTypes = document.querySelectorAll('.offerType');
         const percentageDiv = document.getElementById('percentageDiv');
-        // const fixedAmountDiv = document.getElementById('fixedAmountDiv');
-        // const getDiv = document.getElementById('getDiv');
-        // const buyDiv = document.getElementById('buyDiv');
         const percentageInput = document.getElementById('percentageInput');
-        // const fixedAmountInput = document.getElementById('fixedAmountInput');
-        // const getInput = document.getElementById('getInput');
-        // const buyInput = document.getElementById('buyInput');
         const submitBtn =  document.getElementById('submitBtn');
 
         offerInput.forEach(input =>{
@@ -80,50 +74,11 @@
         offerTypes.forEach(type=>{
             type.addEventListener('change',function(){
                 if(this.value == 'percentage'){
-                    // getDiv.hidden = true;
-                    // buyDiv.hidden = true;
-                    // fixedAmountDiv.hidden = true;
                     percentageDiv.hidden = false;
                     percentageInput.required  = true;
-                    // fixedAmountInput.required = false;
-                    // getInput.required = false;
-                    // buyInput.required = false;
-
                     percentageInput.disabled  = false;
-                    // fixedAmountInput.disabled = true;
-                    // getInput.disabled = true;
-                    // buyInput.disabled = true;
                 }
-                // else if(this.value == 'fixedAmount'){
-                //     getDiv.hidden = true;
-                //     buyDiv.hidden = true;
-                //     percentageDiv.hidden = true;
-                //     fixedAmountDiv.hidden = false;
-                //     percentageInput.required  = false;
-                //     fixedAmountInput.required = true;
-                //     getInput.required = false;
-                //     buyInput.required = false;
-
-                //     percentageInput.disabled  = true;
-                //     fixedAmountInput.disabled = false;
-                //     getInput.disabled = true;
-                //     buyInput.disabled = true;
-                // }
-                // else if(this.value == 'buyXgetY'){
-                //     getDiv.hidden = false;
-                //     buyDiv.hidden = false;
-                //     fixedAmountDiv.hidden = true;
-                //     percentageDiv.hidden = true;
-                //     percentageInput.required  = false;
-                //     fixedAmountInput.required = false;
-                //     getInput.required = true;
-                //     buyInput.required = true;
-
-                //     percentageInput.disabled  = true;
-                //     fixedAmountInput.disabled = true;
-                //     getInput.disabled = false;
-                //     buyInput.disabled = false;
-                // }
+               
             })
         })
 

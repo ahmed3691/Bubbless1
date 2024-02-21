@@ -6,7 +6,6 @@
             <div class="card-body">
                 <div class="row gx-5">
                     <div id="addAdress" class="col-md-12"   style="margin-top: 2vh;" >
-                        <!-- <section class="content-body p-xl-4"> -->
                             <form action="/edit-address/<%= addressToEdit.addresses[0]._id %>" method="post">
                                 <div class="row">
                                     <div class="col-md-8">
@@ -63,13 +62,9 @@
                                     <input type="submit" class="btn btn-primary " value="Save Details">  
                                 </div>                                                          
                             </form>
-                        <!-- </section> -->
                     </div>
                     <script>
-                               $(document).ready(function () {
-                            
-                           
-
+                        $(document).ready(function () {
                             $('#phoneNumber').on('input',function(){
                                 console.log("hi")
                                 let inputValue = $(this).val();

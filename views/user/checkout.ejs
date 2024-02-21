@@ -7,11 +7,9 @@
                     <!-- Checkout -->
                     <form id="checkoutForm" action="/place-order" method="post">
                         <div class="card col-md-7 shadow-0 border">
-
                             <div class="p-4">
                                 <div class="row">
                                     <h5 class="card-title mb-3">Delivery adress:</h5>
-                                    <!-- fill address  -->
                                     <div id="addAddress" class="col-md-12">
                                         <p><span style="color: red;">* marked sections are mandatory</span></p>
                                         <div class="col-md-12 mb-3">
@@ -81,7 +79,6 @@
                                     <div class="col-md-12 " style="margin-top: 2vh;">
                                         <span id="savedAddress-btn" class="btn btn-primary">Saved Addresses</span>
                                     </div>
-                                    <!-- select adressese -->
                                     <div id="savedAddress" class="col-md-12" hidden>
                                         <div class="row mb-3">
                                             <% savedAddress?.addresses.forEach(address=>{ %>
@@ -109,25 +106,19 @@
                                                 <% }) %>
                                         </div>
                                     </div>
-                               
                                 </div>
-
                                 <hr class="my-4" />
                                 <h5 class="card-title mb-3">Add delivery instructions</h5>
                                 <div class="row mb-3">
                                     <div class="mb-3 col-md-12">
-
                                         <div class="form-outline">
                                             <textarea name="deliveryInstruction" class="form-control"
                                                 id="textAreaExample1" rows="2"></textarea>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
-
                         </div>
-                        <!-- Checkout -->
 
                         <!-- single Product Summary........................................................... -->
 
@@ -141,7 +132,6 @@
                                         <a href="" id="viewCoupons" > view available coupons</a>
                                         <div hidden  id="couponsPreview" class="row">
                                             <% coupons.forEach(coupon=>{ %>
-
                                                 <div   class="col-sm-12 row coupon-container" >
                                                     <small class="col-sm-6 coupon-title" ><%= coupon.couponTitle %></small>
                                                     <small class="col-sm-4 couponAmount" style="font-size: 14px;" >&#x20B9; <%= coupon.couponAmount %> OFF</small>
@@ -205,9 +195,6 @@
                                             <div class="">Quantity: <%= productQty %></div>
                                         </div>
                                     </div>
-                                    <script>
-                                        
-                                    </script>
                                     <% } else{%>
                                         <div>Cart Checkout</div>
                                         <h6 class="mb-3 " style="font-weight: bolder; font-size: larger;"> Summary</h6>
@@ -332,7 +319,6 @@
                     $('#house').val().trim() !== '' && $('#city').val().trim() !== '' &&
                     $('#pincode').val().trim() !== '';
                 const savedAddress = $('.selectAddress:checked').length !== 0;
-                
                 const paymentMethod = $('.paymentOptions:checked').length !== 0;
                
                 return (addAddres || savedAddress) && paymentMethod;
@@ -350,7 +336,7 @@
                     console.log(response)
                     if(response.COD){
                         location.href = '/order-success';
-                    }else if(!response.COD){
+                    }else if(response.stock == false){
                         return alert('Sorry, Out of Stock')
                     }else{
                         console.log(response)

@@ -42,35 +42,23 @@
 						<div style="color: red;">
 							<%= message %>
 						</div>
-						<% } %>
-							<!-- <a class="news-letter " href="#">
-						 <label class="checkbox1"><input type="checkbox" name="checkbox" ><i> </i>Forget Password</label>
-					   </a> -->
-							<label class="hvr-skew-backward">
-								<input id="submitBtn" type="submit" value="Get OTP">
-							</label>
-
-
-
+					<% } %>
+					<label class="hvr-skew-backward">
+						<input id="submitBtn" type="submit" value="Get OTP">
+					</label>
 				</div>
 				<div class="col-md-6 login-right">
 					<h3>Existing user</h3>
 
 					<p>Already have an account? Login here</p>
 					<a href="/login" class="hvr-skew-backward">Login</a>
-
 				</div>
-
 				<div class="clearfix"> </div>
 			</form>
 		</div>
 	</div>
-
 	<%- include("../user/layouts/footer") %>
 	<script>
-
-		
-
 		function notBlank(value){
 			if(value.trim() == '') return false;
 			if(value.trim()!== '') return true;
@@ -122,9 +110,6 @@
 				return false;
 			}		
 		})
-
-		
-
 	</script>
 
 		<script src="/js/simpleCart.min.js"> </script>

@@ -3,8 +3,8 @@
     <div class="container">
 
         <div class="bs-example4 col-md-8" data-example-id="simple-responsive-table" style="background-color: #d6ccc4;
-    border-radius: 30px;
-    margin-top: 2vh;">
+                    border-radius: 30px;
+                    margin-top: 2vh;">
             <div class="card-body">
                 <table class="table-heading simpleCart_shelfItem cart-list table-hover">
                     <thead>
@@ -15,7 +15,6 @@
                         <p hidden id="stockAlert" style="color: red;">Sorry stock limit has been reached</p>
                     </thead>
                     <% cartItems?.items.forEach(item=>{ %>
-
                         <tr class="cart-header ">
                             <td class="ring-in"><a href="single.html" class="at-in"><img
                                         src="<%= item.productId.productImages[0] %>" class="img-responsive" alt=""></a>
@@ -37,7 +36,6 @@
                             
                             </td>
                             <td>FREE SHIPPING </td>
- 
                             <td class="item_price">
                                 <input class="productId" hidden value="<%= item.productId._id %>">
                                 <select name="productQty" class="selectedQty" id="productQty">

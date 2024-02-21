@@ -1,6 +1,6 @@
 const { ProductModel } = require("../../model/productModel");
 const { CartModel } = require("../../model/cartModel");
-const { generateOrderId,placeOrder, razorPayRequest } = require("../../config/userConfig");
+const { generateOrderId,placeOrder, razorPayRequest,checkForStock } = require("../../config/userConfig");
 const { updateStock,confirmPayment } = require("../../config/userDBHelpers");
 const { AddressModel } = require("../../model/addressModel");
 const {PaymentModel}  = require('../../model/paymentModel');
@@ -68,9 +68,9 @@ const getChekout = async (req, res) => {
 
 const orderConfirmation = async (req, res) => {
     try {
-        const {paymentMethod,totalPrice,selectedCoupon} = req.body 
-        
-        
+        const {paymentMethod,totalPrice,selectedCoupon,cartId,productId,orderProductQty,productPrice} = req.body 
+       
+
         const userId = req.user;
         async function manageCoupon(selectedCoupon){
             if(selectedCoupon){
@@ -88,7 +88,36 @@ const orderConfirmation = async (req, res) => {
         }
         
         const userName = req.userName;
+
         if(paymentMethod == 'Online Payment'){
+            console.log(req.body)
+            //.............................................................
+            let products = [];
+
+            if (cartId) {
+              
+              const userCart = await CartModel.findOne(
+                { _id: cartId },
+                {
+                   'items._id':0,
+                    _id: 0,
+                    userId:0, 
+                }
+              );
+              products =  userCart.items;
+              const stock = await checkForStock(products);
+              if(!stock) return res.json({stock:false});
+            }else{
+                let obj = {
+                productId: productId,
+                quantity: orderProductQty,
+                totalPrice: productPrice
+                }
+                products.push(obj);
+                const stock = await checkForStock(products);
+                if(!stock) return res.json({stock:false});
+            }
+            //.........................................................
             const orderId = generateOrderId();
             razorPayRequest(orderId, parseInt(totalPrice))
                 .then(async response=>{
@@ -111,10 +140,11 @@ const orderConfirmation = async (req, res) => {
             const orderId = generateOrderId();
             const orderPlace = await placeOrder(req.body,userId,userName,orderId);
             console.log('orderPlaced',orderPlace)
-            if(!orderPlace) return res.json({COD:false})
+            if(!orderPlace) return  res.json({stock:false});
             await manageCoupon(selectedCoupon);
             res.json({ COD: true });
         }
+        
     } catch (error) {
         console.log(error);
         res.render('./user/404')

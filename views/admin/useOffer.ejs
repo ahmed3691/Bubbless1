@@ -81,11 +81,9 @@
                                 <% }) %>
                             </tbody>
                         </table>
-                       
                     </div>
                     <input type="submit" id="catBtn" class="btn btn-success" value="Apply for these categories">
                 </div>
-               
             </form>
         </div>
         <div class="col-md-12" hidden id="productDiv">
@@ -113,15 +111,12 @@
                             <div class="col-lg-2 col-sm-2 col-4 col-price"><span><%= product.category %></span></div>
                             <div class="col-lg-2 col-sm-2 col-4 col-price productPrice"><span>&#x20B9; <%= product.price %></span></div>
                         </div>
-                        <!-- row .// -->
                     </article>
                     <% }) %>
                     <input type="submit" id="productBtn" class="btn btn-success" value="Apply for selected products">
             </div>
-           
         </form>
     </div>
-    
 </section>
 
 <script>
@@ -136,7 +131,6 @@
         const productForm = document.getElementById('productForm');
         const catBtn = document.getElementById('catBtn');
         const productBtn = document.getElementById('productBtn');
-     
         
         applyFor.forEach(item=>{
             item.addEventListener('change',function(){
@@ -158,13 +152,11 @@
                     mainCategoryDiv.hidden = true;
                     subCategoryDiv.hidden = false;
                     productDiv.hidden = true;
-
                     mainCatInput.forEach(input=>{
                         input.disabled = true;
                     });
                     subCatInput.forEach(input=>{
                         input.disabled = false;
-                        
                     });
                     productForm.disabled = true;
                 }else if(this.value == 'product'){
@@ -172,7 +164,6 @@
                     mainCategoryDiv.hidden = true;
                     subCategoryDiv.hidden = true;
                     productDiv.hidden = false;
-
                     categoryForm.disabled = true;
                     productForm.disabled = false;
                 }

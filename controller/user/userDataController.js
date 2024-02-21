@@ -307,7 +307,7 @@ const returnOrder = async (req,res)=>{
       paymentFor: 'Wallet Credit',
       paymentIntitatedFor:'Returned Order',
       entity: 'order',
-      amount:price,
+      amount:price*100,
       amount_paid: price,
       amount_due: 0,
       currenc: 'INR',

@@ -14,15 +14,23 @@ const userAuthentication = async (req,res,next)=>{
                
                 const decode = jwt.verify(token,process.env.JWT_ACCESS_SECRET);
                 const user = await UserModel.findById(decode?.userId).select('-password');
-                if(user){
+                console.log(user);
+                if(user && user.isBlocked == false){
          
                     req.user = user._id;
                     req.userEmail = user.userEmail;
                     req.userName= user.userName;
-                  
                     next(); 
                 }else{
-                    res.render('./user/userLogin')
+                    if(user.isBlocked == true){
+                        res.clearCookie("userAccessToken");
+                        res.clearCookie('userId')
+                        res.clearCookie('cartQty')
+                        req.session.destroy();
+                        res.render('./user/userLogin',{message:'You have been blocked!'});
+                    }else{
+                        res.render('./user/userLogin');
+                    }
                 }
             } catch (error) {
                 console.log('hmmm....expired token',error);
@@ -34,14 +42,11 @@ const userAuthentication = async (req,res,next)=>{
                     res.render('/user/userLogin')
                 }
             }
-           
         }else{
             
             let message = req.flash("message");
-            
             if(req.path === '/login') return res.render('./user/userLogin',{message});
-            if(req.path === '/register') return res.render('./user/userRegister');            
-            // res.render('./user/home',{products,banners});
+            if(req.path === '/register') return res.render('./user/userRegister');
             res.render('./user/userLogin')
         }
 }

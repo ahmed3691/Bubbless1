@@ -48,15 +48,11 @@
       function handleInput() {
         var otpInput = document.getElementById("otpField");
         var submitButton = document.getElementById("submitBtn");
-
-        // Set the desired number of characters
         var requiredCharacters = 4;
-
-        // Check if the entered characters reach the required number
         if (otpInput.value.length === requiredCharacters) {
-          submitButton.disabled = false; // Enable the submit button
+          submitButton.disabled = false;
         } else {
-          submitButton.disabled = true; // Disable the submit button
+          submitButton.disabled = true; 
         }
       }
       
@@ -82,7 +78,6 @@
       function resendOTP() {
         countDown = 120;
         startTimer();
-        // Hide the resend button
         document.getElementById('resendBtn').style.display = 'none';
     }
 

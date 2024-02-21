@@ -84,8 +84,7 @@
                         refferalCode = response.refferalCode;
                         refferalLink = `http://localhost:4500/user-signup/${response.refferalCode}`
                         $('#refferalLink').text(refferalLink)
-                        
-                    
+                
                         Swal.fire({
                             title: " <p>Share this link</p>",
                         
@@ -98,27 +97,18 @@
                             confirmButtonText: `
                                 <i class="fa-solid fa-copy"></i> Copy to clipboard
                             `,
-                            // confirmButtonAriaLabel: "Thumbs up, great!",
                             cancelButtonText: `
                                 Cancel
                             `,
-                            // cancelButtonAriaLabel: "Thumbs down"
                         }).then(result=>{
                             if(result.isConfirmed){
                                navigator.clipboard.writeText(refferalLink);
                             }
                         });
-                        
-                        console.log(refferalCode)
                     }
-                    
                 }
             })
-            
-            
         })
-
-
     })
 </script>
 

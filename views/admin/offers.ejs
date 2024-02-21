@@ -5,9 +5,7 @@
     <div class="content-header">
         <div>
             <h2 class="content-title card-title">Offers List</h2>
-            
         </div>
-        
         <div>
             <a href="/admin/create-offer" class="btn btn-primary btn-sm rounded">Create new offer</a>
         </div>
@@ -102,22 +100,17 @@
             </article>
             <% }) %>
         </div>
-   
 </section>
 
 <script>
     document.addEventListener('DOMContentLoaded',function(){
         const deleteBtn = document.querySelectorAll('.deleteBtn')
-        
-        console.log(deleteBtn)
 
         deleteBtn.forEach(btn=>{
-
             btn.addEventListener('click',function(event){
                 event.preventDefault();
                 const offerIdSpan = this.nextElementSibling;
                 const offerId = offerIdSpan.innerText;
-            
             
                 Swal.fire({
                     title: "Are you sure?",
@@ -129,7 +122,6 @@
                     confirmButtonText: "Yes, delete it!"
                     }).then((result) => {
                     if (result.isConfirmed) {
-
                         fetch('/admin/offers',{
                             method: 'DELETE',
                             headers:{
@@ -156,12 +148,10 @@
                                 document.getElementById('errorMessage').innerHTML = " <div class='alert-danger alert'>Delete failed</div>"
                             }
                         })
-                }
+                    }
                 });
+            })
         })
-
-        })
-        
     })
 </script>
 

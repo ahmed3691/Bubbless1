@@ -99,14 +99,6 @@
                             <div>
                                 <input type="hidden" name="productId" id="productId" value="<%= product._id %>">
                             </div>
-                            <!-- <div class="card mb-4">
-                                <div class="card-body">
-                                    <div>
-                                        <label class="form-label">Choose upto 4 pictures</label>
-                                        <input class="form-control" id="image-input" type="file" multiple name="productImages"  required />
-                                    </div>
-                                </div>
-                            </div> -->
                             <div class="card-body col-lg-6">
                                 <input type="submit"  class="btn btn-md rounded font-sm hover-up" value="Save Product" > </button>
                             </div>
@@ -160,10 +152,6 @@
                    
                         const file = event.target.files[0];
                         const reader = new FileReader();
-                    //    if(event.target.files.length>1){
-                    //     event.target.value = '';
-                    //     return alert('please select only 1 file')
-                    //    }
                         reader.onload = function(e){
                             const thisImage = thisImageDiv.querySelector('img');
                             thisImage.src = e.target.result;

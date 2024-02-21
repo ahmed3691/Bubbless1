@@ -28,7 +28,6 @@
                 </tr>
             </thead>
             <tbody id="tableContents">
-                <!-- transactions details from fetchTransactions goes here  -->
             </tbody>
         </table>
     </div>
@@ -56,8 +55,6 @@
         function updateTable(transactions,userWallet){
             tableContents.empty();
             walletBalance.text(userWallet.amount);
-            // walletBalance.val() = userWallet.amount;
-
             transactions.forEach(transaction => {
                 const amount = transaction.paymentFor == 'Wallet Credit' ? `+${(transaction.amount)/100}`
                             : transaction.paymentFor == 'Wallet Debit' ? `-${(transaction.amount)/100}`
