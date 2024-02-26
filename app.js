@@ -47,7 +47,7 @@ app.use((req,res,next)=>{
 })
 
 app.use('/admin',adminRoute);
-app.use(`/`,userRoute);
+app.use(`/`,userRoute); 
 
 
 app.listen(port,()=>{

@@ -29,9 +29,7 @@
 
         if (files.length > 0) {
           let divCount = previewImageContainer.querySelectorAll('.view-image').length;
-          console.log('file lenght',files.length)
-          console.log('img count',croppers.length)
-          console.log(' total length',files.length + croppers.length)
+         
           if(files.length + croppers.length >4){
             previewImageContainer.innerHTML = "";
             croppers.length = 0;
@@ -102,7 +100,7 @@
       }
 
       submitForm.addEventListener("click", async (ev) => {
-        console.log('button clicked')
+       
         let form = document.getElementById("productForm");
         ev.preventDefault();
         let formData = new FormData();
@@ -110,7 +108,6 @@
         formData.append("productDesc",document.getElementById("productDesc").value);
         formData.append("productPrice",document.getElementById("productPrice").value);
         formData.append("productQty", document.getElementById("productQty").value);
-        // formData.append("productSize",document.getElementById("productSize").value);
         formData.append("productCat", document.getElementById("productCat").value);
         formData.append("productSubCat",document.getElementById("productSubCat").value);
         formData.append("productBrand",productBrand.value)

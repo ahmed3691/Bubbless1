@@ -1,5 +1,12 @@
 <%- include("../user/layouts/header") %>
 
+    <% if(!cartItems || cartItems?.items.length == 0){ %>
+        <div class="container">
+            <div class="wishlist">
+                <p>No products were added to the Cart</p>
+            </div>
+        </div>
+        <% }else{ %>
     <div class="container">
 
         <div class="bs-example4 col-md-8" data-example-id="simple-responsive-table" style="background-color: #d6ccc4;
@@ -10,7 +17,7 @@
                     <thead>
                         <th>Product</th>
                         <th>Price</th>
-                        <th>Delivery </th>
+                        <th>Delivery</th>
                         <th>Quantity</th>
                         <p hidden id="stockAlert" style="color: red;">Sorry stock limit has been reached</p>
                     </thead>
@@ -79,6 +86,7 @@
             <a href="/checkout/<%= cartItems?._id %>" class="hvr-skew-backward" style>checkout</a>
         </div>
     </div>
+    <% } %>
 
 
 

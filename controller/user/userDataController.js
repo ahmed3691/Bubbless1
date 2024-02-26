@@ -31,6 +31,7 @@ const getUserCart = async (req, res) => {
     let cartQty = req.cookies.cartQty;
     const userId = req.user;
     const cartItems = await CartModel.findOne({ userId: userId }).populate("items.productId");
+    console.log(cartItems)
     res.render("./user/cart", { isAuthenticated, cartQty, cartItems });
   } catch (error) {
     console.log(error);

@@ -154,7 +154,11 @@
                                         <% } %>
                                     </div>
                                     <div class="col-md-12">
-                                        <p> <b>Wallet Balance:</b> &#x20B9;<span id="walletBalance"><%= userWallet?.amount %></span></p>
+                                        <% if(userWallet){ %>
+                                            <p> <b>Wallet Balance:</b> &#x20B9;<span id="walletBalance"><%= userWallet?.amount %></span></p>
+                                        <% }else{ %>
+                                            <p> <b>Wallet Balance:</b> &#x20B9;<span id="walletBalance">0</span></p>
+                                        <% } %>
                                     </div>
                                     <div>
                                         <h5>Choose a payment method</h5>
@@ -234,7 +238,12 @@
                                             <button class="btn btn-light text-primary border">Apply</button>
                                         </div>
                                         <div class="col-md-12">
-                                            <p> <b>Wallet Balance:</b> &#x20B9;<span id="walletBalance"><%= userWallet.amount %></span></p>
+                                            <% if(userWallet){ %>
+                                                <p> <b>Wallet Balance:</b> &#x20B9;<span id="walletBalance"><%= userWallet?.amount %></span></p>
+                                            <% }else{ %>
+                                                <p> <b>Wallet Balance:</b> &#x20B9;<span id="walletBalance">0</span></p>
+                                            <% } %>
+                                            
                                         </div>
                                         <div>
                                             <h5>Choose a payment method</h5>

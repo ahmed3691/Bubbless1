@@ -49,7 +49,10 @@ const loginUser = async (req, res) => {
       req.flash("message", "This user doesnt exist");
       return res.redirect("/login");
     }
+
+    
     if (userExists && bcrypt.compareSync(userPassword, userExists.userPassword)) {
+      
       if(userExists.isBlocked === true){
         req.flash('message','Sorry you have been blocked for violating our policies. For further clarifications you may contact our admin.')
         return res.redirect('/login')
