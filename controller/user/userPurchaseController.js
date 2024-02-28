@@ -200,6 +200,7 @@ const cancelOrder = async (req, res) => {
             "products.productId",
         );
         const price = order.totalPrice;
+        console.log(price);
         if (order.status !== "Delivered" && order.status !== "Returned") {
             const updateOrderStatus = await OrdersModel.updateOne(
                 { _id: orderId },
