@@ -215,14 +215,14 @@ const cancelOrder = async (req, res) => {
                 {userId:userId},
                 {$inc:{amount:price}},
                 {upsert: true});
-    
+            const priceTosave = price*100
             const newPayment = new PaymentModel({
                 userId,
                 paymentFor: 'Wallet Credit',
                 paymentIntitatedFor:'Cancelled Order',
                 entity: 'order',
-                amount:(price*100),
-                amount_paid: (price*100),
+                amount:priceTosave,
+                amount_paid: priceTosave,
                 amount_due: 0,
                 currenc: 'INR',
                 receipt: orderId,
